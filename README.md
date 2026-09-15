@@ -1,32 +1,29 @@
-# React + TypeScript + Vite
+# StoreReady
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Design your App Store screenshots first, then let your AI coding agent capture the real app screens for you.
 
-Currently, two official plugins are available:
+StoreReady is a visual editor for App Store marketing screenshots. Instead of starting from an
+existing screenshot, you design the layout first — headline, subheadline, and one or more phone
+placeholders, positioned and sized exactly as they'll appear in the final image. Each phone gets a
+**screenshot name** (e.g. `home_full`, `history`). When you're ready, generate a capture prompt for
+that name and hand it to Claude Code, Cursor, or any AI coding agent working in your app's own
+repository — it captures the real screen and you upload the result back in.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Getting started
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Scripts
+
+- `npm run dev` — start the Vite dev server
+- `npm run build` — type-check and build for production
+- `npm run preview` — preview the production build locally
+- `npm run lint` — run Oxlint
+
+## Stack
+
+React + TypeScript, Konva / react-konva for the canvas, Zustand (+ Immer) for state, IndexedDB for
+local persistence. No backend, no accounts — everything lives in the browser for Phase 1.

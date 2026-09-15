@@ -65,10 +65,14 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
   return (
     <header className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-800 bg-neutral-900 px-4 py-2.5">
       <div className="flex items-center gap-3">
+        <span className="shrink-0 text-sm font-bold tracking-tight text-neutral-100">
+          Store<span className="text-blue-400">Ready</span>
+        </span>
+        <span className="h-4 w-px bg-neutral-700" />
         <input
           value={project.name}
           onChange={(e) => renameProject(e.target.value)}
-          className="w-48 rounded border border-transparent bg-transparent px-1.5 py-1 text-sm font-semibold text-neutral-100 hover:border-neutral-700 focus:border-blue-500 focus:bg-neutral-800 focus:outline-none"
+          className="w-44 rounded border border-transparent bg-transparent px-1.5 py-1 text-sm font-semibold text-neutral-100 hover:border-neutral-700 focus:border-blue-500 focus:bg-neutral-800 focus:outline-none"
         />
         <select
           value={project.devicePresetId}
