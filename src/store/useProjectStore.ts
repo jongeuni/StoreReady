@@ -36,8 +36,9 @@ type State = {
   project: Project;
   currentPageId: string;
   selectedObjectIds: string[];
-  promptModalOpen: boolean;
-  promptModalScope: 'page' | 'all';
+  infoModalOpen: boolean;
+  infoModalStep: 1 | 2 | 3;
+  infoModalSelectedPageIds: string[];
 };
 
 type Actions = {
@@ -81,9 +82,12 @@ type Actions = {
   selectObject: (id: string, additive?: boolean) => void;
   clearSelection: () => void;
 
-  // Prompt modal
-  openPromptModal: (scope: 'page' | 'all') => void;
-  closePromptModal: () => void;
+  // Screenshot info modal
+  openInfoModal: () => void;
+  closeInfoModal: () => void;
+  setInfoModalStep: (step: 1 | 2 | 3) => void;
+  toggleInfoModalPage: (pageId: string) => void;
+  setInfoModalAllPagesSelected: (selected: boolean) => void;
 
   // Danger zone
   resetProject: () => void;
@@ -99,8 +103,9 @@ export const useProjectStore = create<State & Actions>()(
       project: initialProject,
       currentPageId: initialProject.pages[0].id,
       selectedObjectIds: [],
-      promptModalOpen: false,
-      promptModalScope: 'page',
+      infoModalOpen: false,
+      infoModalStep: 1,
+      infoModalSelectedPageIds: [],
 
       renameProject: (name) =>
         set((s) => {
@@ -426,15 +431,35 @@ export const useProjectStore = create<State & Actions>()(
           s.selectedObjectIds = [];
         }),
 
-      openPromptModal: (scope) =>
+      openInfoModal: () =>
         set((s) => {
-          s.promptModalOpen = true;
-          s.promptModalScope = scope;
+          s.infoModalOpen = true;
+          s.infoModalStep = 1;
+          s.infoModalSelectedPageIds = s.project.pages.map((p) => p.id);
         }),
 
-      closePromptModal: () =>
+      closeInfoModal: () =>
         set((s) => {
-          s.promptModalOpen = false;
+          s.infoModalOpen = false;
+        }),
+
+      setInfoModalStep: (step) =>
+        set((s) => {
+          s.infoModalStep = step;
+        }),
+
+      toggleInfoModalPage: (pageId) =>
+        set((s) => {
+          if (s.infoModalSelectedPageIds.includes(pageId)) {
+            s.infoModalSelectedPageIds = s.infoModalSelectedPageIds.filter((id) => id !== pageId);
+          } else {
+            s.infoModalSelectedPageIds.push(pageId);
+          }
+        }),
+
+      setInfoModalAllPagesSelected: (selected) =>
+        set((s) => {
+          s.infoModalSelectedPageIds = selected ? s.project.pages.map((p) => p.id) : [];
         }),
 
       resetProject: () =>

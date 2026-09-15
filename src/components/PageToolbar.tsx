@@ -19,7 +19,6 @@ export function PageToolbar({ page }: { page: Page }) {
   const selectedObjectIds = useProjectStore((s) => s.selectedObjectIds);
   const alignSelected = useProjectStore((s) => s.alignSelected);
   const applyTemplate = useProjectStore((s) => s.applyTemplate);
-  const openPromptModal = useProjectStore((s) => s.openPromptModal);
   const removeSelectedObjects = useProjectStore((s) => s.removeSelectedObjects);
 
   const hasSelection = selectedObjectIds.length > 0;
@@ -72,10 +71,6 @@ export function PageToolbar({ page }: { page: Page }) {
           Delete
         </Button>
       </div>
-
-      <Button variant="primary" onClick={() => openPromptModal('page')}>
-        Generate AI Prompt (this page)
-      </Button>
     </div>
   );
 }

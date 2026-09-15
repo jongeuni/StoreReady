@@ -6,7 +6,7 @@ import { PageTabs } from './components/PageTabs';
 import { PageToolbar } from './components/PageToolbar';
 import { CanvasStage } from './components/CanvasStage';
 import { PropertiesPanel } from './components/PropertiesPanel';
-import { PromptModal } from './components/PromptModal';
+import { ScreenshotInfoModal } from './components/ScreenshotInfoModal';
 import { Toasts } from './components/Toasts';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 
@@ -27,7 +27,7 @@ function App() {
         <CanvasStage page={page} stageRef={stageRef} />
         <PropertiesPanel page={page} />
       </div>
-      <PromptModal />
+      <ScreenshotInfoModal />
       <Toasts />
     </div>
   );

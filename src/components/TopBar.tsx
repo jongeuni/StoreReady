@@ -22,7 +22,7 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
   const renameProject = useProjectStore((s) => s.renameProject);
   const setDevicePreset = useProjectStore((s) => s.setDevicePreset);
   const setTargetFramework = useProjectStore((s) => s.setTargetFramework);
-  const openPromptModal = useProjectStore((s) => s.openPromptModal);
+  const openInfoModal = useProjectStore((s) => s.openInfoModal);
   const pushToast = useToastStore((s) => s.push);
 
   const currentPage = project.pages.find((p) => p.id === currentPageId);
@@ -101,7 +101,7 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
       </div>
 
       <div className="flex items-center gap-2">
-        <Button onClick={() => openPromptModal('all')}>Generate All Prompts</Button>
+        <Button onClick={openInfoModal}>Screenshot Info</Button>
         <Button onClick={handleExportAll}>Export All (ZIP)</Button>
         <Button variant="primary" onClick={handleDownload}>
           Download PNG
