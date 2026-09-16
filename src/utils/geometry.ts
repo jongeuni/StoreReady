@@ -11,7 +11,7 @@ function estimateTextHeight(obj: Extract<CanvasObject, { type: 'text' }>): numbe
 
 export function getObjectBBox(obj: CanvasObject): BBox {
   if (obj.type === 'phone') {
-    return { x: obj.left, y: obj.top, width: obj.width, height: deviceHeightForWidth(obj.width, obj.deviceKind) };
+    return { x: obj.left, y: obj.top, width: obj.width, height: deviceHeightForWidth(obj.width, obj.deviceKind, obj.deviceModel) };
   }
   if (obj.type === 'shape') {
     return { x: obj.left, y: obj.top, width: obj.width, height: obj.height };

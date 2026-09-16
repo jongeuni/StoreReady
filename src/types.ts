@@ -71,6 +71,8 @@ export type DeviceKind = 'phone' | 'tablet' | 'watch';
 export type PhoneObject = BaseObject & {
   type: 'phone';
   deviceKind?: DeviceKind; // defaults to 'phone' when absent (older persisted data)
+  /** Specific model within deviceKind (e.g. 'phone-se' vs 'phone-pro-max') — see DEVICE_MODELS. */
+  deviceModel?: string;
   screenshotName: string;
   /** Optional free-form note about what this screen should show — extra context for an AI capture agent. */
   screenshotDescription?: string;

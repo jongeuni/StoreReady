@@ -6,7 +6,7 @@ import { idbStorage } from '../persist/idbStorage';
 import { DEFAULT_DEVICE_PRESET_ID, getDevicePreset } from '../devicePresets';
 import { createBlankPage, getTemplate, type TemplateId } from '../templates';
 import { getObjectBBox, unionBBox, computeAlignedPosition, setObjectPosition, type AlignType } from '../utils/geometry';
-import { DEVICE_DEFAULT_WIDTH_RATIO } from '../phoneFrame';
+import { DEVICE_DEFAULT_WIDTH_RATIO, defaultModelForKind } from '../phoneFrame';
 import type {
   Background,
   CanvasObject,
@@ -272,6 +272,7 @@ export const useProjectStore = create<State & Actions>()(
             id: makeId(),
             type: 'phone',
             deviceKind,
+            deviceModel: defaultModelForKind(deviceKind).id,
             screenshotName: `${namePrefix}_${existingCount + 1}`,
             width,
             left: Math.round((page.canvas.width - width) / 2),

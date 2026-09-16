@@ -4,7 +4,7 @@ import { useToastStore } from '../store/useToastStore';
 import type { DeviceKind, Page, PhoneObject, ShapeKind, TextRole } from '../types';
 import { Button, ColorField, NumberField, SelectField, TextField } from './ui/Field';
 import { readImageFile } from '../utils/imageUpload';
-import { DEVICE_KIND_LABELS, deviceHeightForWidth } from '../phoneFrame';
+import { DEVICE_KIND_LABELS, defaultModelForKind, deviceHeightForWidth, getDeviceModel, modelsForKind } from '../phoneFrame';
 
 const FONT_OPTIONS = [
   { value: 'system-ui, -apple-system, "SF Pro Display", sans-serif', label: 'System (SF Pro)' },
@@ -88,7 +88,14 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
         label="Device kind"
         value={obj.deviceKind ?? 'phone'}
         options={DEVICE_KIND_OPTIONS}
-        onChange={(v) => updateObject(page.id, obj.id, { deviceKind: v })}
+        onChange={(v) => updateObject(page.id, obj.id, { deviceKind: v, deviceModel: defaultModelForKind(v).id })}
+      />
+
+      <SelectField
+        label="Model"
+        value={getDeviceModel(obj.deviceModel, obj.deviceKind ?? 'phone').id}
+        options={modelsForKind(obj.deviceKind ?? 'phone').map((m) => ({ value: m.id, label: m.label }))}
+        onChange={(v) => updateObject(page.id, obj.id, { deviceModel: v })}
       />
 
       <div>
@@ -164,7 +171,11 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
           min={40}
           onChange={(v) => updateObject(page.id, obj.id, { width: Math.max(40, v) })}
         />
-        <NumberField label="Height (auto)" value={deviceHeightForWidth(obj.width, obj.deviceKind)} onChange={() => {}} />
+        <NumberField
+          label="Height (auto)"
+          value={deviceHeightForWidth(obj.width, obj.deviceKind, obj.deviceModel)}
+          onChange={() => {}}
+        />
         <NumberField label="Position X" value={obj.left} onChange={(v) => updateObject(page.id, obj.id, { left: v })} />
         <NumberField label="Position Y" value={obj.top} onChange={(v) => updateObject(page.id, obj.id, { top: v })} />
         <NumberField
@@ -355,20 +366,6 @@ function AddTextMenu({ pageId }: { pageId: string }) {
   );
 }
 
-function AddDeviceMenu({ pageId }: { pageId: string }) {
-  const addPhoneObject = useProjectStore((s) => s.addPhoneObject);
-  const kinds: DeviceKind[] = ['phone', 'tablet', 'watch'];
-  return (
-    <div className="grid grid-cols-3 gap-1.5">
-      {kinds.map((k) => (
-        <Button key={k} variant={k === 'phone' ? 'primary' : 'default'} onClick={() => addPhoneObject(pageId, k)}>
-          + {DEVICE_KIND_LABELS[k]}
-        </Button>
-      ))}
-    </div>
-  );
-}
-
 function AddShapeMenu({ pageId }: { pageId: string }) {
   const addShapeObject = useProjectStore((s) => s.addShapeObject);
   const kinds: { kind: ShapeKind; label: string }[] = [
@@ -419,8 +416,10 @@ export function PropertiesPanel({ page }: { page: Page }) {
         <>
           <div>
             <h2 className="mb-2 text-sm font-semibold text-neutral-200">Add to page</h2>
+            <p className="mb-2 text-[11px] text-neutral-500">
+              기기(phone/tablet/watch)는 상단 툴바의 "+ 기기 추가" 드롭다운에서 추가하세요.
+            </p>
             <div className="flex flex-col gap-3">
-              <AddDeviceMenu pageId={page.id} />
               <AddTextMenu pageId={page.id} />
               <AddShapeMenu pageId={page.id} />
             </div>

@@ -1,9 +1,9 @@
 import { forwardRef } from 'react';
-import { Group, Rect, Text, Image as KonvaImage } from 'react-konva';
+import { Circle, Group, Rect, Text, Image as KonvaImage } from 'react-konva';
 import type Konva from 'konva';
 import type { Context } from 'konva/lib/Context';
 import type { PhoneObject } from '../../types';
-import { DEVICE_FRAME_CONFIG, deviceHeightForWidth } from '../../phoneFrame';
+import { getDeviceModel } from '../../phoneFrame';
 import { useHtmlImage } from '../../hooks/useHtmlImage';
 
 function roundedRectPath(ctx: Context, w: number, h: number, r: number) {
@@ -41,18 +41,21 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
 ) {
   const image = useHtmlImage(obj.image);
   const deviceKind = obj.deviceKind ?? 'phone';
-  const frame = DEVICE_FRAME_CONFIG[deviceKind];
+  const model = getDeviceModel(obj.deviceModel, deviceKind);
   const width = obj.width;
-  const height = deviceHeightForWidth(width, deviceKind);
-  const bodyRadius = width * frame.cornerRadiusRatio;
-  const inset = width * frame.screenInsetRatio;
-  const screenRadius = width * frame.screenCornerRadiusRatio;
-  const screenW = width - inset * 2;
-  const screenH = height - inset * 2;
+  const height = Math.round(width * model.aspect);
+  const bodyRadius = width * model.cornerRadiusRatio;
+  const insetTop = width * model.screenInsetRatio;
+  const insetSide = width * model.screenInsetRatio;
+  const insetBottom = width * model.screenInsetBottomRatio;
+  const screenRadius = width * model.screenCornerRadiusRatio;
+  const screenW = width - insetSide * 2;
+  const screenH = height - insetTop - insetBottom;
   const islandW = width * 0.28;
   const islandH = height * 0.013;
   const crownW = width * 0.05;
   const crownH = height * 0.14;
+  const homeButtonRadius = width * 0.055;
 
   const crop = image ? coverCrop(image.naturalWidth, image.naturalHeight, screenW, screenH) : null;
 
@@ -94,7 +97,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
       <Rect width={width} height={height} cornerRadius={bodyRadius} fill="#0a0a0c" stroke="#38383c" strokeWidth={1} />
 
       {/* Digital crown (watch only) */}
-      {frame.showCrown && (
+      {model.chrome === 'crown' && (
         <Rect
           x={width - 1}
           y={height / 2 - crownH / 2}
@@ -108,7 +111,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
       )}
 
       {/* Screen */}
-      <Group x={inset} y={inset} clipFunc={(ctx) => roundedRectPath(ctx, screenW, screenH, screenRadius)}>
+      <Group x={insetSide} y={insetTop} clipFunc={(ctx) => roundedRectPath(ctx, screenW, screenH, screenRadius)}>
         {image && crop ? (
           <KonvaImage image={image} width={screenW} height={screenH} crop={crop} />
         ) : (
@@ -138,15 +141,27 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
         )}
       </Group>
 
-      {/* Dynamic island chrome (phone only), drawn on top for realism whether or not an image is set */}
-      {frame.showIsland && (
+      {/* Dynamic island (Face ID phones), drawn on top for realism whether or not an image is set */}
+      {model.chrome === 'island' && (
         <Rect
           x={width / 2 - islandW / 2}
-          y={inset + height * 0.018}
+          y={insetTop + height * 0.018}
           width={islandW}
           height={islandH}
           cornerRadius={islandH / 2}
           fill="rgba(0,0,0,0.75)"
+          listening={false}
+        />
+      )}
+
+      {/* Home button (iPhone SE-style phones), centered in the bottom bezel */}
+      {model.chrome === 'homeButton' && (
+        <Circle
+          x={width / 2}
+          y={height - insetBottom / 2}
+          radius={homeButtonRadius}
+          stroke="#38383c"
+          strokeWidth={Math.max(1, width * 0.006)}
           listening={false}
         />
       )}
