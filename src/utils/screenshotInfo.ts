@@ -8,13 +8,7 @@ type PageInfoData = {
   headline: ReturnType<typeof describeText> | null;
   subheadline: ReturnType<typeof describeText> | null;
   otherText: ReturnType<typeof describeText>[];
-  phones: {
-    img: string;
-    width: number;
-    top: number;
-    left: number;
-    rotate: number;
-  }[];
+  phones: ReturnType<typeof describePhone>[];
 };
 
 function describeText(t: TextObject) {
@@ -34,6 +28,8 @@ function describeText(t: TextObject) {
 function describePhone(p: PhoneObject) {
   return {
     img: p.screenshotName,
+    ...(p.screenshotDescription ? { desc: p.screenshotDescription } : {}),
+    kind: p.deviceKind ?? 'phone',
     width: p.width,
     top: p.top,
     left: p.left,

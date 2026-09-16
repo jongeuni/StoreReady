@@ -42,10 +42,18 @@ export type BaseObject = {
 
 export type TextRole = 'headline' | 'subheadline' | 'body';
 
+/** A contiguous colored run of characters within a TextObject, used for partial (per-character) coloring. */
+export type TextRun = {
+  text: string;
+  color: string;
+};
+
 export type TextObject = BaseObject & {
   type: 'text';
   role: TextRole;
   text: string;
+  /** When present (2+ entries), overrides `color` for rendering — segments of `text` with individual colors. */
+  runs?: TextRun[];
   x: number;
   y: number;
   width: number;
@@ -57,9 +65,15 @@ export type TextObject = BaseObject & {
   lineHeight: number;
 };
 
+/** Device placeholder kinds — all share the same object shape, just different frame geometry. */
+export type DeviceKind = 'phone' | 'tablet' | 'watch';
+
 export type PhoneObject = BaseObject & {
   type: 'phone';
+  deviceKind?: DeviceKind; // defaults to 'phone' when absent (older persisted data)
   screenshotName: string;
+  /** Optional free-form note about what this screen should show — extra context for an AI capture agent. */
+  screenshotDescription?: string;
   image?: string; // data URL of the uploaded screenshot
   imageFileName?: string;
   width: number;
@@ -67,7 +81,20 @@ export type PhoneObject = BaseObject & {
   left: number;
 };
 
-export type CanvasObject = TextObject | PhoneObject;
+export type ShapeKind = 'rect' | 'ellipse';
+
+export type ShapeObject = BaseObject & {
+  type: 'shape';
+  shapeKind: ShapeKind;
+  width: number;
+  height: number;
+  top: number;
+  left: number;
+  fill: string;
+  cornerRadius?: number; // rect only
+};
+
+export type CanvasObject = TextObject | PhoneObject | ShapeObject;
 
 export type TargetFramework =
   | 'expo'

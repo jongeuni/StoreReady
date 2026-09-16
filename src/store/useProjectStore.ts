@@ -6,12 +6,16 @@ import { idbStorage } from '../persist/idbStorage';
 import { DEFAULT_DEVICE_PRESET_ID, getDevicePreset } from '../devicePresets';
 import { createBlankPage, getTemplate, type TemplateId } from '../templates';
 import { getObjectBBox, unionBBox, computeAlignedPosition, setObjectPosition, type AlignType } from '../utils/geometry';
+import { DEVICE_DEFAULT_WIDTH_RATIO } from '../phoneFrame';
 import type {
   Background,
   CanvasObject,
+  DeviceKind,
   Page,
   PhoneObject,
   Project,
+  ShapeKind,
+  ShapeObject,
   TargetFramework,
   TextObject,
   TextRole,
@@ -59,7 +63,8 @@ type Actions = {
 
   // Objects
   addTextObject: (pageId: string, role: TextRole) => void;
-  addPhoneObject: (pageId: string) => void;
+  addPhoneObject: (pageId: string, deviceKind?: DeviceKind) => void;
+  addShapeObject: (pageId: string, shapeKind: ShapeKind) => void;
   updateObject: (pageId: string, objectId: string, patch: Partial<CanvasObject>) => void;
   moveObjectBy: (pageId: string, objectId: string, dx: number, dy: number) => void;
   removeObject: (pageId: string, objectId: string) => void;
@@ -127,6 +132,11 @@ export const useProjectStore = create<State & Actions>()(
                 obj.left = Math.round(obj.left * scaleX);
                 obj.top = Math.round(obj.top * scaleY);
                 obj.width = Math.round(obj.width * scaleX);
+              } else if (obj.type === 'shape') {
+                obj.left = Math.round(obj.left * scaleX);
+                obj.top = Math.round(obj.top * scaleY);
+                obj.width = Math.round(obj.width * scaleX);
+                obj.height = Math.round(obj.height * scaleY);
               } else {
                 obj.x = Math.round(obj.x * scaleX);
                 obj.y = Math.round(obj.y * scaleY);
@@ -250,20 +260,45 @@ export const useProjectStore = create<State & Actions>()(
           s.selectedObjectIds = [obj.id];
         }),
 
-      addPhoneObject: (pageId) =>
+      addPhoneObject: (pageId, deviceKind = 'phone') =>
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
           if (!page) return;
           const maxZ = Math.max(0, ...page.objects.map((o) => o.zIndex));
-          const width = Math.round(page.canvas.width * 0.62);
-          const existingPhoneCount = page.objects.filter((o) => o.type === 'phone').length;
+          const width = Math.round(page.canvas.width * DEVICE_DEFAULT_WIDTH_RATIO[deviceKind]);
+          const existingCount = page.objects.filter((o) => o.type === 'phone' && (o.deviceKind ?? 'phone') === deviceKind).length;
+          const namePrefix = deviceKind === 'phone' ? 'screen' : deviceKind;
           const obj: PhoneObject = {
             id: makeId(),
             type: 'phone',
-            screenshotName: `screen_${existingPhoneCount + 1}`,
+            deviceKind,
+            screenshotName: `${namePrefix}_${existingCount + 1}`,
             width,
             left: Math.round((page.canvas.width - width) / 2),
             top: Math.round(page.canvas.height * 0.32),
+            rotation: 0,
+            zIndex: maxZ + 1,
+          };
+          page.objects.push(obj);
+          s.selectedObjectIds = [obj.id];
+        }),
+
+      addShapeObject: (pageId, shapeKind) =>
+        set((s) => {
+          const page = s.project.pages.find((p) => p.id === pageId);
+          if (!page) return;
+          const maxZ = Math.max(0, ...page.objects.map((o) => o.zIndex));
+          const size = Math.round(page.canvas.width * 0.3);
+          const obj: ShapeObject = {
+            id: makeId(),
+            type: 'shape',
+            shapeKind,
+            width: size,
+            height: size,
+            left: Math.round((page.canvas.width - size) / 2),
+            top: Math.round((page.canvas.height - size) / 2),
+            fill: '#000000',
+            cornerRadius: shapeKind === 'rect' ? Math.round(size * 0.06) : undefined,
             rotation: 0,
             zIndex: maxZ + 1,
           };
@@ -284,7 +319,7 @@ export const useProjectStore = create<State & Actions>()(
           const page = s.project.pages.find((p) => p.id === pageId);
           const obj = page?.objects.find((o) => o.id === objectId);
           if (!obj) return;
-          if (obj.type === 'phone') {
+          if (obj.type === 'phone' || obj.type === 'shape') {
             obj.left += dx;
             obj.top += dy;
           } else {
@@ -317,7 +352,7 @@ export const useProjectStore = create<State & Actions>()(
           if (!page || !obj) return;
           const maxZ = Math.max(0, ...page.objects.map((o) => o.zIndex));
           const clone: CanvasObject =
-            obj.type === 'phone'
+            obj.type === 'phone' || obj.type === 'shape'
               ? { ...obj, id: makeId(), left: obj.left + 24, top: obj.top + 24, zIndex: maxZ + 1 }
               : { ...obj, id: makeId(), x: obj.x + 24, y: obj.y + 24, zIndex: maxZ + 1 };
           page.objects.push(clone);

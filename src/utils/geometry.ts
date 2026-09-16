@@ -1,5 +1,5 @@
 import type { CanvasObject } from '../types';
-import { phoneHeightForWidth } from '../phoneFrame';
+import { deviceHeightForWidth } from '../phoneFrame';
 
 export type BBox = { x: number; y: number; width: number; height: number };
 
@@ -11,7 +11,10 @@ function estimateTextHeight(obj: Extract<CanvasObject, { type: 'text' }>): numbe
 
 export function getObjectBBox(obj: CanvasObject): BBox {
   if (obj.type === 'phone') {
-    return { x: obj.left, y: obj.top, width: obj.width, height: phoneHeightForWidth(obj.width) };
+    return { x: obj.left, y: obj.top, width: obj.width, height: deviceHeightForWidth(obj.width, obj.deviceKind) };
+  }
+  if (obj.type === 'shape') {
+    return { x: obj.left, y: obj.top, width: obj.width, height: obj.height };
   }
   return { x: obj.x, y: obj.y, width: obj.width, height: estimateTextHeight(obj) };
 }
@@ -25,7 +28,7 @@ export function unionBBox(boxes: BBox[]): BBox {
 }
 
 export function setObjectPosition(obj: CanvasObject, x: number, y: number): CanvasObject {
-  if (obj.type === 'phone') {
+  if (obj.type === 'phone' || obj.type === 'shape') {
     return { ...obj, left: x, top: y };
   }
   return { ...obj, x, y };

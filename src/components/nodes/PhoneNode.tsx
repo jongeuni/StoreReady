@@ -3,12 +3,7 @@ import { Group, Rect, Text, Image as KonvaImage } from 'react-konva';
 import type Konva from 'konva';
 import type { Context } from 'konva/lib/Context';
 import type { PhoneObject } from '../../types';
-import {
-  PHONE_CORNER_RADIUS_RATIO,
-  PHONE_SCREEN_CORNER_RADIUS_RATIO,
-  PHONE_SCREEN_INSET_RATIO,
-  phoneHeightForWidth,
-} from '../../phoneFrame';
+import { DEVICE_FRAME_CONFIG, deviceHeightForWidth } from '../../phoneFrame';
 import { useHtmlImage } from '../../hooks/useHtmlImage';
 
 function roundedRectPath(ctx: Context, w: number, h: number, r: number) {
@@ -45,15 +40,19 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
   ref,
 ) {
   const image = useHtmlImage(obj.image);
+  const deviceKind = obj.deviceKind ?? 'phone';
+  const frame = DEVICE_FRAME_CONFIG[deviceKind];
   const width = obj.width;
-  const height = phoneHeightForWidth(width);
-  const bodyRadius = width * PHONE_CORNER_RADIUS_RATIO;
-  const inset = width * PHONE_SCREEN_INSET_RATIO;
-  const screenRadius = width * PHONE_SCREEN_CORNER_RADIUS_RATIO;
+  const height = deviceHeightForWidth(width, deviceKind);
+  const bodyRadius = width * frame.cornerRadiusRatio;
+  const inset = width * frame.screenInsetRatio;
+  const screenRadius = width * frame.screenCornerRadiusRatio;
   const screenW = width - inset * 2;
   const screenH = height - inset * 2;
   const islandW = width * 0.28;
   const islandH = height * 0.013;
+  const crownW = width * 0.05;
+  const crownH = height * 0.14;
 
   const crop = image ? coverCrop(image.naturalWidth, image.naturalHeight, screenW, screenH) : null;
 
@@ -73,7 +72,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
         node.scaleX(1);
         node.scaleY(1);
         onTransformEnd({
-          width: Math.max(60, Math.round(width * scaleX)),
+          width: Math.max(40, Math.round(width * scaleX)),
           left: Math.round(node.x()),
           top: Math.round(node.y()),
           rotation: Math.round(node.rotation()),
@@ -91,15 +90,25 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
         listening={false}
       />
 
-      {/* Phone body */}
+      {/* Device body */}
       <Rect width={width} height={height} cornerRadius={bodyRadius} fill="#0a0a0c" stroke="#38383c" strokeWidth={1} />
 
+      {/* Digital crown (watch only) */}
+      {frame.showCrown && (
+        <Rect
+          x={width - 1}
+          y={height / 2 - crownH / 2}
+          width={crownW}
+          height={crownH}
+          cornerRadius={crownW / 2}
+          fill="#0a0a0c"
+          stroke="#38383c"
+          strokeWidth={1}
+        />
+      )}
+
       {/* Screen */}
-      <Group
-        x={inset}
-        y={inset}
-        clipFunc={(ctx) => roundedRectPath(ctx, screenW, screenH, screenRadius)}
-      >
+      <Group x={inset} y={inset} clipFunc={(ctx) => roundedRectPath(ctx, screenW, screenH, screenRadius)}>
         {image && crop ? (
           <KonvaImage image={image} width={screenW} height={screenH} crop={crop} />
         ) : (
@@ -129,16 +138,18 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
         )}
       </Group>
 
-      {/* Dynamic island chrome, drawn on top for realism whether or not an image is set */}
-      <Rect
-        x={width / 2 - islandW / 2}
-        y={inset + height * 0.018}
-        width={islandW}
-        height={islandH}
-        cornerRadius={islandH / 2}
-        fill="rgba(0,0,0,0.75)"
-        listening={false}
-      />
+      {/* Dynamic island chrome (phone only), drawn on top for realism whether or not an image is set */}
+      {frame.showIsland && (
+        <Rect
+          x={width / 2 - islandW / 2}
+          y={inset + height * 0.018}
+          width={islandW}
+          height={islandH}
+          cornerRadius={islandH / 2}
+          fill="rgba(0,0,0,0.75)"
+          listening={false}
+        />
+      )}
     </Group>
   );
 });
