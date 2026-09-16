@@ -6,6 +6,10 @@ import type { Page, TextObject } from '../types';
 import { BackgroundNode } from './nodes/BackgroundNode';
 import { PhoneNode } from './nodes/PhoneNode';
 import { TextNode } from './nodes/TextNode';
+import { RichTextNode } from './nodes/RichTextNode';
+import { ShapeNode } from './nodes/ShapeNode';
+import { TextEditOverlay } from './TextEditOverlay';
+import { runsHaveMultipleColors } from '../utils/richText';
 
 type Props = {
   page: Page;
@@ -55,7 +59,9 @@ export function CanvasStage({ page, stageRef }: Props) {
         tr.enabledAnchors(
           obj.type === 'phone'
             ? ['top-left', 'top-right', 'bottom-left', 'bottom-right']
-            : ['middle-left', 'middle-right'],
+            : obj.type === 'shape'
+              ? ['top-left', 'top-right', 'bottom-left', 'bottom-right', 'middle-left', 'middle-right', 'top-center', 'bottom-center']
+              : ['middle-left', 'middle-right'],
         );
         tr.getLayer()?.batchDraw();
         return;
@@ -106,18 +112,46 @@ export function CanvasStage({ page, stageRef }: Props) {
             {[...page.objects]
               .sort((a, b) => a.zIndex - b.zIndex)
               .map((obj) => {
+                const setRef = (node: Konva.Node | null) => {
+                  if (node) nodeRefs.current.set(obj.id, node);
+                  else nodeRefs.current.delete(obj.id);
+                };
+
                 if (obj.type === 'phone') {
                   return (
                     <PhoneNode
                       key={obj.id}
                       obj={obj}
                       isSelected={selectedObjectIds.includes(obj.id)}
-                      ref={(node) => {
-                        if (node) nodeRefs.current.set(obj.id, node);
-                        else nodeRefs.current.delete(obj.id);
-                      }}
+                      ref={setRef}
                       onSelect={handleSelect(obj.id)}
                       onDragEnd={(x, y) => updateObject(page.id, obj.id, { left: Math.round(x), top: Math.round(y) })}
+                      onTransformEnd={(attrs) => updateObject(page.id, obj.id, attrs)}
+                    />
+                  );
+                }
+                if (obj.type === 'shape') {
+                  return (
+                    <ShapeNode
+                      key={obj.id}
+                      obj={obj}
+                      ref={setRef}
+                      onSelect={handleSelect(obj.id)}
+                      onDragEnd={(x, y) => updateObject(page.id, obj.id, { left: Math.round(x), top: Math.round(y) })}
+                      onTransformEnd={(attrs) => updateObject(page.id, obj.id, attrs)}
+                    />
+                  );
+                }
+                if (runsHaveMultipleColors(obj.runs)) {
+                  return (
+                    <RichTextNode
+                      key={obj.id}
+                      obj={obj}
+                      visible={obj.id !== editingTextId}
+                      ref={setRef}
+                      onSelect={handleSelect(obj.id)}
+                      onDblClick={() => setEditingTextId(obj.id)}
+                      onDragEnd={(x, y) => updateObject(page.id, obj.id, { x: Math.round(x), y: Math.round(y) })}
                       onTransformEnd={(attrs) => updateObject(page.id, obj.id, attrs)}
                     />
                   );
@@ -127,10 +161,7 @@ export function CanvasStage({ page, stageRef }: Props) {
                     key={obj.id}
                     obj={obj}
                     visible={obj.id !== editingTextId}
-                    ref={(node) => {
-                      if (node) nodeRefs.current.set(obj.id, node);
-                      else nodeRefs.current.delete(obj.id);
-                    }}
+                    ref={setRef}
                     onSelect={handleSelect(obj.id)}
                     onDblClick={() => setEditingTextId(obj.id)}
                     onDragEnd={(x, y) => updateObject(page.id, obj.id, { x: Math.round(x), y: Math.round(y) })}
@@ -145,50 +176,20 @@ export function CanvasStage({ page, stageRef }: Props) {
               anchorStroke="#5b8def"
               anchorFill="#ffffff"
               anchorSize={10}
-              boundBoxFunc={(oldBox, newBox) => (newBox.width < 30 ? oldBox : newBox)}
+              boundBoxFunc={(oldBox, newBox) => (newBox.width < 30 || newBox.height < 20 ? oldBox : newBox)}
             />
           </Layer>
         </Stage>
 
         {editingObj && (
-          <textarea
-            autoFocus
-            defaultValue={editingObj.text}
-            onFocus={(e) => e.currentTarget.select()}
-            onBlur={(e) => {
-              updateObject(page.id, editingObj.id, { text: e.currentTarget.value });
+          <TextEditOverlay
+            obj={editingObj}
+            viewScale={viewScale}
+            onCancel={() => setEditingTextId(null)}
+            onCommit={(patch) => {
+              updateObject(page.id, editingObj.id, patch);
               setEditingTextId(null);
             }}
-            onKeyDown={(e) => {
-              if (e.key === 'Escape') {
-                setEditingTextId(null);
-              } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                e.currentTarget.blur();
-              }
-              e.stopPropagation();
-            }}
-            style={{
-              position: 'absolute',
-              top: editingObj.y * viewScale,
-              left: editingObj.x * viewScale,
-              width: editingObj.width * viewScale,
-              fontSize: editingObj.fontSize * viewScale,
-              fontFamily: editingObj.fontFamily,
-              fontWeight: editingObj.fontWeight,
-              color: editingObj.color,
-              textAlign: editingObj.align,
-              lineHeight: editingObj.lineHeight,
-              transform: `rotate(${editingObj.rotation}deg)`,
-              transformOrigin: 'top left',
-              background: 'rgba(0,0,0,0.35)',
-              border: '1px dashed #5b8def',
-              outline: 'none',
-              resize: 'none',
-              padding: 0,
-              margin: 0,
-              overflow: 'hidden',
-            }}
-            rows={Math.max(1, editingObj.text.split('\n').length)}
           />
         )}
       </div>
