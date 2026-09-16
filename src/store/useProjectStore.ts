@@ -36,9 +36,9 @@ type State = {
   project: Project;
   currentPageId: string;
   selectedObjectIds: string[];
-  infoModalOpen: boolean;
-  infoModalStep: 1 | 2 | 3;
-  infoModalSelectedPageIds: string[];
+  promptWizardOpen: boolean;
+  promptWizardStep: 1 | 2 | 3;
+  promptWizardSelectedPageIds: string[];
 };
 
 type Actions = {
@@ -82,12 +82,12 @@ type Actions = {
   selectObject: (id: string, additive?: boolean) => void;
   clearSelection: () => void;
 
-  // Screenshot info modal
-  openInfoModal: () => void;
-  closeInfoModal: () => void;
-  setInfoModalStep: (step: 1 | 2 | 3) => void;
-  toggleInfoModalPage: (pageId: string) => void;
-  setInfoModalAllPagesSelected: (selected: boolean) => void;
+  // AI prompt wizard
+  openPromptWizard: () => void;
+  closePromptWizard: () => void;
+  setPromptWizardStep: (step: 1 | 2 | 3) => void;
+  togglePromptWizardPage: (pageId: string) => void;
+  setPromptWizardAllPagesSelected: (selected: boolean) => void;
 
   // Danger zone
   resetProject: () => void;
@@ -103,9 +103,9 @@ export const useProjectStore = create<State & Actions>()(
       project: initialProject,
       currentPageId: initialProject.pages[0].id,
       selectedObjectIds: [],
-      infoModalOpen: false,
-      infoModalStep: 1,
-      infoModalSelectedPageIds: [],
+      promptWizardOpen: false,
+      promptWizardStep: 1,
+      promptWizardSelectedPageIds: [],
 
       renameProject: (name) =>
         set((s) => {
@@ -431,35 +431,35 @@ export const useProjectStore = create<State & Actions>()(
           s.selectedObjectIds = [];
         }),
 
-      openInfoModal: () =>
+      openPromptWizard: () =>
         set((s) => {
-          s.infoModalOpen = true;
-          s.infoModalStep = 1;
-          s.infoModalSelectedPageIds = s.project.pages.map((p) => p.id);
+          s.promptWizardOpen = true;
+          s.promptWizardStep = 1;
+          s.promptWizardSelectedPageIds = s.project.pages.map((p) => p.id);
         }),
 
-      closeInfoModal: () =>
+      closePromptWizard: () =>
         set((s) => {
-          s.infoModalOpen = false;
+          s.promptWizardOpen = false;
         }),
 
-      setInfoModalStep: (step) =>
+      setPromptWizardStep: (step) =>
         set((s) => {
-          s.infoModalStep = step;
+          s.promptWizardStep = step;
         }),
 
-      toggleInfoModalPage: (pageId) =>
+      togglePromptWizardPage: (pageId) =>
         set((s) => {
-          if (s.infoModalSelectedPageIds.includes(pageId)) {
-            s.infoModalSelectedPageIds = s.infoModalSelectedPageIds.filter((id) => id !== pageId);
+          if (s.promptWizardSelectedPageIds.includes(pageId)) {
+            s.promptWizardSelectedPageIds = s.promptWizardSelectedPageIds.filter((id) => id !== pageId);
           } else {
-            s.infoModalSelectedPageIds.push(pageId);
+            s.promptWizardSelectedPageIds.push(pageId);
           }
         }),
 
-      setInfoModalAllPagesSelected: (selected) =>
+      setPromptWizardAllPagesSelected: (selected) =>
         set((s) => {
-          s.infoModalSelectedPageIds = selected ? s.project.pages.map((p) => p.id) : [];
+          s.promptWizardSelectedPageIds = selected ? s.project.pages.map((p) => p.id) : [];
         }),
 
       resetProject: () =>

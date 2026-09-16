@@ -83,7 +83,7 @@ export function CanvasStage({ page, stageRef }: Props) {
   return (
     <div
       ref={wrapperRef}
-      className="relative flex h-full w-full items-center justify-center overflow-auto bg-neutral-900"
+      className="relative flex min-h-0 w-full flex-1 items-center justify-center overflow-auto bg-neutral-900"
       style={{ padding: VIEWPORT_PADDING }}
     >
       <div

@@ -5,8 +5,9 @@ import { TopBar } from './components/TopBar';
 import { PageTabs } from './components/PageTabs';
 import { PageToolbar } from './components/PageToolbar';
 import { CanvasStage } from './components/CanvasStage';
+import { PageInfoBar } from './components/PageInfoBar';
 import { PropertiesPanel } from './components/PropertiesPanel';
-import { ScreenshotInfoModal } from './components/ScreenshotInfoModal';
+import { PromptWizardModal } from './components/PromptWizardModal';
 import { Toasts } from './components/Toasts';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 
@@ -24,10 +25,13 @@ function App() {
       <PageTabs />
       <PageToolbar page={page} />
       <div className="flex min-h-0 flex-1">
-        <CanvasStage page={page} stageRef={stageRef} />
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+          <CanvasStage page={page} stageRef={stageRef} />
+          <PageInfoBar page={page} />
+        </div>
         <PropertiesPanel page={page} />
       </div>
-      <ScreenshotInfoModal />
+      <PromptWizardModal />
       <Toasts />
     </div>
   );

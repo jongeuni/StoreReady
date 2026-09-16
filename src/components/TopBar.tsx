@@ -3,17 +3,7 @@ import { useProjectStore } from '../store/useProjectStore';
 import { useToastStore } from '../store/useToastStore';
 import { DEVICE_PRESETS } from '../devicePresets';
 import { Button } from './ui/Field';
-import type { TargetFramework } from '../types';
 import { exportPageAsPng, exportPagesAsZip, exportStageToDataUrl } from '../utils/export';
-
-const FRAMEWORKS: { value: TargetFramework; label: string }[] = [
-  { value: 'expo', label: 'Expo / React Native' },
-  { value: 'react-native-cli', label: 'React Native CLI' },
-  { value: 'flutter', label: 'Flutter' },
-  { value: 'ios-native', label: 'iOS native' },
-  { value: 'android-native', label: 'Android native' },
-  { value: 'other', label: 'Other / not sure' },
-];
 
 export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | null> }) {
   const project = useProjectStore((s) => s.project);
@@ -21,8 +11,7 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
   const selectPage = useProjectStore((s) => s.selectPage);
   const renameProject = useProjectStore((s) => s.renameProject);
   const setDevicePreset = useProjectStore((s) => s.setDevicePreset);
-  const setTargetFramework = useProjectStore((s) => s.setTargetFramework);
-  const openInfoModal = useProjectStore((s) => s.openInfoModal);
+  const openPromptWizard = useProjectStore((s) => s.openPromptWizard);
   const pushToast = useToastStore((s) => s.push);
 
   const currentPage = project.pages.find((p) => p.id === currentPageId);
@@ -86,22 +75,10 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
             </option>
           ))}
         </select>
-        <select
-          value={project.targetFramework}
-          onChange={(e) => setTargetFramework(e.target.value as TargetFramework)}
-          title="Target app framework, used to tailor the AI capture prompt"
-          className="rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs text-neutral-200"
-        >
-          {FRAMEWORKS.map((f) => (
-            <option key={f.value} value={f.value}>
-              {f.label}
-            </option>
-          ))}
-        </select>
       </div>
 
       <div className="flex items-center gap-2">
-        <Button onClick={openInfoModal}>Screenshot Info</Button>
+        <Button onClick={openPromptWizard}>Generate AI Prompt</Button>
         <Button onClick={handleExportAll}>Export All (ZIP)</Button>
         <Button variant="primary" onClick={handleDownload}>
           Download PNG
