@@ -29,7 +29,14 @@ export function PageToolbar({ page }: { page: Page }) {
         <label className="text-xs text-neutral-500">Template</label>
         <select
           value={page.templateId ?? ''}
-          onChange={(e) => applyTemplate(page.id, e.target.value as TemplateId)}
+          onChange={(e) => {
+            const templateId = e.target.value as TemplateId;
+            if (page.objects.length > 0 && !window.confirm('템플릿을 적용하면 현재 페이지의 내용이 모두 사라집니다. 계속할까요?')) {
+              e.target.value = page.templateId ?? '';
+              return;
+            }
+            applyTemplate(page.id, templateId);
+          }}
           className="rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs text-neutral-100"
         >
           <option value="" disabled>
