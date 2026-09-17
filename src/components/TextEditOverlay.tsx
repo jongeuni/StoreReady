@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { TextObject, TextRun } from '../types';
 import { runsHaveMultipleColors } from '../utils/richText';
+import { useTextEditStore } from '../store/useTextEditStore';
 
 function escapeHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -58,6 +59,7 @@ type Props = {
 export function TextEditOverlay({ obj, viewScale, onCommit, onCancel }: Props) {
   const divRef = useRef<HTMLDivElement>(null);
   const savedRangeRef = useRef<Range | null>(null);
+  const setApplyColorToSelection = useTextEditStore((s) => s.setApplyColorToSelection);
 
   useEffect(() => {
     const el = divRef.current;
@@ -94,13 +96,6 @@ export function TextEditOverlay({ obj, viewScale, onCommit, onCancel }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const commit = () => {
-    const el = divRef.current;
-    if (!el) return;
-    const { text, runs } = domToRuns(el, obj.color);
-    onCommit({ text, runs: runsHaveMultipleColors(runs) ? runs : undefined });
-  };
-
   const applyColor = (color: string) => {
     const el = divRef.current;
     const range = savedRangeRef.current;
@@ -119,67 +114,67 @@ export function TextEditOverlay({ obj, viewScale, onCommit, onCancel }: Props) {
     saveSelection();
   };
 
+  // Let the Properties Panel's Color field drive coloring of whatever is currently
+  // drag-selected in this editor, for as long as this editor stays mounted.
+  useEffect(() => {
+    setApplyColorToSelection(applyColor);
+    return () => setApplyColorToSelection(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const commit = () => {
+    const el = divRef.current;
+    if (!el) return;
+    const { text, runs } = domToRuns(el, obj.color);
+    onCommit({ text, runs: runsHaveMultipleColors(runs) ? runs : undefined });
+  };
+
   return (
-    <>
-      <div
-        className="absolute z-10 flex items-center gap-2 rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-[11px] text-neutral-400 shadow-lg"
-        style={{ top: obj.y * viewScale - 34, left: obj.x * viewScale }}
-      >
-        <span>글자를 드래그해서 선택 후</span>
-        <input
-          type="color"
-          defaultValue={obj.color}
-          onMouseDown={saveSelection}
-          onChange={(e) => applyColor(e.target.value)}
-          className="h-5 w-6 cursor-pointer rounded border border-neutral-700 bg-neutral-800"
-          title="선택한 글자 색상 적용"
-        />
-      </div>
-      <div
-        ref={divRef}
-        contentEditable
-        suppressContentEditableWarning
-        onMouseUp={saveSelection}
-        onKeyUp={saveSelection}
-        onBlur={(e) => {
-          // Clicking the color input blurs the editable div — don't commit/close in that case.
-          if (e.relatedTarget instanceof HTMLInputElement && e.relatedTarget.type === 'color') return;
+    <div
+      ref={divRef}
+      contentEditable
+      suppressContentEditableWarning
+      onMouseUp={saveSelection}
+      onKeyUp={saveSelection}
+      onBlur={(e) => {
+        // Focus moving to the Properties Panel's color controls means the user is still
+        // mid-edit (about to recolor the selection) — don't commit/close in that case.
+        if (e.relatedTarget instanceof HTMLElement && e.relatedTarget.closest('[data-text-color-target]')) return;
+        commit();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          onCancel();
+        } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
           commit();
-        }}
-        onKeyDown={(e) => {
-          if (e.key === 'Escape') {
-            e.preventDefault();
-            onCancel();
-          } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-            e.preventDefault();
-            commit();
-          }
-          e.stopPropagation();
-        }}
-        style={{
-          position: 'absolute',
-          top: obj.y * viewScale,
-          left: obj.x * viewScale,
-          width: obj.width * viewScale,
-          minHeight: obj.fontSize * viewScale * obj.lineHeight,
-          fontSize: obj.fontSize * viewScale,
-          fontFamily: obj.fontFamily,
-          fontWeight: obj.fontWeight,
-          color: obj.color,
-          textAlign: obj.align,
-          lineHeight: obj.lineHeight,
-          transform: `rotate(${obj.rotation}deg)`,
-          transformOrigin: 'top left',
-          background: 'rgba(0,0,0,0.35)',
-          border: '1px dashed #5b8def',
-          outline: 'none',
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-word',
-          overflowWrap: 'break-word',
-          padding: 0,
-          margin: 0,
-        }}
-      />
-    </>
+        }
+        e.stopPropagation();
+      }}
+      style={{
+        position: 'absolute',
+        top: obj.y * viewScale,
+        left: obj.x * viewScale,
+        width: obj.width * viewScale,
+        minHeight: obj.fontSize * viewScale * obj.lineHeight,
+        fontSize: obj.fontSize * viewScale,
+        fontFamily: obj.fontFamily,
+        fontWeight: obj.fontWeight,
+        color: obj.color,
+        textAlign: obj.align,
+        lineHeight: obj.lineHeight,
+        transform: `rotate(${obj.rotation}deg)`,
+        transformOrigin: 'top left',
+        background: 'rgba(0,0,0,0.35)',
+        border: '1px dashed #5b8def',
+        outline: 'none',
+        whiteSpace: 'pre-wrap',
+        wordBreak: 'break-word',
+        overflowWrap: 'break-word',
+        padding: 0,
+        margin: 0,
+      }}
+    />
   );
 }

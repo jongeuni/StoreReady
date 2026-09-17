@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useProjectStore } from '../store/useProjectStore';
 import { useToastStore } from '../store/useToastStore';
+import { useTextEditStore } from '../store/useTextEditStore';
 import type { DeviceKind, Page, PhoneObject, ShapeKind, TextRole } from '../types';
 import { Button, ColorField, NumberField, SelectField, TextField } from './ui/Field';
 import { readImageFile } from '../utils/imageUpload';
@@ -194,6 +195,7 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
 function TextPanel({ page, objectId }: { page: Page; objectId: string }) {
   const obj = page.objects.find((o) => o.id === objectId);
   const updateObject = useProjectStore((s) => s.updateObject);
+  const applyColorToSelection = useTextEditStore((s) => s.applyColorToSelection);
   if (!obj || obj.type !== 'text') return null;
 
   return (
@@ -207,7 +209,8 @@ function TextPanel({ page, objectId }: { page: Page; objectId: string }) {
           className="w-full resize-none rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
         />
         <span className="text-[11px] text-neutral-500">
-          캔버스에서 더블클릭하면 직접 편집할 수 있고, 편집 중 일부만 드래그로 선택해서 색을 다르게 줄 수 있어요.
+          캔버스에서 더블클릭하면 직접 편집할 수 있어요. 편집 중 일부 글자만 드래그로 선택한 다음, 아래 Color를 바꾸면
+          선택한 글자에만 색이 적용돼요.
         </span>
       </label>
 
@@ -228,11 +231,16 @@ function TextPanel({ page, objectId }: { page: Page; objectId: string }) {
         />
       </div>
 
-      <ColorField
-        label={obj.runs ? 'Base color (아직 지정 안 한 글자)' : 'Color'}
-        value={obj.color}
-        onChange={(v) => updateObject(page.id, obj.id, { color: v })}
-      />
+      <div data-text-color-target>
+        <ColorField
+          label="Color"
+          value={obj.color}
+          onChange={(v) => {
+            if (applyColorToSelection) applyColorToSelection(v);
+            else updateObject(page.id, obj.id, { color: v });
+          }}
+        />
+      </div>
 
       <div>
         <div className="mb-1 text-xs text-neutral-400">Alignment</div>
