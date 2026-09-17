@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react';
 import { useProjectStore } from '../store/useProjectStore';
 import { useToastStore } from '../store/useToastStore';
 import { buildFullPrompt, FRAMEWORK_LABELS } from '../utils/promptGenerator';
-import { Button, SelectField } from './ui/Field';
-import type { TargetFramework } from '../types';
+import { Button, SelectField, TextField } from './ui/Field';
+import { DEVICE_KIND_LABELS, modelsForKind } from '../phoneFrame';
+import type { Page, PhoneObject, TargetFramework, TextObject } from '../types';
 
 const STEPS = [
   { step: 1 as const, label: 'Select pages' },
@@ -46,17 +47,100 @@ function StepHeader() {
   );
 }
 
+function PageReviewCard({ page }: { page: Page }) {
+  const updateObject = useProjectStore((s) => s.updateObject);
+  const headline = page.objects.find((o): o is TextObject => o.type === 'text' && o.role === 'headline');
+  const subheadline = page.objects.find((o): o is TextObject => o.type === 'text' && o.role === 'subheadline');
+  const otherText = page.objects.filter(
+    (o): o is TextObject => o.type === 'text' && o.role !== 'headline' && o.role !== 'subheadline',
+  );
+  const phones = page.objects.filter((o): o is PhoneObject => o.type === 'phone');
+
+  return (
+    <div className="flex flex-col gap-3 border-t border-neutral-800 bg-neutral-950/60 p-3">
+      {headline && (
+        <label className="flex flex-col gap-1 text-xs text-neutral-400">
+          <span>Headline</span>
+          <textarea
+            value={headline.text}
+            onChange={(e) => updateObject(page.id, headline.id, { text: e.target.value, runs: undefined })}
+            rows={2}
+            className="w-full resize-none rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
+          />
+        </label>
+      )}
+
+      {subheadline && (
+        <label className="flex flex-col gap-1 text-xs text-neutral-400">
+          <span>Subheadline</span>
+          <textarea
+            value={subheadline.text}
+            onChange={(e) => updateObject(page.id, subheadline.id, { text: e.target.value, runs: undefined })}
+            rows={2}
+            className="w-full resize-none rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
+          />
+        </label>
+      )}
+
+      {otherText.map((t) => (
+        <label key={t.id} className="flex flex-col gap-1 text-xs text-neutral-400">
+          <span>Text ({t.role})</span>
+          <textarea
+            value={t.text}
+            onChange={(e) => updateObject(page.id, t.id, { text: e.target.value, runs: undefined })}
+            rows={2}
+            className="w-full resize-none rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
+          />
+        </label>
+      ))}
+
+      {phones.map((p) => (
+        <div key={p.id} className="flex flex-col gap-2 rounded border border-neutral-800 p-2">
+          <div className="grid grid-cols-2 gap-2">
+            <TextField
+              label="Screenshot name"
+              value={p.screenshotName}
+              onChange={(v) => updateObject(page.id, p.id, { screenshotName: v })}
+            />
+            <SelectField
+              label={`Model (${DEVICE_KIND_LABELS[p.deviceKind ?? 'phone']})`}
+              value={p.deviceModel ?? modelsForKind(p.deviceKind ?? 'phone')[0].id}
+              options={modelsForKind(p.deviceKind ?? 'phone').map((m) => ({ value: m.id, label: m.label }))}
+              onChange={(v) => updateObject(page.id, p.id, { deviceModel: v })}
+            />
+          </div>
+          <label className="flex flex-col gap-1 text-xs text-neutral-400">
+            <span>Screenshot description</span>
+            <textarea
+              value={p.screenshotDescription ?? ''}
+              onChange={(e) => updateObject(page.id, p.id, { screenshotDescription: e.target.value })}
+              rows={2}
+              placeholder="e.g. Home screen with 3 completed tasks and the streak banner visible"
+              className="w-full resize-none rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
+            />
+          </label>
+        </div>
+      ))}
+
+      {!headline && !subheadline && otherText.length === 0 && phones.length === 0 && (
+        <p className="text-xs text-neutral-500">이 페이지에는 검토할 텍스트나 phone이 없습니다.</p>
+      )}
+    </div>
+  );
+}
+
 function PageSelectStep() {
   const pages = useProjectStore((s) => s.project.pages);
   const selectedIds = useProjectStore((s) => s.promptWizardSelectedPageIds);
   const togglePage = useProjectStore((s) => s.togglePromptWizardPage);
   const setAllSelected = useProjectStore((s) => s.setPromptWizardAllPagesSelected);
   const setStep = useProjectStore((s) => s.setPromptWizardStep);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-neutral-300">프롬프트에 포함할 페이지를 선택하세요.</p>
+        <p className="text-sm text-neutral-300">프롬프트에 포함할 페이지를 선택하세요. 화살표를 누르면 내용을 검토·수정할 수 있어요.</p>
         <div className="flex gap-1.5">
           <Button variant="ghost" onClick={() => setAllSelected(true)}>
             전체 선택
@@ -68,24 +152,36 @@ function PageSelectStep() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        {pages.map((page, i) => (
-          <label
-            key={page.id}
-            className="flex cursor-pointer items-center gap-2 rounded border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-neutral-200 hover:border-neutral-700"
-          >
-            <input
-              type="checkbox"
-              checked={selectedIds.includes(page.id)}
-              onChange={() => togglePage(page.id)}
-              className="h-4 w-4 accent-blue-600"
-            />
-            {i + 1}. {page.label}
-            <span className="ml-auto text-xs text-neutral-500">
-              {page.objects.filter((o) => o.type === 'phone').length} phone ·{' '}
-              {page.objects.filter((o) => o.type === 'text').length} text
-            </span>
-          </label>
-        ))}
+        {pages.map((page, i) => {
+          const expanded = expandedId === page.id;
+          return (
+            <div key={page.id} className="overflow-hidden rounded border border-neutral-800 bg-neutral-900">
+              <div className="flex items-center gap-2 px-3 py-2 text-sm text-neutral-200">
+                <label className="flex flex-1 cursor-pointer items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(page.id)}
+                    onChange={() => togglePage(page.id)}
+                    className="h-4 w-4 accent-blue-600"
+                  />
+                  {i + 1}. {page.label}
+                  <span className="ml-auto text-xs text-neutral-500">
+                    {page.objects.filter((o) => o.type === 'phone').length} phone ·{' '}
+                    {page.objects.filter((o) => o.type === 'text').length} text
+                  </span>
+                </label>
+                <button
+                  onClick={() => setExpandedId(expanded ? null : page.id)}
+                  title="검토 · 수정"
+                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded text-neutral-400 transition-transform hover:bg-neutral-800 ${expanded ? 'rotate-180' : ''}`}
+                >
+                  ▾
+                </button>
+              </div>
+              {expanded && <PageReviewCard page={page} />}
+            </div>
+          );
+        })}
       </div>
 
       <div className="flex justify-end">
@@ -100,6 +196,8 @@ function PageSelectStep() {
 function ExtraInfoStep() {
   const framework = useProjectStore((s) => s.project.targetFramework);
   const setTargetFramework = useProjectStore((s) => s.setTargetFramework);
+  const captureNotes = useProjectStore((s) => s.project.captureNotes ?? '');
+  const setCaptureNotes = useProjectStore((s) => s.setCaptureNotes);
   const setStep = useProjectStore((s) => s.setPromptWizardStep);
 
   const frameworkOptions = (Object.keys(FRAMEWORK_LABELS) as TargetFramework[]).map((value) => ({
@@ -111,15 +209,27 @@ function ExtraInfoStep() {
     <div className="flex flex-col gap-4 p-4">
       <p className="text-sm text-neutral-300">
         아래 정보는 스크린샷 이미지 자체(위치/텍스트)엔 필요 없지만, AI가 실제 앱에서 화면을 찾고 캡처하는 데 도움이
-        되는 정보예요.
+        되는 정보예요. 참고용 힌트일 뿐이니, 실제와 다르면 아래 메모에 적어주세요 — 예를 들어 React Native로
+        개발했지만 캡처는 Xcode 시뮬레이터로 직접 한다면 그렇게 적으면 프롬프트에 그대로 반영돼요.
       </p>
 
       <SelectField
-        label="앱 프레임워크"
+        label="앱 프레임워크 (힌트)"
         value={framework}
         options={frameworkOptions}
         onChange={(v) => setTargetFramework(v)}
       />
+
+      <label className="flex flex-col gap-1 text-xs text-neutral-400">
+        <span>추가 메모 (선택)</span>
+        <textarea
+          value={captureNotes}
+          onChange={(e) => setCaptureNotes(e.target.value)}
+          rows={3}
+          placeholder="예: React Native로 개발했지만 실제 캡처는 Xcode 시뮬레이터로 직접 진행합니다."
+          className="w-full resize-none rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
+        />
+      </label>
 
       <div className="flex justify-between">
         <Button onClick={() => setStep(1)}>이전</Button>

@@ -50,6 +50,7 @@ type Actions = {
   renameProject: (name: string) => void;
   setDevicePreset: (id: string) => void;
   setTargetFramework: (fw: TargetFramework) => void;
+  setCaptureNotes: (notes: string) => void;
 
   // Pages
   addPage: (templateId?: TemplateId) => void;
@@ -150,6 +151,11 @@ export const useProjectStore = create<State & Actions>()(
       setTargetFramework: (fw) =>
         set((s) => {
           s.project.targetFramework = fw;
+        }),
+
+      setCaptureNotes: (notes) =>
+        set((s) => {
+          s.project.captureNotes = notes;
         }),
 
       addPage: (templateId = 'single-phone') =>

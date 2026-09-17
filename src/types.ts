@@ -123,5 +123,8 @@ export type Project = {
   name: string;
   devicePresetId: string;
   targetFramework: TargetFramework;
+  /** Free-form note for the AI agent about how capture actually works for this project
+   * (e.g. "built with React Native, but captures are taken via the Xcode simulator"). */
+  captureNotes?: string;
   pages: Page[];
 };
