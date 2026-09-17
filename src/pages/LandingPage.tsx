@@ -1,11 +1,17 @@
-import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { DemoSection } from './DemoSection';
+import demo1 from '../assets/hero/demo-1.png';
+import demo2 from '../assets/hero/demo-2.png';
+import demo3 from '../assets/hero/demo-3.png';
+import demo4 from '../assets/hero/demo-4.png';
 
 type Props = {
   onStart: () => void;
 };
 
 const GITHUB_URL = 'https://github.com/jongeuni/StoreReady';
+const HERO_IMAGES = [demo1, demo2, demo3, demo4];
 
 function GithubIcon({ className = 'h-4 w-4' }: { className?: string }) {
   return (
@@ -29,20 +35,44 @@ function GithubLink({ className = '' }: { className?: string }) {
   );
 }
 
-function MockPhone({ rotate = 0, className = '', delay = 0 }: { rotate?: number; className?: string; delay?: number }) {
+function HeroCard({
+  rotate = 0,
+  startIndex = 0,
+  delay = 0,
+  className = '',
+}: {
+  rotate?: number;
+  startIndex?: number;
+  delay?: number;
+  className?: string;
+}) {
+  const [index, setIndex] = useState(startIndex % HERO_IMAGES.length);
+
+  useEffect(() => {
+    const id = setInterval(() => setIndex((i) => (i + 1) % HERO_IMAGES.length), 2200);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 24, rotate: rotate * 2 }}
       animate={{ opacity: 1, y: 0, rotate }}
       transition={{ delay, duration: 0.6, ease: 'easeOut' }}
-      className={`h-64 w-32 shrink-0 rounded-[1.6rem] border border-neutral-700 bg-neutral-900 shadow-xl ${className}`}
+      className={`relative h-72 w-36 shrink-0 overflow-hidden rounded-[1.6rem] border border-neutral-700 bg-neutral-900 shadow-2xl ${className}`}
     >
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay }}
-      >
-        <div className="mx-auto mt-2 h-1.5 w-10 rounded-full bg-black/70" />
-        <div className="mx-3 mt-3 h-[13.5rem] rounded-xl bg-neutral-800" />
+      <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay }} className="absolute inset-0">
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={index}
+            src={HERO_IMAGES[index]}
+            alt=""
+            initial={{ opacity: 0, x: 28 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -28 }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </AnimatePresence>
       </motion.div>
     </motion.div>
   );
@@ -99,8 +129,8 @@ export function LandingPage({ onStart }: Props) {
               레이아웃부터 <span className="text-blue-400">디자인</span>하세요.
             </h1>
             <p className="mt-4 text-base leading-relaxed text-neutral-400">
-              Design your App Store screenshots first, then let your AI coding agent capture the real app screens for
-              you.
+              Design your App Store screenshots first, then let your AI coding agent generate the finished screens
+              for you.
             </p>
             <p className="mt-3 text-sm leading-relaxed text-neutral-500">
               실제 스크린샷을 업로드해서 꾸미는 편집기가 아니에요. 헤드라인·서브헤드라인·폰 배치 같은 마케팅
@@ -118,8 +148,8 @@ export function LandingPage({ onStart }: Props) {
           </motion.div>
 
           <div className="flex items-center justify-center gap-3 py-4">
-            <MockPhone rotate={-6} className="translate-y-3" delay={0.1} />
-            <MockPhone rotate={5} delay={0.25} />
+            <HeroCard rotate={-6} startIndex={0} delay={0.1} className="translate-y-3" />
+            <HeroCard rotate={5} startIndex={2} delay={0.25} />
           </div>
         </section>
 
@@ -136,15 +166,15 @@ export function LandingPage({ onStart }: Props) {
 
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             <FadeIn delay={0.05} className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-6">
-              <h3 className="text-sm font-semibold text-blue-300">방법 1 — AI에게 캡처를 맡기기</h3>
+              <h3 className="text-sm font-semibold text-blue-300">방법 1 — AI에게 디자인을 맡기기</h3>
               <ol className="mt-3 list-decimal space-y-1.5 pl-4 text-sm leading-relaxed text-neutral-300">
-                <li>캔버스에 폰 placeholder를 놓고 각각 screenshot name을 정해요 (예: home_full)</li>
+                <li>캔버스에 폰 placeholder를 놓고 각각 screenshot name과 원하는 화면에 대한 간단한 설명을 적어요</li>
                 <li>
                   <span className="rounded bg-neutral-800 px-1.5 py-0.5 text-xs">Generate AI Prompt</span> 버튼으로
-                  캡처 지시문을 만들어요
+                  정확한 위치·색상·문구가 담긴 프롬프트를 만들어요
                 </li>
-                <li>그 프롬프트를 Claude Code, Cursor 같은 AI 코딩 도구에 붙여넣으면, AI가 실제 앱 프로젝트에서 해당 화면을 찾아 캡처해줘요</li>
-                <li>캡처된 이미지를 다시 해당 phone에 업로드하면 완성</li>
+                <li>그 프롬프트를 Claude Code, Cursor 같은 AI 코딩 도구에 붙여넣으면, AI가 지정한 스펙 그대로 완성된 마케팅 이미지를 직접 만들어줘요 — 실제 앱을 캡처하는 게 아니라, 화면 내용까지 새로 디자인해줘요</li>
+                <li>그대로 쓰거나, 특정 화면만 실제 스크린샷으로 바꾸고 싶으면 해당 phone에 업로드해서 교체해요</li>
               </ol>
             </FadeIn>
 
@@ -171,7 +201,7 @@ export function LandingPage({ onStart }: Props) {
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <Feature delay={0} title="여러 페이지" body="Page 1, 2, 3... 필요한 만큼 마케팅 이미지를 만들고 각각 독립적으로 편집해요." />
             <Feature delay={0.05} title="Phone / Tablet / Watch" body="기기 종류와 세부 모델(iPhone SE, iPad Pro 등)을 자유롭게 바꿀 수 있어요." />
-            <Feature delay={0.1} title="AI 캡처 프롬프트" body="스크린샷 위치·문구를 구조화된 프롬프트로 만들어 AI 코딩 에이전트에게 바로 전달해요." />
+            <Feature delay={0.1} title="AI 디자인 프롬프트" body="레이아웃 스펙(위치·색상·문구)을 구조화된 프롬프트로 만들어, AI가 완성된 화면을 직접 그리게 해요." />
             <Feature delay={0.15} title="부분 글자 색상" body="헤드라인에서 원하는 단어만 드래그해서 다른 색을 줄 수 있어요." />
             <Feature delay={0.2} title="도형 / 배경" body="사각형·원형 도형과 솔리드·그라디언트 배경으로 레이아웃을 자유롭게 꾸며요." />
             <Feature delay={0.25} title="정확한 export" body={'App Store 제출 규격(6.9"/6.7"/6.5") 그대로 PNG·ZIP으로 내보내요.'} />
@@ -193,7 +223,7 @@ export function LandingPage({ onStart }: Props) {
       <footer className="border-t border-neutral-800 py-6">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center text-xs text-neutral-600 md:flex-row md:justify-between">
           <span>
-            Store<span className="text-blue-400">Ready</span> — Design first, capture later.
+            Store<span className="text-blue-400">Ready</span> — Design first, generate later.
           </span>
           <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-neutral-300">
             <GithubIcon className="h-3.5 w-3.5" />

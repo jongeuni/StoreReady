@@ -21,15 +21,15 @@ const STEPS: DemoStep[] = [
   },
   {
     title: '4. 스크린샷 이름을 정해요',
-    body: '"home_full" 같은 이름을 붙여두면, 나중에 AI 코딩 에이전트가 어떤 화면을 캡처해야 하는지 정확히 알 수 있어요.',
+    body: '"home_full" 같은 이름을 붙여두면, 나중에 AI 코딩 에이전트가 어떤 화면을 디자인해야 하는지 정확히 알 수 있어요.',
   },
   {
     title: '5. 두 번째 폰을 추가해요',
     body: '여러 화면을 한 이미지 안에 겹쳐서 보여줄 수 있어요. 회전과 위치를 조절해 자연스럽게 배치해요.',
   },
   {
-    title: '6. 스크린샷을 채우면 완성',
-    body: 'AI가 캡처해준 이미지를 업로드하거나, 직접 캡처한 이미지를 올리면 App Store에 제출할 준비가 끝나요.',
+    title: '6. 화면을 채우면 완성',
+    body: 'AI가 스펙 그대로 만들어준 이미지를 쓰거나, 직접 캡처한 스크린샷을 올려도 돼요. App Store에 제출할 준비 끝.',
   },
 ];
 
@@ -75,9 +75,7 @@ function MockPhone({
           className="absolute rounded-[1.4rem] border border-neutral-700 bg-neutral-950 shadow-2xl"
           style={{ width, height, left: '50%', top: '50%', marginLeft: -width / 2, marginTop: -height / 2 }}
         >
-          {label && (
-            <span className="absolute -top-5 left-0 font-mono text-[9px] text-blue-400">{label}</span>
-          )}
+          {label && <span className="absolute -top-5 left-0 font-mono text-[9px] text-blue-400">{label}</span>}
           <div className="mx-auto mt-1.5 h-1 w-8 rounded-full bg-black/70" />
           <div className="mx-2 mt-2 overflow-hidden rounded-lg" style={{ height: height - 16 }}>
             <AnimatePresence mode="wait">
@@ -126,32 +124,28 @@ function TypedLine({ text, active, className }: { text: string; active: boolean;
 
 function MockCanvas({ step }: { step: number }) {
   return (
-    <div className="relative aspect-[9/16.4] w-full max-w-[280px] overflow-hidden rounded-2xl border border-neutral-800 bg-black shadow-2xl">
-      <div className="absolute inset-x-0 top-10 flex flex-col items-center gap-1 px-6">
+    <div className="relative aspect-[9/16.4] w-full max-w-[380px] overflow-hidden rounded-2xl border border-neutral-800 bg-black shadow-2xl">
+      <div className="absolute inset-x-0 top-12 flex flex-col items-center gap-1.5 px-8">
         <TypedLine
           text="One square at a time"
           active={step >= 2}
-          className="text-center text-lg font-bold leading-tight text-white"
+          className="text-center text-2xl font-bold leading-tight text-white"
         />
-        <TypedLine
-          text="Every habit, one tap away"
-          active={step >= 5}
-          className="text-center text-[10px] text-neutral-400"
-        />
+        <TypedLine text="Every habit, one tap away" active={step >= 5} className="text-center text-xs text-neutral-400" />
       </div>
 
       <div className="relative h-full w-full">
-        <MockPhone x={0} y={30} rotate={0} width={128} visible={step >= 1 && step < 4} filled={false} />
+        <MockPhone x={0} y={40} rotate={0} width={172} visible={step >= 1 && step < 4} filled={false} />
         <MockPhone
-          x={step >= 4 ? -34 : 0}
-          y={30}
+          x={step >= 4 ? -46 : 0}
+          y={40}
           rotate={step >= 4 ? -8 : 0}
-          width={116}
+          width={156}
           visible={step >= 4}
           label="home_full"
           filled={step >= 5}
         />
-        <MockPhone x={34} y={22} rotate={7} width={116} visible={step >= 4} label="history" filled={step >= 5} />
+        <MockPhone x={46} y={30} rotate={7} width={156} visible={step >= 4} label="history" filled={step >= 5} />
         {step >= 3 && step < 4 && <Chip>home_full</Chip>}
       </div>
     </div>
@@ -163,24 +157,10 @@ export function DemoSection() {
 
   return (
     <section className="border-t border-neutral-800 py-20">
-      <motion.h2
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-center text-2xl font-bold text-neutral-100"
-      >
-        만들어지는 과정을 직접 보세요
-      </motion.h2>
-      <p className="mx-auto mt-2 max-w-md text-center text-sm text-neutral-500">스크롤해보세요 — 왼쪽 미리보기가 단계마다 바뀌어요.</p>
+      <p className="mx-auto max-w-md text-center text-sm text-neutral-500">스크롤해보세요 — 오른쪽 미리보기가 단계마다 바뀌어요.</p>
 
-      <div className="mt-14 grid gap-10 md:grid-cols-2 md:gap-16">
-        <div className="order-2 md:order-1">
-          <div className="sticky top-24 flex justify-center">
-            <MockCanvas step={activeStep} />
-          </div>
-        </div>
-
-        <div className="order-1 flex flex-col gap-[22vh] py-[10vh] md:order-2">
+      <div className="mt-10 grid gap-10 md:grid-cols-2 md:gap-16">
+        <div className="order-2 flex flex-col gap-[22vh] py-[10vh] md:order-1">
           {STEPS.map((s, i) => (
             <motion.div
               key={s.title}
@@ -194,6 +174,15 @@ export function DemoSection() {
               <p className="mt-2 text-sm leading-relaxed text-neutral-400">{s.body}</p>
             </motion.div>
           ))}
+        </div>
+
+        <div className="order-1 md:order-2">
+          <div className="sticky top-16 flex flex-col items-center gap-6">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-neutral-100">만들어지는 과정을 직접 보세요</h2>
+            </div>
+            <MockCanvas step={activeStep} />
+          </div>
         </div>
       </div>
     </section>
