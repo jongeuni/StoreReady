@@ -16,7 +16,6 @@ import type {
   Project,
   ShapeKind,
   ShapeObject,
-  TargetFramework,
   TextObject,
   TextRole,
 } from '../types';
@@ -31,7 +30,6 @@ function createInitialProject(): Project {
     id: makeId(),
     name: 'Untitled Project',
     devicePresetId: preset.id,
-    targetFramework: 'other',
     pages: [createBlankPage('Page 1', preset.width, preset.height)],
   };
 }
@@ -49,8 +47,7 @@ type Actions = {
   // Project / device
   renameProject: (name: string) => void;
   setDevicePreset: (id: string) => void;
-  setTargetFramework: (fw: TargetFramework) => void;
-  setCaptureNotes: (notes: string) => void;
+  setExtraNotes: (notes: string) => void;
 
   // Pages
   addPage: (templateId?: TemplateId) => void;
@@ -148,14 +145,9 @@ export const useProjectStore = create<State & Actions>()(
           }
         }),
 
-      setTargetFramework: (fw) =>
+      setExtraNotes: (notes) =>
         set((s) => {
-          s.project.targetFramework = fw;
-        }),
-
-      setCaptureNotes: (notes) =>
-        set((s) => {
-          s.project.captureNotes = notes;
+          s.project.extraNotes = notes;
         }),
 
       addPage: (templateId = 'single-phone') =>

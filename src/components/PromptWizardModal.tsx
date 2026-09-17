@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useProjectStore } from '../store/useProjectStore';
 import { useToastStore } from '../store/useToastStore';
-import { buildFullPrompt, FRAMEWORK_LABELS } from '../utils/promptGenerator';
+import { buildFullPrompt } from '../utils/promptGenerator';
 import { Button, SelectField, TextField } from './ui/Field';
 import { DEVICE_KIND_LABELS, modelsForKind } from '../phoneFrame';
-import type { Page, PhoneObject, TargetFramework, TextObject } from '../types';
+import type { Page, PhoneObject, TextObject } from '../types';
 
 const STEPS = [
   { step: 1 as const, label: 'Select pages' },
@@ -194,39 +194,24 @@ function PageSelectStep() {
 }
 
 function ExtraInfoStep() {
-  const framework = useProjectStore((s) => s.project.targetFramework);
-  const setTargetFramework = useProjectStore((s) => s.setTargetFramework);
-  const captureNotes = useProjectStore((s) => s.project.captureNotes ?? '');
-  const setCaptureNotes = useProjectStore((s) => s.setCaptureNotes);
+  const extraNotes = useProjectStore((s) => s.project.extraNotes ?? '');
+  const setExtraNotes = useProjectStore((s) => s.setExtraNotes);
   const setStep = useProjectStore((s) => s.setPromptWizardStep);
-
-  const frameworkOptions = (Object.keys(FRAMEWORK_LABELS) as TargetFramework[]).map((value) => ({
-    value,
-    label: FRAMEWORK_LABELS[value],
-  }));
 
   return (
     <div className="flex flex-col gap-4 p-4">
       <p className="text-sm text-neutral-300">
-        아래 정보는 스크린샷 이미지 자체(위치/텍스트)엔 필요 없지만, AI가 실제 앱에서 화면을 찾고 캡처하는 데 도움이
-        되는 정보예요. 참고용 힌트일 뿐이니, 실제와 다르면 아래 메모에 적어주세요 — 예를 들어 React Native로
-        개발했지만 캡처는 Xcode 시뮬레이터로 직접 한다면 그렇게 적으면 프롬프트에 그대로 반영돼요.
+        AI가 화면 내용을 디자인할 때 참고할 배경 정보예요. 이 앱이 어떤 앱인지, 어떤 분위기·톤인지 적어두면 각 phone
+        화면 안에 더 그럴듯한 UI를 만들어줘요. (레이아웃 자체의 위치·색상·글자는 이미 JSON 스펙에 정확히 포함돼요.)
       </p>
 
-      <SelectField
-        label="앱 프레임워크 (힌트)"
-        value={framework}
-        options={frameworkOptions}
-        onChange={(v) => setTargetFramework(v)}
-      />
-
       <label className="flex flex-col gap-1 text-xs text-neutral-400">
-        <span>추가 메모 (선택)</span>
+        <span>앱 소개 / 스타일 참고 (선택)</span>
         <textarea
-          value={captureNotes}
-          onChange={(e) => setCaptureNotes(e.target.value)}
-          rows={3}
-          placeholder="예: React Native로 개발했지만 실제 캡처는 Xcode 시뮬레이터로 직접 진행합니다."
+          value={extraNotes}
+          onChange={(e) => setExtraNotes(e.target.value)}
+          rows={4}
+          placeholder="예: 하루 계획과 실제 기록을 비교해주는 다이어리 앱입니다. 미니멀하고 딱딱하지 않은 톤으로요."
           className="w-full resize-none rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
         />
       </label>

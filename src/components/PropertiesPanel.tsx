@@ -106,7 +106,7 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
           onChange={(v) => updateObject(page.id, obj.id, { screenshotName: v })}
         />
         <p className="mt-1 text-[11px] leading-snug text-neutral-500">
-          This name tells your AI coding agent which app screen to capture for this phone — it will appear as{' '}
+          This name tells your AI coding agent which screen to design for this phone — it will appear as{' '}
           <code className="text-neutral-400">"img": "{obj.screenshotName || 'name'}"</code> in the generated prompt.
         </p>
       </div>

@@ -74,7 +74,7 @@ export type PhoneObject = BaseObject & {
   /** Specific model within deviceKind (e.g. 'phone-se' vs 'phone-pro-max') — see DEVICE_MODELS. */
   deviceModel?: string;
   screenshotName: string;
-  /** Optional free-form note about what this screen should show — extra context for an AI capture agent. */
+  /** Optional free-form note about what this screen should show — a creative brief for the AI designing it. */
   screenshotDescription?: string;
   image?: string; // data URL of the uploaded screenshot
   imageFileName?: string;
@@ -98,14 +98,6 @@ export type ShapeObject = BaseObject & {
 
 export type CanvasObject = TextObject | PhoneObject | ShapeObject;
 
-export type TargetFramework =
-  | 'expo'
-  | 'react-native-cli'
-  | 'flutter'
-  | 'ios-native'
-  | 'android-native'
-  | 'other';
-
 export type Page = {
   id: string;
   label: string;
@@ -122,9 +114,7 @@ export type Project = {
   id: string;
   name: string;
   devicePresetId: string;
-  targetFramework: TargetFramework;
-  /** Free-form note for the AI agent about how capture actually works for this project
-   * (e.g. "built with React Native, but captures are taken via the Xcode simulator"). */
-  captureNotes?: string;
+  /** Free-form context for the AI (app concept, brand/style guidance) to inform the screens it designs. */
+  extraNotes?: string;
   pages: Page[];
 };

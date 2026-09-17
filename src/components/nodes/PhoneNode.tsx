@@ -128,7 +128,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
               fill="#8e8e93"
             />
             <Text
-              text="Upload a screenshot or generate an AI capture prompt"
+              text="Upload a screenshot or generate an AI prompt"
               width={screenW * 0.82}
               x={screenW * 0.09}
               y={screenH / 2 + width * 0.01}

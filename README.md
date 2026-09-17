@@ -1,13 +1,14 @@
 # StoreReady
 
-Design your App Store screenshots first, then let your AI coding agent capture the real app screens for you.
+Design your App Store screenshots first, then let your AI coding agent generate the finished screens for you.
 
 StoreReady is a visual editor for App Store marketing screenshots. Instead of starting from an
 existing screenshot, you design the layout first — headline, subheadline, and one or more phone
 placeholders, positioned and sized exactly as they'll appear in the final image. Each phone gets a
-**screenshot name** (e.g. `home_full`, `history`). When you're ready, generate a capture prompt for
-that name and hand it to Claude Code, Cursor, or any AI coding agent working in your app's own
-repository — it captures the real screen and you upload the result back in.
+**screenshot name** and, optionally, a short creative brief for what that screen should show. When
+you're ready, generate a prompt from the exact layout spec (positions, colors, fonts) and hand it
+to Claude Code, Cursor, or any AI coding agent — it designs and renders that screen's content to
+match, and you drop the result back in (or upload a real screenshot instead, if you'd rather).
 
 ## Getting started
 
