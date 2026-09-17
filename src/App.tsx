@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import type Konva from 'konva';
 import { useProjectStore } from './store/useProjectStore';
 import { TopBar } from './components/TopBar';
@@ -8,37 +8,16 @@ import { CanvasStage } from './components/CanvasStage';
 import { PageInfoBar } from './components/PageInfoBar';
 import { PropertiesPanel } from './components/PropertiesPanel';
 import { PromptWizardModal } from './components/PromptWizardModal';
-import { OnboardingModal } from './components/OnboardingModal';
 import { Toasts } from './components/Toasts';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
-
-const ONBOARDING_SEEN_KEY = 'storeready_onboarding_seen';
-
-function hasSeenOnboarding(): boolean {
-  try {
-    return localStorage.getItem(ONBOARDING_SEEN_KEY) === '1';
-  } catch {
-    return true;
-  }
-}
 
 function App() {
   const stageRef = useRef<Konva.Stage | null>(null);
   const project = useProjectStore((s) => s.project);
   const currentPageId = useProjectStore((s) => s.currentPageId);
   const page = project.pages.find((p) => p.id === currentPageId) ?? project.pages[0];
-  const [onboardingOpen, setOnboardingOpen] = useState(() => !hasSeenOnboarding());
 
   useKeyboardShortcuts(page.id);
-
-  const closeOnboarding = () => {
-    setOnboardingOpen(false);
-    try {
-      localStorage.setItem(ONBOARDING_SEEN_KEY, '1');
-    } catch {
-      // best-effort — a private-browsing tab may reject storage writes
-    }
-  };
 
   return (
     <div className="flex h-screen w-screen flex-col bg-neutral-950 text-neutral-100">
@@ -48,7 +27,7 @@ function App() {
         screens for you. Lay out headlines, subheadlines, and phone screens visually, and export a
         capture-ready prompt for Claude Code, Cursor, or any AI coding agent.
       </p>
-      <TopBar stageRef={stageRef} onOpenOnboarding={() => setOnboardingOpen(true)} />
+      <TopBar stageRef={stageRef} />
       <PageTabs />
       <PageToolbar page={page} />
       <div className="flex min-h-0 flex-1">
@@ -59,7 +38,6 @@ function App() {
         <PropertiesPanel page={page} />
       </div>
       <PromptWizardModal />
-      {onboardingOpen && <OnboardingModal onClose={closeOnboarding} />}
       <Toasts />
     </div>
   );

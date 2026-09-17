@@ -1,17 +1,13 @@
 import type Konva from 'konva';
 import { useProjectStore } from '../store/useProjectStore';
 import { useToastStore } from '../store/useToastStore';
+import { useRouter } from '../router';
 import { DEVICE_PRESETS } from '../devicePresets';
 import { Button } from './ui/Field';
 import { exportPageAsPng, exportPagesAsZip, exportStageToDataUrl } from '../utils/export';
 
-export function TopBar({
-  stageRef,
-  onOpenOnboarding,
-}: {
-  stageRef: React.RefObject<Konva.Stage | null>;
-  onOpenOnboarding: () => void;
-}) {
+export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | null> }) {
+  const { navigate } = useRouter();
   const project = useProjectStore((s) => s.project);
   const currentPageId = useProjectStore((s) => s.currentPageId);
   const selectPage = useProjectStore((s) => s.selectPage);
@@ -61,8 +57,8 @@ export function TopBar({
     <header className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-800 bg-neutral-900 px-4 py-2.5">
       <div className="flex items-center gap-3">
         <button
-          onClick={onOpenOnboarding}
-          title="StoreReady 소개 다시 보기"
+          onClick={() => navigate('/')}
+          title="StoreReady 메인 페이지로"
           className="shrink-0 rounded text-sm font-bold tracking-tight text-neutral-100 hover:text-neutral-300"
         >
           Store<span className="text-blue-400">Ready</span>
