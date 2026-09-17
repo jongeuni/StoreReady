@@ -56,6 +56,10 @@ export function CanvasStage({ page, stageRef }: Props) {
         tr.nodes([node]);
         tr.keepRatio(obj.type === 'phone');
         tr.rotateEnabled(true);
+        // Text's own bounding box hugs the glyphs tightly (no breathing room like the
+        // double-click edit box has); pad the selection outline a bit so it doesn't feel
+        // cramped. Other object types keep a flush, exact-fit outline.
+        tr.padding(obj.type === 'text' ? Math.max(4, Math.round(obj.fontSize * 0.18)) : 0);
         tr.enabledAnchors(
           obj.type === 'phone'
             ? ['top-left', 'top-right', 'bottom-left', 'bottom-right']

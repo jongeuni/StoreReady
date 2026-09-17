@@ -21,6 +21,12 @@ function App() {
 
   return (
     <div className="flex h-screen w-screen flex-col bg-neutral-950 text-neutral-100">
+      <h1 className="sr-only">StoreReady — App Store Screenshot Builder</h1>
+      <p className="sr-only">
+        Design your App Store screenshots first, then let your AI coding agent capture the real app
+        screens for you. Lay out headlines, subheadlines, and phone screens visually, and export a
+        capture-ready prompt for Claude Code, Cursor, or any AI coding agent.
+      </p>
       <TopBar stageRef={stageRef} />
       <PageTabs />
       <PageToolbar page={page} />
