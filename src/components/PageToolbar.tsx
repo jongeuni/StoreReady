@@ -5,22 +5,29 @@ import { Button } from './ui/Field';
 import { ConfirmModal } from './ConfirmModal';
 import type { AlignType } from '../utils/geometry';
 import type { DeviceKind, Page } from '../types';
-import { DEVICE_KIND_LABELS } from '../phoneFrame';
+import { DEVICE_KIND_KEY, useT, type TKey } from '../i18n';
 
-const ALIGN_H: { type: AlignType; label: string }[] = [
-  { type: 'left', label: 'Align left' },
-  { type: 'center-h', label: 'Align center' },
-  { type: 'right', label: 'Align right' },
+const ALIGN_H: { type: AlignType; key: TKey }[] = [
+  { type: 'left', key: 'toolbar.alignLeft' },
+  { type: 'center-h', key: 'toolbar.alignCenter' },
+  { type: 'right', key: 'toolbar.alignRight' },
 ];
-const ALIGN_V: { type: AlignType; label: string }[] = [
-  { type: 'top', label: 'Align top' },
-  { type: 'center-v', label: 'Align middle' },
-  { type: 'bottom', label: 'Align bottom' },
+const ALIGN_V: { type: AlignType; key: TKey }[] = [
+  { type: 'top', key: 'toolbar.alignTop' },
+  { type: 'center-v', key: 'toolbar.alignMiddle' },
+  { type: 'bottom', key: 'toolbar.alignBottom' },
 ];
+
+const TEMPLATE_KEY: Record<TemplateId, TKey> = {
+  blank: 'template.blank',
+  'single-phone': 'template.single-phone',
+  'dual-phone': 'template.dual-phone',
+};
 
 const DEVICE_KINDS: DeviceKind[] = ['phone', 'tablet', 'watch'];
 
 export function PageToolbar({ page }: { page: Page }) {
+  const t = useT();
   const selectedObjectIds = useProjectStore((s) => s.selectedObjectIds);
   const alignSelected = useProjectStore((s) => s.alignSelected);
   const applyTemplate = useProjectStore((s) => s.applyTemplate);
@@ -44,7 +51,7 @@ export function PageToolbar({ page }: { page: Page }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-800 bg-neutral-900 px-3 py-2">
       <div className="flex items-center gap-2">
-        <label className="text-xs text-neutral-500">Template</label>
+        <label className="text-xs text-neutral-500">{t('toolbar.template')}</label>
         <select
           ref={templateSelectRef}
           value={page.templateId ?? ''}
@@ -52,11 +59,11 @@ export function PageToolbar({ page }: { page: Page }) {
           className="rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs text-neutral-100"
         >
           <option value="" disabled>
-            Apply template…
+            {t('toolbar.applyTemplate')}
           </option>
-          {TEMPLATES.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.label}
+          {TEMPLATES.map((tpl) => (
+            <option key={tpl.id} value={tpl.id}>
+              {t(TEMPLATE_KEY[tpl.id])}
             </option>
           ))}
         </select>
@@ -74,21 +81,21 @@ export function PageToolbar({ page }: { page: Page }) {
           }}
           className="rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs text-neutral-100"
         >
-          <option value="">+ 기기 추가…</option>
+          <option value="">{t('toolbar.addDevice')}</option>
           {DEVICE_KINDS.map((k) => (
             <option key={k} value={k}>
-              {DEVICE_KIND_LABELS[k]}
+              {t(DEVICE_KIND_KEY[k])}
             </option>
           ))}
         </select>
       </div>
 
       <div className={`flex items-center gap-1 ${hasSelection ? '' : 'pointer-events-none opacity-30'}`}>
-        <span className="mr-1 text-xs text-neutral-500">Align</span>
+        <span className="mr-1 text-xs text-neutral-500">{t('toolbar.align')}</span>
         {ALIGN_H.map((a) => (
           <button
             key={a.type}
-            title={a.label}
+            title={t(a.key)}
             onClick={() => alignSelected(page.id, a.type)}
             className="rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs text-neutral-200 hover:bg-neutral-700"
           >
@@ -99,7 +106,7 @@ export function PageToolbar({ page }: { page: Page }) {
         {ALIGN_V.map((a) => (
           <button
             key={a.type}
-            title={a.label}
+            title={t(a.key)}
             onClick={() => alignSelected(page.id, a.type)}
             className="rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs text-neutral-200 hover:bg-neutral-700"
           >
@@ -108,16 +115,16 @@ export function PageToolbar({ page }: { page: Page }) {
         ))}
         <span className="mx-1 h-4 w-px bg-neutral-700" />
         <Button variant="danger" onClick={() => removeSelectedObjects(page.id)}>
-          Delete
+          {t('common.delete')}
         </Button>
       </div>
 
       {pendingTemplateId && (
         <ConfirmModal
-          title="템플릿을 적용할까요?"
-          message="템플릿을 적용하면 현재 페이지의 내용이 모두 사라집니다. 계속할까요?"
-          confirmLabel="적용"
-          cancelLabel="취소"
+          title={t('toolbar.confirmTitle')}
+          message={t('toolbar.confirmMessage')}
+          confirmLabel={t('toolbar.confirmApply')}
+          cancelLabel={t('common.cancel')}
           onCancel={() => {
             if (templateSelectRef.current) templateSelectRef.current.value = page.templateId ?? '';
             setPendingTemplateId(null);

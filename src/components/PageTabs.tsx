@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useProjectStore } from '../store/useProjectStore';
 import { Button } from './ui/Field';
+import { useT } from '../i18n';
 
 export function PageTabs() {
   const pages = useProjectStore((s) => s.project.pages);
@@ -11,6 +12,7 @@ export function PageTabs() {
   const duplicatePage = useProjectStore((s) => s.duplicatePage);
   const renamePage = useProjectStore((s) => s.renamePage);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const t = useT();
 
   return (
     <div className="flex items-center gap-2 overflow-x-auto border-b border-neutral-800 bg-neutral-900 px-3 py-2">
@@ -46,7 +48,7 @@ export function PageTabs() {
           )}
           <span className="hidden gap-1 group-hover:flex">
             <button
-              title="Duplicate page"
+              title={t('tabs.duplicate')}
               onClick={(e) => {
                 e.stopPropagation();
                 duplicatePage(page.id);
@@ -57,7 +59,7 @@ export function PageTabs() {
             </button>
             {pages.length > 1 && (
               <button
-                title="Delete page"
+                title={t('tabs.delete')}
                 onClick={(e) => {
                   e.stopPropagation();
                   removePage(page.id);
@@ -70,7 +72,7 @@ export function PageTabs() {
           </span>
         </div>
       ))}
-      <Button onClick={() => addPage()}>+ Page</Button>
+      <Button onClick={() => addPage()}>{t('tabs.addPage')}</Button>
     </div>
   );
 }

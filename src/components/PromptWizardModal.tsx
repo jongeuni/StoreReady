@@ -3,16 +3,24 @@ import { useProjectStore } from '../store/useProjectStore';
 import { useToastStore } from '../store/useToastStore';
 import { buildFullPrompt } from '../utils/promptGenerator';
 import { Button, SelectField, TextField } from './ui/Field';
-import { DEVICE_KIND_LABELS, modelsForKind } from '../phoneFrame';
-import type { Page, PhoneObject, TextObject } from '../types';
+import { modelsForKind } from '../phoneFrame';
+import { DEVICE_KIND_KEY, useT, type TKey } from '../i18n';
+import type { Page, PhoneObject, TextObject, TextRole } from '../types';
 
-const STEPS = [
-  { step: 1 as const, label: 'Select pages' },
-  { step: 2 as const, label: 'Extra info' },
-  { step: 3 as const, label: 'Prompt' },
+const STEPS: { step: 1 | 2 | 3; key: TKey }[] = [
+  { step: 1, key: 'wizard.step1' },
+  { step: 2, key: 'wizard.step2' },
+  { step: 3, key: 'wizard.step3' },
 ];
 
+const ROLE_KEY: Record<TextRole, TKey> = {
+  headline: 'role.headline',
+  subheadline: 'role.subheadline',
+  body: 'role.body',
+};
+
 function StepHeader() {
+  const t = useT();
   const step = useProjectStore((s) => s.promptWizardStep);
   const setStep = useProjectStore((s) => s.setPromptWizardStep);
   const selectedCount = useProjectStore((s) => s.promptWizardSelectedPageIds.length);
@@ -37,7 +45,7 @@ function StepHeader() {
               >
                 {s.step}
               </span>
-              {s.label}
+              {t(s.key)}
             </button>
             {i < STEPS.length - 1 && <span className="h-px w-4 bg-neutral-700" />}
           </div>
@@ -48,6 +56,7 @@ function StepHeader() {
 }
 
 function PageReviewCard({ page }: { page: Page }) {
+  const t = useT();
   const updateObject = useProjectStore((s) => s.updateObject);
   const headline = page.objects.find((o): o is TextObject => o.type === 'text' && o.role === 'headline');
   const subheadline = page.objects.find((o): o is TextObject => o.type === 'text' && o.role === 'subheadline');
@@ -60,7 +69,7 @@ function PageReviewCard({ page }: { page: Page }) {
     <div className="flex flex-col gap-3 border-t border-neutral-800 bg-neutral-950/60 p-3">
       {headline && (
         <label className="flex flex-col gap-1 text-xs text-neutral-400">
-          <span>Headline</span>
+          <span>{t('wizard.headline')}</span>
           <textarea
             value={headline.text}
             onChange={(e) => updateObject(page.id, headline.id, { text: e.target.value, runs: undefined })}
@@ -72,7 +81,7 @@ function PageReviewCard({ page }: { page: Page }) {
 
       {subheadline && (
         <label className="flex flex-col gap-1 text-xs text-neutral-400">
-          <span>Subheadline</span>
+          <span>{t('wizard.subheadline')}</span>
           <textarea
             value={subheadline.text}
             onChange={(e) => updateObject(page.id, subheadline.id, { text: e.target.value, runs: undefined })}
@@ -82,12 +91,12 @@ function PageReviewCard({ page }: { page: Page }) {
         </label>
       )}
 
-      {otherText.map((t) => (
-        <label key={t.id} className="flex flex-col gap-1 text-xs text-neutral-400">
-          <span>Text ({t.role})</span>
+      {otherText.map((tx) => (
+        <label key={tx.id} className="flex flex-col gap-1 text-xs text-neutral-400">
+          <span>{t('wizard.textRole', { role: t(ROLE_KEY[tx.role]) })}</span>
           <textarea
-            value={t.text}
-            onChange={(e) => updateObject(page.id, t.id, { text: e.target.value, runs: undefined })}
+            value={tx.text}
+            onChange={(e) => updateObject(page.id, tx.id, { text: e.target.value, runs: undefined })}
             rows={2}
             className="w-full resize-none rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
           />
@@ -98,24 +107,24 @@ function PageReviewCard({ page }: { page: Page }) {
         <div key={p.id} className="flex flex-col gap-2 rounded border border-neutral-800 p-2">
           <div className="grid grid-cols-2 gap-2">
             <TextField
-              label="Screenshot name"
+              label={t('panel.screenshotName')}
               value={p.screenshotName}
               onChange={(v) => updateObject(page.id, p.id, { screenshotName: v })}
             />
             <SelectField
-              label={`Model (${DEVICE_KIND_LABELS[p.deviceKind ?? 'phone']})`}
+              label={t('wizard.modelOf', { kind: t(DEVICE_KIND_KEY[p.deviceKind ?? 'phone']) })}
               value={p.deviceModel ?? modelsForKind(p.deviceKind ?? 'phone')[0].id}
               options={modelsForKind(p.deviceKind ?? 'phone').map((m) => ({ value: m.id, label: m.label }))}
               onChange={(v) => updateObject(page.id, p.id, { deviceModel: v })}
             />
           </div>
           <label className="flex flex-col gap-1 text-xs text-neutral-400">
-            <span>Screenshot description</span>
+            <span>{t('panel.description')}</span>
             <textarea
               value={p.screenshotDescription ?? ''}
               onChange={(e) => updateObject(page.id, p.id, { screenshotDescription: e.target.value })}
               rows={2}
-              placeholder="e.g. Home screen with 3 completed tasks and the streak banner visible"
+              placeholder={t('panel.descriptionPlaceholder')}
               className="w-full resize-none rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
             />
           </label>
@@ -123,13 +132,14 @@ function PageReviewCard({ page }: { page: Page }) {
       ))}
 
       {!headline && !subheadline && otherText.length === 0 && phones.length === 0 && (
-        <p className="text-xs text-neutral-500">이 페이지에는 검토할 텍스트나 phone이 없습니다.</p>
+        <p className="text-xs text-neutral-500">{t('wizard.emptyPage')}</p>
       )}
     </div>
   );
 }
 
 function PageSelectStep() {
+  const t = useT();
   const pages = useProjectStore((s) => s.project.pages);
   const selectedIds = useProjectStore((s) => s.promptWizardSelectedPageIds);
   const togglePage = useProjectStore((s) => s.togglePromptWizardPage);
@@ -139,14 +149,14 @@ function PageSelectStep() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-neutral-300">프롬프트에 포함할 페이지를 선택하세요. 화살표를 누르면 내용을 검토·수정할 수 있어요.</p>
-        <div className="flex gap-1.5">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-sm text-neutral-300">{t('wizard.selectHint')}</p>
+        <div className="flex shrink-0 gap-1.5">
           <Button variant="ghost" onClick={() => setAllSelected(true)}>
-            전체 선택
+            {t('common.selectAll')}
           </Button>
           <Button variant="ghost" onClick={() => setAllSelected(false)}>
-            전체 해제
+            {t('common.deselectAll')}
           </Button>
         </div>
       </div>
@@ -166,13 +176,15 @@ function PageSelectStep() {
                   />
                   {i + 1}. {page.label}
                   <span className="ml-auto text-xs text-neutral-500">
-                    {page.objects.filter((o) => o.type === 'phone').length} phone ·{' '}
-                    {page.objects.filter((o) => o.type === 'text').length} text
+                    {t('wizard.counts', {
+                      phones: page.objects.filter((o) => o.type === 'phone').length,
+                      texts: page.objects.filter((o) => o.type === 'text').length,
+                    })}
                   </span>
                 </label>
                 <button
                   onClick={() => setExpandedId(expanded ? null : page.id)}
-                  title="검토 · 수정"
+                  title={t('wizard.reviewTitle')}
                   className={`flex h-6 w-6 shrink-0 items-center justify-center rounded text-neutral-400 transition-transform hover:bg-neutral-800 ${expanded ? 'rotate-180' : ''}`}
                 >
                   ▾
@@ -186,7 +198,7 @@ function PageSelectStep() {
 
       <div className="flex justify-end">
         <Button variant="primary" disabled={selectedIds.length === 0} onClick={() => setStep(2)}>
-          다음
+          {t('common.next')}
         </Button>
       </div>
     </div>
@@ -194,32 +206,30 @@ function PageSelectStep() {
 }
 
 function ExtraInfoStep() {
+  const t = useT();
   const extraNotes = useProjectStore((s) => s.project.extraNotes ?? '');
   const setExtraNotes = useProjectStore((s) => s.setExtraNotes);
   const setStep = useProjectStore((s) => s.setPromptWizardStep);
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <p className="text-sm text-neutral-300">
-        AI가 화면 내용을 디자인할 때 참고할 배경 정보예요. 이 앱이 어떤 앱인지, 어떤 분위기·톤인지 적어두면 각 phone
-        화면 안에 더 그럴듯한 UI를 만들어줘요. (레이아웃 자체의 위치·색상·글자는 이미 JSON 스펙에 정확히 포함돼요.)
-      </p>
+      <p className="text-sm text-neutral-300">{t('wizard.extraIntro')}</p>
 
       <label className="flex flex-col gap-1 text-xs text-neutral-400">
-        <span>앱 소개 / 스타일 참고 (선택)</span>
+        <span>{t('wizard.extraLabel')}</span>
         <textarea
           value={extraNotes}
           onChange={(e) => setExtraNotes(e.target.value)}
           rows={4}
-          placeholder="예: 하루 계획과 실제 기록을 비교해주는 다이어리 앱입니다. 미니멀하고 딱딱하지 않은 톤으로요."
+          placeholder={t('wizard.extraPlaceholder')}
           className="w-full resize-none rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
         />
       </label>
 
       <div className="flex justify-between">
-        <Button onClick={() => setStep(1)}>이전</Button>
+        <Button onClick={() => setStep(1)}>{t('common.prev')}</Button>
         <Button variant="primary" onClick={() => setStep(3)}>
-          다음
+          {t('common.next')}
         </Button>
       </div>
     </div>
@@ -227,6 +237,7 @@ function ExtraInfoStep() {
 }
 
 function PromptStep() {
+  const t = useT();
   const project = useProjectStore((s) => s.project);
   const pages = useProjectStore((s) => s.project.pages);
   const selectedIds = useProjectStore((s) => s.promptWizardSelectedPageIds);
@@ -236,6 +247,7 @@ function PromptStep() {
   const [copied, setCopied] = useState(false);
 
   const selectedPages = useMemo(() => pages.filter((p) => selectedIds.includes(p.id)), [pages, selectedIds]);
+  // The prompt itself stays in English on purpose: it's addressed to an AI agent, not the user.
   const prompt = useMemo(() => buildFullPrompt(project, selectedPages), [project, selectedPages]);
 
   const handleCopy = async () => {
@@ -245,7 +257,7 @@ function PromptStep() {
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error(err);
-      pushToast('클립보드 복사에 실패했습니다. 아래 텍스트를 직접 선택해서 복사해주세요.', 'error');
+      pushToast(t('common.copyFailed'), 'error');
     }
   };
 
@@ -258,11 +270,11 @@ function PromptStep() {
         onFocus={(e) => e.currentTarget.select()}
       />
       <div className="flex justify-between">
-        <Button onClick={() => setStep(2)}>이전</Button>
+        <Button onClick={() => setStep(2)}>{t('common.prev')}</Button>
         <div className="flex gap-1.5">
-          <Button onClick={close}>닫기</Button>
+          <Button onClick={close}>{t('common.close')}</Button>
           <Button variant="primary" onClick={handleCopy}>
-            {copied ? 'Copied!' : 'Copy Prompt'}
+            {copied ? t('common.copied') : t('wizard.copyPrompt')}
           </Button>
         </div>
       </div>
@@ -271,6 +283,7 @@ function PromptStep() {
 }
 
 export function PromptWizardModal() {
+  const t = useT();
   const open = useProjectStore((s) => s.promptWizardOpen);
   const step = useProjectStore((s) => s.promptWizardStep);
   const close = useProjectStore((s) => s.closePromptWizard);
@@ -284,7 +297,7 @@ export function PromptWizardModal() {
         className="flex max-h-[85vh] w-full max-w-2xl flex-col rounded-lg border border-neutral-700 bg-neutral-900 shadow-2xl"
       >
         <div className="flex items-center justify-between border-b border-neutral-800 px-4 py-3">
-          <h2 className="text-sm font-semibold text-neutral-100">Generate AI Prompt</h2>
+          <h2 className="text-sm font-semibold text-neutral-100">{t('wizard.title')}</h2>
           <button onClick={close} className="text-neutral-500 hover:text-neutral-200">
             ✕
           </button>

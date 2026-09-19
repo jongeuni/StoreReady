@@ -2,12 +2,15 @@ import type Konva from 'konva';
 import { useProjectStore } from '../store/useProjectStore';
 import { useToastStore } from '../store/useToastStore';
 import { useRouter } from '../router';
+import { useT } from '../i18n';
+import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
 import { DEVICE_PRESETS } from '../devicePresets';
 import { Button } from './ui/Field';
 import { exportPageAsPng, exportPagesAsZip, exportStageToDataUrl } from '../utils/export';
 
 export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | null> }) {
   const { navigate } = useRouter();
+  const t = useT();
   const project = useProjectStore((s) => s.project);
   const currentPageId = useProjectStore((s) => s.currentPageId);
   const selectPage = useProjectStore((s) => s.selectPage);
@@ -21,14 +24,14 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
   const handleDownload = () => {
     const stage = stageRef.current;
     if (!stage || !currentPage) {
-      pushToast('Nothing to export yet.', 'error');
+      pushToast(t('top.nothingToExport'), 'error');
       return;
     }
     try {
       exportPageAsPng(stage, currentPage.label);
     } catch (err) {
       console.error(err);
-      pushToast('Export failed. Please try again.', 'error');
+      pushToast(t('top.exportFailed'), 'error');
     }
   };
 
@@ -46,10 +49,10 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
       }
       selectPage(originalPageId);
       await exportPagesAsZip(entries, `${project.name || 'app-store-screenshots'}.zip`);
-      pushToast('ZIP export complete.', 'success');
+      pushToast(t('top.zipDone'), 'success');
     } catch (err) {
       console.error(err);
-      pushToast('ZIP export failed. Please try again.', 'error');
+      pushToast(t('top.zipFailed'), 'error');
     }
   };
 
@@ -58,7 +61,7 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate('/')}
-          title="StoreReady 메인 페이지로"
+          title={t('top.homeTitle')}
           className="shrink-0 rounded text-sm font-bold tracking-tight text-neutral-100 hover:text-neutral-300"
         >
           Store<span className="text-blue-400">Ready</span>
@@ -72,7 +75,7 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
         <select
           value={project.devicePresetId}
           onChange={(e) => setDevicePreset(e.target.value)}
-          title="App Store screenshot device size"
+          title={t('top.deviceTitle')}
           className="rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs text-neutral-200"
         >
           {DEVICE_PRESETS.map((p) => (
@@ -84,10 +87,11 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
       </div>
 
       <div className="flex items-center gap-2">
-        <Button onClick={openPromptWizard}>Generate AI Prompt</Button>
-        <Button onClick={handleExportAll}>Export All (ZIP)</Button>
+        <LanguageSwitcher />
+        <Button onClick={openPromptWizard}>{t('top.generatePrompt')}</Button>
+        <Button onClick={handleExportAll}>{t('top.exportAll')}</Button>
         <Button variant="primary" onClick={handleDownload}>
-          Download PNG
+          {t('top.downloadPng')}
         </Button>
       </div>
     </header>

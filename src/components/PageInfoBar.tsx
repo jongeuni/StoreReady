@@ -3,12 +3,14 @@ import { useProjectStore } from '../store/useProjectStore';
 import { useToastStore } from '../store/useToastStore';
 import { buildScreenshotInfoJson } from '../utils/screenshotInfo';
 import { Button } from './ui/Field';
+import { useT } from '../i18n';
 import type { Page } from '../types';
 
 /** This page's JSON info (positions + copy), collapsed under the canvas — no wizard, no prompt, just this one page. */
 export function PageInfoBar({ page }: { page: Page }) {
   const project = useProjectStore((s) => s.project);
   const pushToast = useToastStore((s) => s.push);
+  const t = useT();
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -21,7 +23,7 @@ export function PageInfoBar({ page }: { page: Page }) {
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error(err);
-      pushToast('클립보드 복사에 실패했습니다. 아래 텍스트를 직접 선택해서 복사해주세요.', 'error');
+      pushToast(t('common.copyFailed'), 'error');
     }
   };
 
@@ -32,8 +34,8 @@ export function PageInfoBar({ page }: { page: Page }) {
         className="flex w-full items-center gap-2 px-3 py-2 text-xs text-neutral-400 hover:text-neutral-200"
       >
         <span className={`transition-transform ${expanded ? 'rotate-90' : ''}`}>▸</span>
-        이 페이지 정보 (JSON)
-        <span className="text-neutral-600">— 위치/문구만, 프롬프트 아님</span>
+        {t('info.title')}
+        <span className="text-neutral-600">{t('info.hint')}</span>
       </button>
       {expanded && (
         <div className="flex flex-col gap-2 px-3 pb-3">
@@ -45,7 +47,7 @@ export function PageInfoBar({ page }: { page: Page }) {
           />
           <div className="flex justify-end">
             <Button variant="primary" onClick={handleCopy}>
-              {copied ? 'Copied!' : 'Copy JSON'}
+              {copied ? t('common.copied') : t('info.copy')}
             </Button>
           </div>
         </div>

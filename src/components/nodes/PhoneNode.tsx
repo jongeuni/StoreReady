@@ -5,6 +5,7 @@ import type { Context } from 'konva/lib/Context';
 import type { PhoneObject } from '../../types';
 import { getDeviceModel } from '../../phoneFrame';
 import { useHtmlImage } from '../../hooks/useHtmlImage';
+import { useT } from '../../i18n';
 
 function roundedRectPath(ctx: Context, w: number, h: number, r: number) {
   ctx.beginPath();
@@ -39,6 +40,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
   { obj, isSelected, onSelect, onDragEnd, onTransformEnd },
   ref,
 ) {
+  const t = useT();
   const image = useHtmlImage(obj.image);
   const deviceKind = obj.deviceKind ?? 'phone';
   const model = getDeviceModel(obj.deviceModel, deviceKind);
@@ -84,7 +86,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
     >
       {/* Selection label */}
       <Text
-        text={obj.screenshotName || '(unnamed)'}
+        text={obj.screenshotName || t('canvas.unnamed')}
         x={0}
         y={-Math.max(28, height * 0.028)}
         fontSize={Math.max(18, width * 0.045)}
@@ -118,7 +120,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
           <>
             <Rect width={screenW} height={screenH} fill="#1c1c1e" />
             <Text
-              text={obj.screenshotName ? obj.screenshotName : 'No name set'}
+              text={obj.screenshotName ? obj.screenshotName : t('canvas.noName')}
               width={screenW}
               y={screenH / 2 - width * 0.09}
               align="center"
@@ -128,7 +130,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
               fill="#8e8e93"
             />
             <Text
-              text="Upload a screenshot or generate an AI prompt"
+              text={t('canvas.placeholder')}
               width={screenW * 0.82}
               x={screenW * 0.09}
               y={screenH / 2 + width * 0.01}

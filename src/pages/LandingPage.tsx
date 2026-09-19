@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DemoSection } from './DemoSection';
+import { useT } from '../i18n';
+import { Rich } from '../i18n/Rich';
+import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
 import demo1 from '../assets/hero/demo-1.png';
 import demo2 from '../assets/hero/demo-2.png';
 import demo3 from '../assets/hero/demo-3.png';
@@ -102,6 +105,8 @@ function Feature({ title, body, delay = 0 }: { title: string; body: string; dela
 }
 
 export function LandingPage({ onStart }: Props) {
+  const t = useT();
+
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
       <header className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
@@ -109,12 +114,13 @@ export function LandingPage({ onStart }: Props) {
           Store<span className="text-blue-400">Ready</span>
         </span>
         <div className="flex items-center gap-2">
+          <LanguageSwitcher className="py-2" />
           <GithubLink />
           <button
             onClick={onStart}
             className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500"
           >
-            에디터 열기
+            {t('land.openEditor')}
           </button>
         </div>
       </header>
@@ -124,26 +130,18 @@ export function LandingPage({ onStart }: Props) {
         <section className="grid items-center gap-10 py-16 md:grid-cols-2 md:py-24">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <h1 className="text-3xl font-bold leading-tight text-neutral-50 md:text-4xl">
-              App Store 스크린샷,
-              <br />
-              레이아웃부터 <span className="text-blue-400">디자인</span>하세요.
+              <Rich text={t('land.heroTitle')} strong="text-blue-400" />
             </h1>
-            <p className="mt-4 text-base leading-relaxed text-neutral-400">
-              Design your App Store screenshots first, then let your AI coding agent generate the finished screens
-              for you.
-            </p>
-            <p className="mt-3 text-sm leading-relaxed text-neutral-500">
-              실제 스크린샷을 업로드해서 꾸미는 편집기가 아니에요. 헤드라인·서브헤드라인·폰 배치 같은 마케팅
-              이미지의 레이아웃을 먼저 디자인하고, 그다음 스크린샷을 채워 넣는 순서로 작업해요.
-            </p>
-            <div className="mt-7 flex items-center gap-3">
+            <p className="mt-4 text-base leading-relaxed text-neutral-400">{t('land.tagline')}</p>
+            <p className="mt-3 text-sm leading-relaxed text-neutral-500">{t('land.heroDesc')}</p>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
               <button
                 onClick={onStart}
                 className="rounded bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-500"
               >
-                무료로 시작하기
+                {t('land.start')}
               </button>
-              <span className="text-xs text-neutral-500">회원가입 없이 바로 사용 가능</span>
+              <span className="text-xs text-neutral-500">{t('land.noSignup')}</span>
             </div>
           </motion.div>
 
@@ -158,36 +156,42 @@ export function LandingPage({ onStart }: Props) {
         {/* How it works */}
         <section className="border-t border-neutral-800 py-16">
           <FadeIn>
-            <h2 className="text-center text-2xl font-bold text-neutral-100">두 가지 방법으로 완성해요</h2>
-            <p className="mx-auto mt-2 max-w-lg text-center text-sm text-neutral-500">
-              한 페이지 안에서 두 방법을 섞어 써도 괜찮아요 — 한 폰은 업로드, 다른 폰은 AI한테 맡기는 식으로요.
-            </p>
+            <h2 className="text-center text-2xl font-bold text-neutral-100">{t('how.title')}</h2>
+            <p className="mx-auto mt-2 max-w-xl text-center text-sm text-neutral-500">{t('how.sub')}</p>
           </FadeIn>
 
           <div className="mt-10 grid gap-6 md:grid-cols-2">
-            <FadeIn delay={0.05} className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-6">
-              <h3 className="text-sm font-semibold text-blue-300">방법 1 — AI에게 디자인을 맡기기</h3>
-              <ol className="mt-3 list-decimal space-y-1.5 pl-4 text-sm leading-relaxed text-neutral-300">
-                <li>캔버스에 폰 placeholder를 놓고 각각 screenshot name과 원하는 화면에 대한 간단한 설명을 적어요</li>
+            {/* Method 1: build it all yourself — the emphasised one */}
+            <FadeIn
+              delay={0.05}
+              className="rounded-lg border border-emerald-500/40 bg-gradient-to-b from-emerald-500/10 to-neutral-900/60 p-6"
+            >
+              <span className="inline-block rounded-full bg-emerald-400/15 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-300">
+                {t('how.m1.badge')}
+              </span>
+              <h3 className="mt-2 text-lg font-bold text-emerald-300">{t('how.m1.title')}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-neutral-300">
+                <Rich text={t('how.m1.lead')} strong="font-bold text-emerald-300" />
+              </p>
+              <ol className="mt-4 list-decimal space-y-1.5 pl-4 text-sm leading-relaxed text-neutral-300">
+                <li>{t('how.m1.s1')}</li>
+                <li>{t('how.m1.s2')}</li>
                 <li>
-                  <span className="rounded bg-neutral-800 px-1.5 py-0.5 text-xs">Generate AI Prompt</span> 버튼으로
-                  정확한 위치·색상·문구가 담긴 프롬프트를 만들어요
+                  <Rich text={t('how.m1.s3', { png: t('top.downloadPng'), zip: t('top.exportAll') })} />
                 </li>
-                <li>그 프롬프트를 Claude Code, Cursor 같은 AI 코딩 도구에 붙여넣으면, AI가 지정한 스펙 그대로 완성된 마케팅 이미지를 직접 만들어줘요 — 실제 앱을 캡처하는 게 아니라, 화면 내용까지 새로 디자인해줘요</li>
-                <li>그대로 쓰거나, 특정 화면만 실제 스크린샷으로 바꾸고 싶으면 해당 phone에 업로드해서 교체해요</li>
               </ol>
             </FadeIn>
 
+            {/* Method 2: hand it to an AI */}
             <FadeIn delay={0.15} className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-6">
-              <h3 className="text-sm font-semibold text-emerald-300">방법 2 — 내가 직접 캡처해서 완성하기</h3>
-              <ol className="mt-3 list-decimal space-y-1.5 pl-4 text-sm leading-relaxed text-neutral-300">
-                <li>이미 스크린샷이 있다면 phone placeholder를 선택하고 바로 이미지를 업로드해요</li>
-                <li>레이아웃과 텍스트를 원하는 대로 조정해요</li>
+              <h3 className="text-lg font-bold text-blue-300">{t('how.m2.title')}</h3>
+              <ol className="mt-4 list-decimal space-y-1.5 pl-4 text-sm leading-relaxed text-neutral-300">
+                <li>{t('how.m2.s1')}</li>
                 <li>
-                  <span className="rounded bg-neutral-800 px-1.5 py-0.5 text-xs">Download PNG</span> 또는{' '}
-                  <span className="rounded bg-neutral-800 px-1.5 py-0.5 text-xs">Export All (ZIP)</span>으로 최종
-                  이미지를 내려받아요
+                  <Rich text={t('how.m2.s2', { prompt: t('top.generatePrompt') })} />
                 </li>
+                <li>{t('how.m2.s3')}</li>
+                <li>{t('how.m2.s4')}</li>
               </ol>
             </FadeIn>
           </div>
@@ -196,26 +200,26 @@ export function LandingPage({ onStart }: Props) {
         {/* Features */}
         <section className="border-t border-neutral-800 py-16">
           <FadeIn>
-            <h2 className="text-center text-2xl font-bold text-neutral-100">필요한 건 다 있어요</h2>
+            <h2 className="text-center text-2xl font-bold text-neutral-100">{t('feat.title')}</h2>
           </FadeIn>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
-            <Feature delay={0} title="여러 페이지" body="Page 1, 2, 3... 필요한 만큼 마케팅 이미지를 만들고 각각 독립적으로 편집해요." />
-            <Feature delay={0.05} title="Phone / Tablet / Watch" body="기기 종류와 세부 모델(iPhone SE, iPad Pro 등)을 자유롭게 바꿀 수 있어요." />
-            <Feature delay={0.1} title="AI 디자인 프롬프트" body="레이아웃 스펙(위치·색상·문구)을 구조화된 프롬프트로 만들어, AI가 완성된 화면을 직접 그리게 해요." />
-            <Feature delay={0.15} title="부분 글자 색상" body="헤드라인에서 원하는 단어만 드래그해서 다른 색을 줄 수 있어요." />
-            <Feature delay={0.2} title="도형 / 배경" body="사각형·원형 도형과 솔리드·그라디언트 배경으로 레이아웃을 자유롭게 꾸며요." />
-            <Feature delay={0.25} title="정확한 export" body={'App Store 제출 규격(6.9"/6.7"/6.5") 그대로 PNG·ZIP으로 내보내요.'} />
+            <Feature delay={0} title={t('feat.pages.t')} body={t('feat.pages.b')} />
+            <Feature delay={0.05} title={t('feat.devices.t')} body={t('feat.devices.b')} />
+            <Feature delay={0.1} title={t('feat.prompt.t')} body={t('feat.prompt.b')} />
+            <Feature delay={0.15} title={t('feat.color.t')} body={t('feat.color.b')} />
+            <Feature delay={0.2} title={t('feat.shapes.t')} body={t('feat.shapes.b')} />
+            <Feature delay={0.25} title={t('feat.export.t')} body={t('feat.export.b')} />
           </div>
         </section>
 
         <FadeIn className="border-t border-neutral-800 py-16 text-center">
-          <h2 className="text-2xl font-bold text-neutral-100">지금 바로 시작해보세요</h2>
-          <p className="mt-2 text-sm text-neutral-500">가입도, 설치도 필요 없어요. 브라우저에서 바로 작업이 저장돼요.</p>
+          <h2 className="text-2xl font-bold text-neutral-100">{t('cta.title')}</h2>
+          <p className="mt-2 text-sm text-neutral-500">{t('cta.sub')}</p>
           <button
             onClick={onStart}
             className="mt-6 rounded bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-500"
           >
-            무료로 시작하기
+            {t('land.start')}
           </button>
         </FadeIn>
       </main>
@@ -223,7 +227,7 @@ export function LandingPage({ onStart }: Props) {
       <footer className="border-t border-neutral-800 py-6">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center text-xs text-neutral-600 md:flex-row md:justify-between">
           <span>
-            Store<span className="text-blue-400">Ready</span> — Design first, generate later.
+            Store<span className="text-blue-400">Ready</span> — {t('land.footer')}
           </span>
           <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-neutral-300">
             <GithubIcon className="h-3.5 w-3.5" />

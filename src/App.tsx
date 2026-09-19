@@ -10,8 +10,10 @@ import { PropertiesPanel } from './components/PropertiesPanel';
 import { PromptWizardModal } from './components/PromptWizardModal';
 import { Toasts } from './components/Toasts';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import { useT } from './i18n';
 
 function App() {
+  const t = useT();
   const stageRef = useRef<Konva.Stage | null>(null);
   const project = useProjectStore((s) => s.project);
   const currentPageId = useProjectStore((s) => s.currentPageId);
@@ -22,11 +24,7 @@ function App() {
   return (
     <div className="flex h-screen w-screen flex-col bg-neutral-950 text-neutral-100">
       <h1 className="sr-only">StoreReady — App Store Screenshot Builder</h1>
-      <p className="sr-only">
-        Design your App Store screenshots first, then let your AI coding agent generate the
-        finished screens for you. Lay out headlines, subheadlines, and phone screens visually, and
-        export a ready-to-use prompt for Claude Code, Cursor, or any AI coding agent.
-      </p>
+      <p className="sr-only">{t('land.tagline')}</p>
       <TopBar stageRef={stageRef} />
       <PageTabs />
       <PageToolbar page={page} />
