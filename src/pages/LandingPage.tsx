@@ -38,11 +38,12 @@ function GithubLink({ className = '' }: { className?: string }) {
   );
 }
 
-const SHOT_W = 150;
+const SHOT_W = 136;
 const SHOT_GAP = 12;
 
 /** An App Store product-page look-alike: listing header + a screenshot row that swipes along on its own. */
 function StoreListing() {
+  const t = useT();
   const [index, setIndex] = useState(0);
   const [snap, setSnap] = useState(false);
   const n = HERO_IMAGES.length;
@@ -62,14 +63,21 @@ function StoreListing() {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="mx-auto w-full max-w-md overflow-hidden rounded-[2rem] border border-neutral-800 bg-neutral-900 p-5 shadow-2xl"
+      className="mx-auto w-full max-w-[22rem]"
     >
+      <div className="mb-3 flex justify-center">
+        <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+          {t('land.madeBadge')}
+        </span>
+      </div>
+      <div className="overflow-hidden rounded-[2rem] border border-neutral-800 bg-neutral-900 p-5 shadow-2xl">
       <div className="flex items-center gap-3.5">
         <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.1rem] bg-lime-400 shadow-lg">
           <span className="text-2xl font-black tracking-tight text-neutral-950">D</span>
         </div>
         <div className="min-w-0 flex-1">
-          <div className="truncate text-base font-semibold text-neutral-50">DAYLine</div>
+          <div className="truncate text-base font-semibold text-neutral-50">Your App</div>
           <div className="mt-0.5 text-xs text-neutral-500">
             <span className="text-amber-400">★★★★★</span> 4.9
           </div>
@@ -101,6 +109,7 @@ function StoreListing() {
             />
           ))}
         </motion.div>
+      </div>
       </div>
     </motion.div>
   );
@@ -157,8 +166,7 @@ export function LandingPage({ onStart }: Props) {
             <h1 className="text-3xl font-bold leading-tight text-neutral-50 md:text-4xl">
               <Rich text={t('land.heroTitle')} strong="text-blue-400" />
             </h1>
-            <p className="mt-4 text-base leading-relaxed text-neutral-400">{t('land.tagline')}</p>
-            <p className="mt-3 text-sm leading-relaxed text-neutral-500">{t('land.heroDesc')}</p>
+            <p className="mt-4 text-sm leading-relaxed text-neutral-500">{t('land.heroDesc')}</p>
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <button
                 onClick={onStart}

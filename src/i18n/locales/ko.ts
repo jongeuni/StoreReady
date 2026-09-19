@@ -157,6 +157,7 @@ const ko: Dict = {
   'land.start': '무료로 시작하기',
   'land.noSignup': '회원가입 없이 바로 사용 가능',
   'land.footer': '먼저 디자인하고, 나중에 생성해요.',
+  'land.madeBadge': "이런 화면, 직접 만들 수 있어요",
 
   'demo.hint': '스크롤해보세요 — 오른쪽 미리보기가 단계마다 바뀌어요.',
   'demo.title': '만들어지는 과정을 직접 보세요',

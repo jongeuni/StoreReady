@@ -155,6 +155,7 @@ const zhCN: Dict = {
   'land.start': '免费开始',
   'land.noSignup': '无需注册',
   'land.footer': '先设计，再生成。',
+  'land.madeBadge': "这样的界面，你自己也能做",
 
   'demo.hint': '向下滚动 — 右侧预览会随每个步骤变化。',
   'demo.title': '亲眼看看它是怎么做出来的',

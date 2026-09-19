@@ -158,6 +158,7 @@ const tr: Dict = {
   'land.start': 'Ücretsiz başla',
   'land.noSignup': 'Kayıt gerekmez',
   'land.footer': 'Önce tasarla, sonra oluştur.',
+  'land.madeBadge': "Bunu kendiniz yapabilirsiniz",
 
   'demo.hint': 'Aşağı kaydırın — sağdaki önizleme her adımda değişir.',
   'demo.title': 'Nasıl oluştuğunu izleyin',

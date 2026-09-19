@@ -158,6 +158,7 @@ const ja: Dict = {
   'land.start': '無料で始める',
   'land.noSignup': '会員登録は不要',
   'land.footer': 'まずデザインして、あとで生成。',
+  'land.madeBadge': "こんな画面も自分で作れます",
 
   'demo.hint': 'スクロールしてみてください — 右側のプレビューがステップごとに変わります。',
   'demo.title': '出来上がるまでを見てみよう',

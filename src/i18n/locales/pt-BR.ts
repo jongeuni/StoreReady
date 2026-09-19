@@ -158,6 +158,7 @@ const ptBR: Dict = {
   'land.start': 'Começar grátis',
   'land.noSignup': 'Sem cadastro',
   'land.footer': 'Projete primeiro, gere depois.',
+  'land.madeBadge': "Você mesmo pode criar isto",
 
   'demo.hint': 'Role a página — a prévia à direita muda a cada etapa.',
   'demo.title': 'Veja ele sendo criado',

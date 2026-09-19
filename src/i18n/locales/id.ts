@@ -158,6 +158,7 @@ const id: Dict = {
   'land.start': 'Mulai gratis',
   'land.noSignup': 'Tanpa pendaftaran',
   'land.footer': 'Rancang dulu, hasilkan kemudian.',
+  'land.madeBadge': "Anda bisa membuatnya sendiri",
 
   'demo.hint': 'Gulir ke bawah — pratinjau di kanan berubah di setiap langkah.',
   'demo.title': 'Lihat proses pembuatannya',

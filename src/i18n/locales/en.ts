@@ -159,6 +159,7 @@ const en = {
   'land.start': 'Start for free',
   'land.noSignup': 'No sign-up needed',
   'land.footer': 'Design first, generate later.',
+  'land.madeBadge': "You can build this yourself",
 
   'demo.hint': 'Keep scrolling — the preview on the right changes with every step.',
   'demo.title': 'Watch it come together',

@@ -155,6 +155,7 @@ const zhTW: Dict = {
   'land.start': '免費開始',
   'land.noSignup': '不需註冊',
   'land.footer': '先設計，再生成。',
+  'land.madeBadge': "這樣的畫面，你自己也能做",
 
   'demo.hint': '向下捲動 — 右側預覽會隨每個步驟改變。',
   'demo.title': '親眼看看它是怎麼做出來的',

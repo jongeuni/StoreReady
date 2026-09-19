@@ -158,6 +158,7 @@ const fr: Dict = {
   'land.start': 'Commencer gratuitement',
   'land.noSignup': "Sans inscription",
   'land.footer': "Concevez d'abord, générez ensuite.",
+  'land.madeBadge': "Vous pouvez créer ça vous-même",
 
   'demo.hint': "Faites défiler : l'aperçu à droite change à chaque étape.",
   'demo.title': 'Regardez-le se construire',

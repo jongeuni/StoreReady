@@ -158,6 +158,7 @@ const vi: Dict = {
   'land.start': 'Bắt đầu miễn phí',
   'land.noSignup': 'Không cần đăng ký',
   'land.footer': 'Thiết kế trước, tạo sau.',
+  'land.madeBadge': "Bạn có thể tự làm được",
 
   'demo.hint': 'Cuộn xuống — bản xem trước bên phải thay đổi theo từng bước.',
   'demo.title': 'Xem nó được tạo ra thế nào',
