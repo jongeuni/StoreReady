@@ -166,7 +166,7 @@ function DeviceMock({
               alt=""
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, transition: { delay: 0, duration: 0.2 } }}
               transition={{ delay: imageDelay, duration: 0.5 }}
               className="absolute inset-0 h-full w-full object-cover object-top"
             />
@@ -198,27 +198,31 @@ function MockCanvas({ step }: { step: number }) {
   const plain = [...before, ...word, ...after].join('');
   const total = before.length + word.length + after.length;
 
-  const typedHeadline = useTyped(plain, step >= S_HEADLINE, 60);
-  const typedCount = Array.from(typedHeadline).length;
+  const typedHeadline = useTyped(plain, step >= S_HEADLINE, 35);
+  // Scrolled past the headline step: show it finished instead of leaving it half-typed.
+  const typedCount = step > S_HEADLINE ? total : Array.from(typedHeadline).length;
   const typedBefore = before.slice(0, typedCount).join('');
   const typedWord = word.slice(0, Math.max(0, typedCount - before.length)).join('');
   const typedAfter = after.slice(0, Math.max(0, typedCount - before.length - word.length)).join('');
   const headlineDone = typedCount >= total && total > 0;
 
   // 0 = plain, 1 = word selected, 2 = recolored
-  const [colorPhase, setColorPhase] = useState(0);
+  const [timedPhase, setTimedPhase] = useState(0);
+  const passedHeadline = step > S_HEADLINE;
   useEffect(() => {
     if (step < S_HEADLINE || !headlineDone) {
-      setColorPhase(0);
+      setTimedPhase(0);
       return;
     }
-    const selectId = setTimeout(() => setColorPhase(1), 350);
-    const colorId = setTimeout(() => setColorPhase(2), 1200);
+    const selectId = setTimeout(() => setTimedPhase(1), 150);
+    const colorId = setTimeout(() => setTimedPhase(2), 550);
     return () => {
       clearTimeout(selectId);
       clearTimeout(colorId);
     };
   }, [step, headlineDone]);
+  // Once the viewer has scrolled past, the recolor is simply done — never stuck mid-selection.
+  const colorPhase = passedHeadline ? 2 : timedPhase;
 
   const typedName = useTyped('home_full', step >= S_NAME, 70);
   const historyName = useTyped('history', step >= S_SECOND, 70);
@@ -237,6 +241,11 @@ function MockCanvas({ step }: { step: number }) {
   const kindA = morphing ? KIND_SEQUENCE[kindIdx % 3] : 'phone';
   const kindB = morphing ? KIND_SEQUENCE[(kindIdx + 1) % 3] : 'phone';
 
+  const [uploadDone, setUploadDone] = useState(false);
+  useEffect(() => {
+    if (step !== S_UPLOAD) setUploadDone(false);
+  }, [step]);
+
   const twoPhones = step >= S_SECOND;
   const singleBase = 224;
   const pairBase = 166;
@@ -246,6 +255,8 @@ function MockCanvas({ step }: { step: number }) {
       className="relative overflow-hidden rounded-2xl border border-neutral-800 bg-black shadow-2xl"
       style={{ width: DESIGN_W, height: DESIGN_H }}
     >
+      {/* The screen being made sits inside a black frame that overlaps its edges slightly */}
+      <div className="absolute inset-3 overflow-hidden rounded-xl bg-gradient-to-b from-slate-700 via-slate-800 to-slate-900 ring-1 ring-white/10">
       <motion.div
         animate={{ opacity: morphing ? 1 : 0 }}
         transition={{ duration: 0.8 }}
@@ -278,7 +289,7 @@ function MockCanvas({ step }: { step: number }) {
             initial={{ opacity: 0, y: -6, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute left-1/2 top-[132px] flex -translate-x-1/2 items-center gap-2 rounded-full border border-neutral-700 bg-neutral-900 px-3 py-1.5 text-[11px] text-neutral-300 shadow-lg"
+            className="absolute left-1/2 top-[168px] z-10 flex -translate-x-1/2 items-center gap-2 rounded-full border border-neutral-700 bg-neutral-900 px-3 py-1.5 text-[11px] text-neutral-300 shadow-lg"
           >
             <motion.span
               className="h-3.5 w-3.5 rounded-full border border-white/20"
@@ -292,9 +303,9 @@ function MockCanvas({ step }: { step: number }) {
       </AnimatePresence>
 
       <motion.p
-        animate={{ opacity: morphing ? 1 : 0, y: morphing ? 0 : 8 }}
-        transition={{ duration: 0.5, delay: morphing ? 0.3 : 0 }}
-        className="absolute inset-x-8 top-[128px] text-center text-[13px] text-neutral-300"
+        animate={{ opacity: headlineDone ? 1 : 0, y: headlineDone ? 0 : 8 }}
+        transition={{ duration: 0.4 }}
+        className="absolute inset-x-8 top-[122px] text-center text-[13px] text-neutral-300"
       >
         {t('demo.sub')}
       </motion.p>
@@ -324,7 +335,7 @@ function MockCanvas({ step }: { step: number }) {
 
       {/* "Upload" pill flying in above the phone during the screenshot step */}
       <AnimatePresence>
-        {step === S_UPLOAD && (
+        {step === S_UPLOAD && !uploadDone && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -337,6 +348,7 @@ function MockCanvas({ step }: { step: number }) {
                 initial={{ width: '0%' }}
                 animate={{ width: '100%' }}
                 transition={{ duration: 0.85, ease: 'easeInOut' }}
+                onAnimationComplete={() => setUploadDone(true)}
                 className="h-full rounded-full bg-emerald-400"
               />
             </div>
@@ -360,6 +372,7 @@ function MockCanvas({ step }: { step: number }) {
           </span>
         ))}
       </motion.div>
+      </div>
     </div>
   );
 }
