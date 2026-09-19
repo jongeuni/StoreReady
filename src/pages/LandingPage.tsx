@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { DemoSection } from './DemoSection';
 import { useT } from '../i18n';
 import { Rich } from '../i18n/Rich';
@@ -38,45 +38,70 @@ function GithubLink({ className = '' }: { className?: string }) {
   );
 }
 
-function HeroCard({
-  rotate = 0,
-  startIndex = 0,
-  delay = 0,
-  className = '',
-}: {
-  rotate?: number;
-  startIndex?: number;
-  delay?: number;
-  className?: string;
-}) {
-  const [index, setIndex] = useState(startIndex % HERO_IMAGES.length);
+const SHOT_W = 150;
+const SHOT_GAP = 12;
+
+/** An App Store product-page look-alike: listing header + a screenshot row that swipes along on its own. */
+function StoreListing() {
+  const [index, setIndex] = useState(0);
+  const [snap, setSnap] = useState(false);
+  const n = HERO_IMAGES.length;
+  // Render the set twice so the row can slide past the last shot and wrap invisibly.
+  const shots = [...HERO_IMAGES, ...HERO_IMAGES];
 
   useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % HERO_IMAGES.length), 2200);
+    const id = setInterval(() => {
+      setSnap(false);
+      setIndex((i) => i + 1);
+    }, 2400);
     return () => clearInterval(id);
   }, []);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24, rotate: rotate * 2 }}
-      animate={{ opacity: 1, y: 0, rotate }}
-      transition={{ delay, duration: 0.6, ease: 'easeOut' }}
-      className={`relative h-72 w-36 shrink-0 overflow-hidden rounded-[1.6rem] border border-neutral-700 bg-neutral-900 shadow-2xl ${className}`}
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      className="mx-auto w-full max-w-md overflow-hidden rounded-[2rem] border border-neutral-800 bg-neutral-900 p-5 shadow-2xl"
     >
-      <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay }} className="absolute inset-0">
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={index}
-            src={HERO_IMAGES[index]}
-            alt=""
-            initial={{ opacity: 0, x: 28 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -28 }}
-            transition={{ duration: 0.4, ease: 'easeInOut' }}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        </AnimatePresence>
-      </motion.div>
+      <div className="flex items-center gap-3.5">
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.1rem] bg-lime-400 shadow-lg">
+          <span className="text-2xl font-black tracking-tight text-neutral-950">D</span>
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-base font-semibold text-neutral-50">DAYLine</div>
+          <div className="mt-0.5 text-xs text-neutral-500">
+            <span className="text-amber-400">★★★★★</span> 4.9
+          </div>
+        </div>
+        <span className="rounded-full bg-blue-600 px-5 py-1.5 text-sm font-bold text-white">GET</span>
+      </div>
+
+      <div className="-mr-5 mt-5 overflow-hidden">
+        <motion.div
+          className="flex"
+          style={{ gap: SHOT_GAP }}
+          animate={{ x: -index * (SHOT_W + SHOT_GAP) }}
+          transition={snap ? { duration: 0 } : { type: 'spring', stiffness: 120, damping: 20 }}
+          onAnimationComplete={() => {
+            if (index >= n) {
+              setSnap(true);
+              setIndex(index - n);
+            }
+          }}
+        >
+          {shots.map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              alt=""
+              draggable={false}
+              className="shrink-0 rounded-[1.4rem] border border-neutral-800 object-cover"
+              style={{ width: SHOT_W, height: SHOT_W * (2796 / 1290) }}
+            />
+          ))}
+        </motion.div>
+      </div>
     </motion.div>
   );
 }
@@ -145,10 +170,7 @@ export function LandingPage({ onStart }: Props) {
             </div>
           </motion.div>
 
-          <div className="flex items-center justify-center gap-3 py-4">
-            <HeroCard rotate={-6} startIndex={0} delay={0.1} className="translate-y-3" />
-            <HeroCard rotate={5} startIndex={2} delay={0.25} />
-          </div>
+          <StoreListing />
         </section>
 
         <DemoSection />
