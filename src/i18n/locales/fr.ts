@@ -177,8 +177,10 @@ const fr: Dict = {
   'demo.s5.body': 'Si vous avez une vraie capture, importez-la : elle apparaît aussitôt dans l’écran du téléphone.',
   'demo.s6.title': '6. Ajoutez un deuxième téléphone',
   'demo.s6.body': 'Réduisez le premier téléphone puis ajoutez-en un second à côté. Superposez-les ou inclinez-les pour un rendu naturel.',
-  'demo.s7.title': '7. Terminez à votre façon',
-  'demo.s7.body': 'Montrez les écrans dont vous avez besoin et créez de superbes captures promotionnelles. Le téléphone peut aussi devenir tablette ou montre.',
+  'demo.s7.title': "7. Décorez librement avec tous les appareils",
+  'demo.s7.body': "Téléphones, tablettes, montres : montrez les écrans qu’il vous faut.",
+  'demo.s8.title': "8. Et voilà le résultat",
+  'demo.s8.body': "Comme DAYLine, une app d’habitudes simple et pratique : un résultat fini, prêt pour le store.",
 
   'how.title': 'Deux façons de finir',
   'how.sub': "Faites tout vous-même sans IA, ou confiez le design à une IA. Vous pouvez aussi mélanger page par page.",

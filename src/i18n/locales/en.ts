@@ -178,9 +178,10 @@ const en = {
   'demo.s5.body': 'Already have a real screenshot? Upload it and it fills the phone right away.',
   'demo.s6.title': '6. Add a second phone',
   'demo.s6.body': 'Resize the first phone and add another next to it — overlap and rotate them for a natural look.',
-  'demo.s7.title': '7. Make it yours',
-  'demo.s7.body':
-    'Show whatever screens you need and build a beautiful promo screenshot — phones can turn into tablets or watches too.',
+  'demo.s7.title': "7. Decorate freely with any device",
+  'demo.s7.body': "Phones, tablets, watches — show whatever screens you need.",
+  'demo.s8.title': "8. And it comes out like this",
+  'demo.s8.body': "Simple, easy habit app — DAYLine. This is a finished, store-ready result.",
 
   'how.title': 'Two ways to finish',
   'how.sub':

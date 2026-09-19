@@ -4,6 +4,12 @@ import { DEVICE_KIND_KEY, useT, type TKey } from '../i18n';
 import type { DeviceKind } from '../types';
 import capture1 from '../assets/hero/capture-1.png';
 import capture2 from '../assets/hero/capture-2.png';
+import demo1 from '../assets/hero/demo-1.png';
+import demo2 from '../assets/hero/demo-2.png';
+import demo3 from '../assets/hero/demo-3.png';
+import demo4 from '../assets/hero/demo-4.png';
+
+const FINISHED = [demo1, demo2, demo3, demo4];
 
 const STEPS: { title: TKey; body: TKey }[] = [
   { title: 'demo.s1.title', body: 'demo.s1.body' },
@@ -13,6 +19,7 @@ const STEPS: { title: TKey; body: TKey }[] = [
   { title: 'demo.s5.title', body: 'demo.s5.body' },
   { title: 'demo.s6.title', body: 'demo.s6.body' },
   { title: 'demo.s7.title', body: 'demo.s7.body' },
+  { title: 'demo.s8.title', body: 'demo.s8.body' },
 ];
 const LAST = STEPS.length - 1;
 
@@ -23,6 +30,7 @@ const S_NAME = 3;
 const S_UPLOAD = 4;
 const S_SECOND = 5;
 const S_MORPH = 6;
+const S_FINISH = 7;
 
 const DESIGN_W = 360;
 const DESIGN_H = 656;
@@ -241,6 +249,16 @@ function MockCanvas({ step }: { step: number }) {
   const kindA = morphing ? KIND_SEQUENCE[kindIdx % 3] : 'phone';
   const kindB = morphing ? KIND_SEQUENCE[(kindIdx + 1) % 3] : 'phone';
 
+  const [finishedIdx, setFinishedIdx] = useState(0);
+  useEffect(() => {
+    if (step < S_FINISH) {
+      setFinishedIdx(0);
+      return;
+    }
+    const id = setInterval(() => setFinishedIdx((i) => (i + 1) % FINISHED.length), 2200);
+    return () => clearInterval(id);
+  }, [step]);
+
   const [uploadDone, setUploadDone] = useState(false);
   useEffect(() => {
     if (step !== S_UPLOAD) setUploadDone(false);
@@ -319,7 +337,7 @@ function MockCanvas({ step }: { step: number }) {
         visible={step >= S_PHONE}
         label={step >= S_NAME ? typedName : undefined}
         image={step >= S_UPLOAD ? capture1 : undefined}
-        imageDelay={step === S_UPLOAD ? 0.9 : 0}
+        imageDelay={0}
       />
       <DeviceMock
         kind={kindB}
@@ -372,6 +390,33 @@ function MockCanvas({ step }: { step: number }) {
           </span>
         ))}
       </motion.div>
+
+      {/* Last step: the finished, store-ready result */}
+      <AnimatePresence>
+        {step >= S_FINISH && (
+          <motion.div
+            key="finished"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 z-20 flex items-center justify-center bg-black"
+          >
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={finishedIdx}
+                src={FINISHED[finishedIdx]}
+                alt=""
+                initial={{ opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -24 }}
+                transition={{ duration: 0.4 }}
+                className="h-full w-auto"
+              />
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
       </div>
     </div>
   );

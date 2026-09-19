@@ -177,8 +177,10 @@ const vi: Dict = {
   'demo.s5.body': 'Nếu có ảnh chụp thật, hãy tải lên và nó sẽ hiện ngay trong màn hình điện thoại.',
   'demo.s6.title': '6. Thêm chiếc điện thoại thứ hai',
   'demo.s6.body': 'Thu nhỏ chiếc đầu tiên rồi thêm chiếc thứ hai bên cạnh. Xếp chồng hoặc xoay để có bố cục tự nhiên.',
-  'demo.s7.title': '7. Hoàn thiện theo ý bạn',
-  'demo.s7.body': 'Hiển thị những màn hình bạn cần và tạo ảnh quảng bá thật đẹp. Điện thoại còn có thể biến thành máy tính bảng hoặc đồng hồ.',
+  'demo.s7.title': "7. Tự do trang trí với nhiều loại thiết bị",
+  'demo.s7.body': "Điện thoại, máy tính bảng, đồng hồ — hiển thị bất kỳ màn hình nào bạn cần.",
+  'demo.s8.title': "8. Và đây là kết quả",
+  'demo.s8.body': "Như DAYLine, ứng dụng thói quen đơn giản, dễ dùng: một sản phẩm hoàn chỉnh, sẵn sàng đưa lên cửa hàng.",
 
   'how.title': 'Hai cách để hoàn thành',
   'how.sub': 'Tự làm mọi thứ mà không cần AI, hoặc giao phần thiết kế cho AI. Bạn cũng có thể kết hợp theo từng trang.',

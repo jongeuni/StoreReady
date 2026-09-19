@@ -177,8 +177,10 @@ const de: Dict = {
   'demo.s5.body': 'Hast du einen echten Screenshot, lade ihn hoch — er erscheint sofort im Smartphone-Bildschirm.',
   'demo.s6.title': '6. Ein zweites Smartphone hinzufügen',
   'demo.s6.body': 'Verkleinere das erste Smartphone und füge daneben ein zweites hinzu. Überlappe oder drehe sie für einen natürlichen Look.',
-  'demo.s7.title': '7. Ganz nach deinem Geschmack fertigstellen',
-  'demo.s7.body': 'Zeige die Bildschirme, die du brauchst, und erstelle schöne Werbe-Screenshots. Das Smartphone kann sich sogar in ein Tablet oder eine Uhr verwandeln.',
+  'demo.s7.title': "7. Frei mit allen Geräten gestalten",
+  'demo.s7.body': "Smartphones, Tablets, Uhren — zeige genau die Bildschirme, die du brauchst.",
+  'demo.s8.title': "8. So sieht das fertige Ergebnis aus",
+  'demo.s8.body': "Wie DAYLine, eine einfache Gewohnheits-App: ein fertiges, store-taugliches Ergebnis.",
 
   'how.title': 'Zwei Wege zum fertigen Ergebnis',
   'how.sub': 'Mach alles selbst ohne KI oder überlasse das Design einer KI. Du kannst auch Seite für Seite mischen.',

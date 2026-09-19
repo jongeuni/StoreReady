@@ -177,8 +177,10 @@ const ptBR: Dict = {
   'demo.s5.body': 'Se tiver uma captura real, envie-a e ela aparece na hora na tela do celular.',
   'demo.s6.title': '6. Adicione um segundo celular',
   'demo.s6.body': 'Diminua o primeiro celular e adicione um segundo ao lado. Sobreponha ou gire para um efeito natural.',
-  'demo.s7.title': '7. Finalize do seu jeito',
-  'demo.s7.body': 'Mostre as telas de que precisa e crie capturas promocionais lindas. O celular pode virar tablet ou relógio.',
+  'demo.s7.title': "7. Decore livremente com qualquer dispositivo",
+  'demo.s7.body': "Celulares, tablets, relógios: mostre as telas de que precisa.",
+  'demo.s8.title': "8. E fica assim",
+  'demo.s8.body': "Como o DAYLine, um app de hábitos simples e fácil: um resultado pronto para a loja.",
 
   'how.title': 'Duas formas de finalizar',
   'how.sub': 'Faça tudo sozinho, sem IA, ou deixe o design nas mãos de uma IA. Você também pode misturar página por página.',

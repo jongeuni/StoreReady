@@ -177,8 +177,10 @@ const it: Dict = {
   'demo.s5.body': 'Se hai uno screenshot reale, caricalo e apparirà subito nella schermata del telefono.',
   'demo.s6.title': '6. Aggiungi un secondo telefono',
   'demo.s6.body': 'Riduci il primo telefono e aggiungine un secondo accanto. Sovrapponili o ruotali per un effetto naturale.',
-  'demo.s7.title': '7. Concludi a modo tuo',
-  'demo.s7.body': 'Mostra le schermate che ti servono e crea bellissimi screenshot promozionali. Il telefono può trasformarsi in tablet o orologio.',
+  'demo.s7.title': "7. Decora liberamente con qualsiasi dispositivo",
+  'demo.s7.body': "Telefoni, tablet, orologi: mostra le schermate che ti servono.",
+  'demo.s8.title': "8. Ed ecco il risultato",
+  'demo.s8.body': "Come DAYLine, un’app di abitudini semplice e comoda: un risultato finito, pronto per lo store.",
 
   'how.title': 'Due modi per finire',
   'how.sub': 'Fai tutto da solo senza IA oppure affida il design a un’IA. Puoi anche mescolare pagina per pagina.',

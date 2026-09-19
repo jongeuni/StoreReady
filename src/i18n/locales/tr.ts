@@ -177,8 +177,10 @@ const tr: Dict = {
   'demo.s5.body': 'Elinizde gerçek bir ekran görüntüsü varsa yükleyin; telefonun ekranında hemen görünür.',
   'demo.s6.title': '6. İkinci bir telefon ekleyin',
   'demo.s6.body': 'İlk telefonu küçültün ve yanına ikincisini ekleyin. Doğal bir görünüm için üst üste bindirin veya döndürün.',
-  'demo.s7.title': '7. Kendi tarzınızda tamamlayın',
-  'demo.s7.body': 'İhtiyacınız olan ekranları özgürce gösterin ve güzel tanıtım ekran görüntüleri oluşturun. Telefon, tablete veya saate de dönüşebilir.',
+  'demo.s7.title': "7. Farklı cihazlarla özgürce süsleyin",
+  'demo.s7.body': "Telefonlar, tabletler, saatler — ihtiyacınız olan ekranları gösterin.",
+  'demo.s8.title': "8. Ve sonuç böyle görünüyor",
+  'demo.s8.body': "Basit ve kolay bir alışkanlık uygulaması olan DAYLine gibi: mağazaya hazır, tamamlanmış bir sonuç.",
 
   'how.title': 'Tamamlamanın iki yolu',
   'how.sub': 'Her şeyi yapay zekasız kendiniz yapın ya da tasarımı yapay zekaya bırakın. Sayfa sayfa karıştırabilirsiniz de.',

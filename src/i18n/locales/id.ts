@@ -177,8 +177,10 @@ const id: Dict = {
   'demo.s5.body': 'Jika punya tangkapan layar asli, unggah saja dan langsung tampil di layar ponsel.',
   'demo.s6.title': '6. Tambahkan ponsel kedua',
   'demo.s6.body': 'Perkecil ponsel pertama lalu tambahkan yang kedua di sampingnya. Tumpuk atau putar agar tampak natural.',
-  'demo.s7.title': '7. Selesaikan sesuka hati',
-  'demo.s7.body': 'Tampilkan layar yang Anda butuhkan dan buat tangkapan layar promosi yang indah. Ponsel bahkan bisa berubah menjadi tablet atau jam tangan.',
+  'demo.s7.title': "7. Hias bebas dengan berbagai perangkat",
+  'demo.s7.body': "Ponsel, tablet, jam tangan — tampilkan layar apa pun yang Anda butuhkan.",
+  'demo.s8.title': "8. Dan beginilah hasilnya",
+  'demo.s8.body': "Seperti DAYLine, aplikasi kebiasaan yang simpel dan mudah: hasil jadi yang siap untuk toko aplikasi.",
 
   'how.title': 'Dua cara menyelesaikannya',
   'how.sub': 'Kerjakan semuanya sendiri tanpa AI, atau serahkan desainnya ke AI. Bisa juga dicampur per halaman.',
