@@ -238,8 +238,8 @@ function MockCanvas({ step }: { step: number }) {
   const kindB = morphing ? KIND_SEQUENCE[(kindIdx + 1) % 3] : 'phone';
 
   const twoPhones = step >= S_SECOND;
-  const singleBase = 178;
-  const pairBase = 150;
+  const singleBase = 224;
+  const pairBase = 166;
 
   return (
     <div
@@ -301,8 +301,8 @@ function MockCanvas({ step }: { step: number }) {
 
       <DeviceMock
         kind={kindA}
-        cx={twoPhones ? 122 : DESIGN_W / 2}
-        cy={twoPhones ? 446 : 440}
+        cx={twoPhones ? 108 : DESIGN_W / 2}
+        cy={twoPhones ? 432 : 412}
         baseWidth={twoPhones ? pairBase : singleBase}
         rotate={twoPhones ? -6 : 0}
         visible={step >= S_PHONE}
@@ -312,8 +312,8 @@ function MockCanvas({ step }: { step: number }) {
       />
       <DeviceMock
         kind={kindB}
-        cx={twoPhones ? 238 : DESIGN_W + 120}
-        cy={426}
+        cx={twoPhones ? 252 : DESIGN_W + 120}
+        cy={416}
         baseWidth={pairBase}
         rotate={twoPhones ? 5 : 12}
         visible={twoPhones}
@@ -413,14 +413,14 @@ export function DemoSection() {
           </div>
         </div>
 
-        <div className="order-2 py-[10vh] md:order-1 md:py-[15vh]">
+        <div className="order-2 py-[4vh] md:order-1 md:py-[30vh]">
           {STEPS.map((s, i) => (
             <div
               key={s.title}
               ref={(el) => {
                 stepRefs.current[i] = el;
               }}
-              className="flex h-[50vh] items-center md:h-[70vh]"
+              className="flex h-[32vh] items-center md:h-[40vh]"
             >
               <motion.div
                 animate={{ opacity: active === i ? 1 : 0.3, x: active === i ? 0 : -8 }}
