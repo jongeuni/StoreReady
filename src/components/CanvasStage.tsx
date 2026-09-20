@@ -1,3 +1,4 @@
+import { panelWidthOf, spreadGap } from '../utils/spread';
 import { useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
 import { Stage, Layer, Transformer } from 'react-konva';
 import type Konva from 'konva';
@@ -184,14 +185,18 @@ export function CanvasStage({ page, stageRef }: Props) {
             />
           </Layer>
         </Stage>
-        {/* Panel seams: editor-only guides, not part of the exported image */}
-        {Array.from({ length: (page.spread ?? 1) - 1 }, (_, i) => (
-          <div
-            key={i}
-            className="pointer-events-none absolute inset-y-0 border-l border-dashed border-blue-400/60"
-            style={{ left: ((i + 1) * displayWidth) / (page.spread ?? 1) }}
-          />
-        ))}
+        {/* Gap between panels: editor-only cover, dropped from the exported images */}
+        {Array.from({ length: (page.spread ?? 1) - 1 }, (_, i) => {
+          const panelW = panelWidthOf(page);
+          const gap = spreadGap(panelW);
+          return (
+            <div
+              key={i}
+              className="pointer-events-none absolute inset-y-0 bg-neutral-900"
+              style={{ left: (panelW + i * (panelW + gap)) * viewScale, width: gap * viewScale }}
+            />
+          );
+        })}
 
         {editingObj && (
           <TextEditOverlay

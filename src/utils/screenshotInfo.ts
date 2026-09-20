@@ -1,3 +1,4 @@
+import { panelWidthOf, spreadGap } from './spread';
 import type { Page, PhoneObject, Project, TextObject } from '../types';
 import { getDevicePreset } from '../devicePresets';
 
@@ -54,8 +55,8 @@ export function buildPageData(page: Page): PageInfoData {
       ? {
           spread: {
             panels: page.spread!,
-            panelWidth: page.canvas.width / page.spread!,
-            note: `This page is ${page.spread} screenshots laid side by side on one wide canvas. Export it as ${page.spread} separate PNGs, each ${page.canvas.width / page.spread!}px wide, cut at equal widths from left to right. A device may straddle the cut so the panels read as one continuous scene when placed next to each other.`,
+            panelWidth: panelWidthOf(page),
+            note: `This page is ${page.spread} screenshots laid side by side on one wide canvas, separated by a ${spreadGap(panelWidthOf(page))}px gap that is NOT part of any image. Export it as ${page.spread} separate PNGs, each ${panelWidthOf(page)}px wide: panel N covers x from N*(${panelWidthOf(page)}+${spreadGap(panelWidthOf(page))}) to that plus ${panelWidthOf(page)}. A device may straddle the gap so the panels read as one continuous scene when placed next to each other.`,
           },
         }
       : {}),

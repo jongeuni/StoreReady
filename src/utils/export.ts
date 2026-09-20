@@ -25,7 +25,7 @@ export function exportStageToDataUrl(stage: Konva.Stage): string {
 }
 
 /** Cuts a wide image into `parts` equal images of exactly `partWidth` × `height` px (a multi-panel spread). */
-export async function sliceDataUrl(dataUrl: string, parts: number, partWidth: number, height: number): Promise<string[]> {
+export async function sliceDataUrl(dataUrl: string, parts: number, partWidth: number, height: number, gap = 0): Promise<string[]> {
   if (parts <= 1) return [dataUrl];
   const img = new Image();
   await new Promise<void>((resolve, reject) => {
@@ -40,21 +40,21 @@ export async function sliceDataUrl(dataUrl: string, parts: number, partWidth: nu
     canvas.height = height;
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('No 2D context');
-    const srcW = img.naturalWidth / parts;
-    ctx.drawImage(img, i * srcW, 0, srcW, img.naturalHeight, 0, 0, partWidth, height);
+    // The editor gap between panels is skipped, so each slice is exactly one panel.
+    ctx.drawImage(img, i * (partWidth + gap), 0, partWidth, img.naturalHeight, 0, 0, partWidth, height);
     out.push(canvas.toDataURL('image/png'));
   }
   return out;
 }
 
-export async function exportPageAsPng(stage: Konva.Stage, pageLabel: string, spread = 1, panel?: { width: number; height: number }) {
+export async function exportPageAsPng(stage: Konva.Stage, pageLabel: string, spread = 1, panel?: { width: number; height: number; gap: number }) {
   const dataUrl = exportStageToDataUrl(stage);
   const base = sanitizeFileName(pageLabel);
   if (spread <= 1 || !panel) {
     downloadDataUrl(dataUrl, `${base}.png`);
     return;
   }
-  const slices = await sliceDataUrl(dataUrl, spread, panel.width, panel.height);
+  const slices = await sliceDataUrl(dataUrl, spread, panel.width, panel.height, panel.gap);
   slices.forEach((url, i) => downloadDataUrl(url, `${base}_${i + 1}.png`));
 }
 

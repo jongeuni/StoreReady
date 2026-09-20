@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import type { CanvasObject, Page, Background } from './types';
+import { canvasWidthFor, spreadGap } from './utils/spread';
 
 export type TemplateId = 'single-phone' | 'dual-phone' | 'split-phone' | 'blank';
 
@@ -81,7 +82,7 @@ function buildSplitPhone(panelWidth: number, canvasHeight: number): CanvasObject
       screenshotName: 'screen_1',
       width: phoneWidth,
       top: Math.round(canvasHeight * 0.3),
-      left: Math.round(panelWidth - phoneWidth / 2),
+      left: Math.round(panelWidth + spreadGap(panelWidth) / 2 - phoneWidth / 2),
       rotation: 0,
       zIndex: 1,
     },
@@ -187,7 +188,7 @@ export function layoutPageWithTemplate(page: Page, templateId: string, panelWidt
   const spread = tpl.spread ?? 1;
   page.templateId = templateId;
   page.spread = spread;
-  page.canvas.width = panelWidth * spread;
+  page.canvas.width = canvasWidthFor(panelWidth, spread);
   page.canvas.height = canvasHeight;
   page.objects = tpl.build(panelWidth, canvasHeight);
 }

@@ -4,6 +4,7 @@ import { immer } from 'zustand/middleware/immer';
 import { makeId } from '../utils/id';
 import { idbStorage } from '../persist/idbStorage';
 import { DEFAULT_DEVICE_PRESET_ID, getDevicePreset } from '../devicePresets';
+import { canvasWidthFor, panelWidthOf } from '../utils/spread';
 import { createBlankPage, layoutPageWithTemplate, type TemplateId } from '../templates';
 import { getObjectBBox, unionBBox, computeAlignedPosition, setObjectPosition, type AlignType } from '../utils/geometry';
 import { DEVICE_DEFAULT_WIDTH_RATIO, defaultModelForKind } from '../phoneFrame';
@@ -123,7 +124,7 @@ export const useProjectStore = create<State & Actions>()(
           const scaleY = preset.height / prevPreset.height;
           s.project.devicePresetId = id;
           for (const page of s.project.pages) {
-            page.canvas.width = preset.width * (page.spread ?? 1);
+            page.canvas.width = canvasWidthFor(preset.width, page.spread ?? 1);
             page.canvas.height = preset.height;
             for (const obj of page.objects) {
               if (obj.type === 'phone') {
@@ -214,7 +215,7 @@ export const useProjectStore = create<State & Actions>()(
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
           if (!page) return;
-          const panelWidth = page.canvas.width / (page.spread ?? 1);
+          const panelWidth = panelWidthOf(page);
           layoutPageWithTemplate(page, templateId, panelWidth, page.canvas.height);
           s.selectedObjectIds = [];
         }),

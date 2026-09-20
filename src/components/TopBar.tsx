@@ -6,6 +6,7 @@ import { useT } from '../i18n';
 import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
 import { DEVICE_PRESETS } from '../devicePresets';
 import { Button } from './ui/Field';
+import { panelWidthOf, spreadGap } from '../utils/spread';
 import { exportPageAsPng, exportPagesAsZip, exportStageToDataUrl, sliceDataUrl } from '../utils/export';
 
 export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | null> }) {
@@ -30,8 +31,9 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
     try {
       const spread = currentPage.spread ?? 1;
       await exportPageAsPng(stage, currentPage.label, spread, {
-        width: currentPage.canvas.width / spread,
+        width: panelWidthOf(currentPage),
         height: currentPage.canvas.height,
+        gap: spreadGap(panelWidthOf(currentPage)),
       });
     } catch (err) {
       console.error(err);
@@ -54,7 +56,7 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
         if (spread <= 1) {
           entries.push({ label: page.label, dataUrl: whole });
         } else {
-          const slices = await sliceDataUrl(whole, spread, page.canvas.width / spread, page.canvas.height);
+          const slices = await sliceDataUrl(whole, spread, panelWidthOf(page), page.canvas.height, spreadGap(panelWidthOf(page)));
           slices.forEach((dataUrl, i) => entries.push({ label: `${page.label}_${i + 1}`, dataUrl }));
         }
       }
