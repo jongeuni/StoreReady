@@ -167,7 +167,6 @@ export function TextEditOverlay({ obj, viewScale, onCommit, onCancel }: Props) {
         transform: `rotate(${obj.rotation}deg)`,
         transformOrigin: 'top left',
         background: 'rgba(0,0,0,0.35)',
-        border: '1px dashed #5b8def',
         outline: 'none',
         whiteSpace: 'pre-wrap',
         wordBreak: 'break-word',

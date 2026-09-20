@@ -36,6 +36,7 @@ const fr: Dict = {
   'template.blank': 'Canevas vide',
   'template.single-phone': 'Un téléphone',
   'template.dual-phone': 'Deux téléphones',
+  'template.split-phone': "Téléphone scindé (2 pages)",
   'toolbar.addDevice': '+ Ajouter un appareil…',
   'toolbar.align': 'Aligner',
   'toolbar.alignLeft': 'Aligner à gauche',

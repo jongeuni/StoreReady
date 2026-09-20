@@ -36,6 +36,7 @@ const ru: Dict = {
   'template.blank': 'Пустой холст',
   'template.single-phone': 'Один телефон',
   'template.dual-phone': 'Два телефона',
+  'template.split-phone': "Телефон на 2 страницы",
   'toolbar.addDevice': '+ Добавить устройство…',
   'toolbar.align': 'Выравнивание',
   'toolbar.alignLeft': 'По левому краю',

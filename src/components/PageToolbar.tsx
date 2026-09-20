@@ -22,6 +22,7 @@ const TEMPLATE_KEY: Record<TemplateId, TKey> = {
   blank: 'template.blank',
   'single-phone': 'template.single-phone',
   'dual-phone': 'template.dual-phone',
+  'split-phone': 'template.split-phone',
 };
 
 const DEVICE_KINDS: DeviceKind[] = ['phone', 'tablet', 'watch'];

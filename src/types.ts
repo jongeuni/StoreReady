@@ -81,6 +81,8 @@ export type PhoneObject = BaseObject & {
   width: number;
   top: number;
   left: number;
+  /** Set on the two halves of a "split phone": one device drawn across two adjacent pages, kept in sync. */
+  linkId?: string;
 };
 
 export type ShapeKind = 'rect' | 'ellipse';

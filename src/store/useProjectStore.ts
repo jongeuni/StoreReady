@@ -4,7 +4,7 @@ import { immer } from 'zustand/middleware/immer';
 import { makeId } from '../utils/id';
 import { idbStorage } from '../persist/idbStorage';
 import { DEFAULT_DEVICE_PRESET_ID, getDevicePreset } from '../devicePresets';
-import { createBlankPage, getTemplate, type TemplateId } from '../templates';
+import { buildSplitPhone, createBlankPage, getTemplate, type TemplateId } from '../templates';
 import { getObjectBBox, unionBBox, computeAlignedPosition, setObjectPosition, type AlignType } from '../utils/geometry';
 import { DEVICE_DEFAULT_WIDTH_RATIO, defaultModelForKind } from '../phoneFrame';
 import type {
@@ -19,6 +19,27 @@ import type {
   TextObject,
   TextRole,
 } from '../types';
+
+/** Copies a split-phone half's shared state onto its partner on the adjacent page (position is offset by page width). */
+function syncLinkedPhone(pages: Page[], pageId: string, objectId: string) {
+  const pageIdx = pages.findIndex((p) => p.id === pageId);
+  const obj = pages[pageIdx]?.objects.find((o) => o.id === objectId);
+  if (!obj || obj.type !== 'phone' || !obj.linkId) return;
+  for (const idx of [pageIdx - 1, pageIdx + 1]) {
+    const other = pages[idx]?.objects.find((o) => o.type === 'phone' && o.linkId === obj.linkId);
+    if (!other || other.type !== 'phone') continue;
+    other.left = obj.left - (idx - pageIdx) * pages[pageIdx].canvas.width;
+    other.top = obj.top;
+    other.width = obj.width;
+    other.rotation = obj.rotation;
+    other.deviceKind = obj.deviceKind;
+    other.deviceModel = obj.deviceModel;
+    other.screenshotName = obj.screenshotName;
+    other.screenshotDescription = obj.screenshotDescription;
+    other.image = obj.image;
+    other.imageFileName = obj.imageFileName;
+  }
+}
 
 function nextPageLabel(pages: Page[]): string {
   return `Page ${pages.length + 1}`;
@@ -183,7 +204,11 @@ export const useProjectStore = create<State & Actions>()(
             ...page,
             id: makeId(),
             label: `${page.label} copy`,
-            objects: page.objects.map((o) => ({ ...o, id: makeId() })),
+            objects: page.objects.map((o) => {
+              const copy = { ...o, id: makeId() };
+              if (copy.type === 'phone') delete copy.linkId;
+              return copy;
+            }),
           };
           const idx = s.project.pages.findIndex((p) => p.id === pageId);
           s.project.pages.splice(idx + 1, 0, clone);
@@ -218,7 +243,19 @@ export const useProjectStore = create<State & Actions>()(
           const tpl = getTemplate(templateId);
           if (!page || !tpl) return;
           page.templateId = templateId;
-          page.objects = tpl.build(page.canvas.width, page.canvas.height);
+          if (templateId === 'split-phone') {
+            // The right half goes on a brand-new page after this one, so no existing page is overwritten.
+            const linkId = makeId();
+            page.objects = buildSplitPhone(page.canvas.width, page.canvas.height, linkId, 0);
+            const idx = s.project.pages.findIndex((p) => p.id === pageId);
+            const partner = createBlankPage(nextPageLabel(s.project.pages), page.canvas.width, page.canvas.height);
+            partner.templateId = 'blank';
+            partner.canvas.background = { ...page.canvas.background };
+            partner.objects = buildSplitPhone(page.canvas.width, page.canvas.height, linkId, 1);
+            s.project.pages.splice(idx + 1, 0, partner);
+          } else {
+            page.objects = tpl.build(page.canvas.width, page.canvas.height);
+          }
           s.selectedObjectIds = [];
         }),
 
@@ -311,6 +348,7 @@ export const useProjectStore = create<State & Actions>()(
           const obj = page?.objects.find((o) => o.id === objectId);
           if (!obj) return;
           Object.assign(obj, patch);
+          syncLinkedPhone(s.project.pages, pageId, objectId);
         }),
 
       moveObjectBy: (pageId, objectId, dx, dy) =>
@@ -321,6 +359,7 @@ export const useProjectStore = create<State & Actions>()(
           if (obj.type === 'phone' || obj.type === 'shape') {
             obj.left += dx;
             obj.top += dy;
+            syncLinkedPhone(s.project.pages, pageId, objectId);
           } else {
             obj.x += dx;
             obj.y += dy;
@@ -354,6 +393,7 @@ export const useProjectStore = create<State & Actions>()(
             obj.type === 'phone' || obj.type === 'shape'
               ? { ...obj, id: makeId(), left: obj.left + 24, top: obj.top + 24, zIndex: maxZ + 1 }
               : { ...obj, id: makeId(), x: obj.x + 24, y: obj.y + 24, zIndex: maxZ + 1 };
+          if (clone.type === 'phone') delete clone.linkId;
           page.objects.push(clone);
           s.selectedObjectIds = [clone.id];
         }),
@@ -365,6 +405,7 @@ export const useProjectStore = create<State & Actions>()(
           if (obj && obj.type === 'phone') {
             obj.image = dataUrl;
             obj.imageFileName = fileName;
+            syncLinkedPhone(s.project.pages, pageId, objectId);
           }
         }),
 
@@ -375,6 +416,7 @@ export const useProjectStore = create<State & Actions>()(
           if (obj && obj.type === 'phone') {
             delete obj.image;
             delete obj.imageFileName;
+            syncLinkedPhone(s.project.pages, pageId, objectId);
           }
         }),
 

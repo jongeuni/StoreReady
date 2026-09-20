@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import type { CanvasObject, Page, Background } from './types';
 
-export type TemplateId = 'single-phone' | 'dual-phone' | 'blank';
+export type TemplateId = 'single-phone' | 'dual-phone' | 'split-phone' | 'blank';
 
 export type Template = {
   id: TemplateId;
@@ -54,6 +54,38 @@ function subheadlineObject(canvasWidth: number, canvasHeight: number, text: stri
   };
 }
 
+/**
+ * One big phone straddling the seam between two neighbouring pages. Both halves are the same device at
+ * the same size, offset by one page width, so laid side by side (or swiped in the App Store) they read as one.
+ * part 0 = left page (headline + phone's left half), part 1 = right page (phone's right half).
+ */
+export function buildSplitPhone(canvasWidth: number, canvasHeight: number, linkId: string, part: 0 | 1): CanvasObject[] {
+  const phoneWidth = Math.round(canvasWidth * 0.8);
+  const phone: CanvasObject = {
+    id: nanoid(),
+    type: 'phone',
+    screenshotName: 'screen_1',
+    width: phoneWidth,
+    top: Math.round(canvasHeight * 0.3),
+    left: part === 0 ? Math.round(canvasWidth - phoneWidth / 2) : Math.round(-phoneWidth / 2),
+    rotation: 0,
+    zIndex: 1,
+    linkId,
+  };
+  if (part === 1) return [phone];
+  const headline = headlineObject(canvasWidth, canvasHeight, 'One screen,\ntwo pages');
+  const sub = subheadlineObject(canvasWidth, canvasHeight, 'A single phone that flows across two screenshots.');
+  const textWidth = Math.round(canvasWidth * 0.56);
+  for (const o of [headline, sub]) {
+    if (o.type === 'text') {
+      o.x = Math.round(canvasWidth * 0.06);
+      o.width = textWidth;
+      o.align = 'left';
+    }
+  }
+  return [headline, sub, phone];
+}
+
 export const TEMPLATES: Template[] = [
   {
     id: 'blank',
@@ -82,6 +114,12 @@ export const TEMPLATES: Template[] = [
         },
       ];
     },
+  },
+  {
+    id: 'split-phone',
+    label: 'Split Phone',
+    description: 'One big phone split across this page and a new next page',
+    build: (canvasWidth, canvasHeight) => buildSplitPhone(canvasWidth, canvasHeight, nanoid(), 0),
   },
   {
     id: 'dual-phone',

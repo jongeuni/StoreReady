@@ -36,6 +36,7 @@ const id: Dict = {
   'template.blank': 'Kanvas kosong',
   'template.single-phone': 'Satu ponsel',
   'template.dual-phone': 'Dua ponsel',
+  'template.split-phone': "Ponsel terbelah (2 halaman)",
   'toolbar.addDevice': '+ Tambah perangkat…',
   'toolbar.align': 'Ratakan',
   'toolbar.alignLeft': 'Rata kiri',
