@@ -24,9 +24,38 @@ export function exportStageToDataUrl(stage: Konva.Stage): string {
   return stage.toDataURL({ mimeType: 'image/png', pixelRatio: 1 / scale });
 }
 
-export function exportPageAsPng(stage: Konva.Stage, pageLabel: string) {
+/** Cuts a wide image into `parts` equal images of exactly `partWidth` × `height` px (a multi-panel spread). */
+export async function sliceDataUrl(dataUrl: string, parts: number, partWidth: number, height: number): Promise<string[]> {
+  if (parts <= 1) return [dataUrl];
+  const img = new Image();
+  await new Promise<void>((resolve, reject) => {
+    img.onload = () => resolve();
+    img.onerror = () => reject(new Error('Could not read the exported image'));
+    img.src = dataUrl;
+  });
+  const out: string[] = [];
+  for (let i = 0; i < parts; i++) {
+    const canvas = document.createElement('canvas');
+    canvas.width = partWidth;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('No 2D context');
+    const srcW = img.naturalWidth / parts;
+    ctx.drawImage(img, i * srcW, 0, srcW, img.naturalHeight, 0, 0, partWidth, height);
+    out.push(canvas.toDataURL('image/png'));
+  }
+  return out;
+}
+
+export async function exportPageAsPng(stage: Konva.Stage, pageLabel: string, spread = 1, panel?: { width: number; height: number }) {
   const dataUrl = exportStageToDataUrl(stage);
-  downloadDataUrl(dataUrl, `${sanitizeFileName(pageLabel)}.png`);
+  const base = sanitizeFileName(pageLabel);
+  if (spread <= 1 || !panel) {
+    downloadDataUrl(dataUrl, `${base}.png`);
+    return;
+  }
+  const slices = await sliceDataUrl(dataUrl, spread, panel.width, panel.height);
+  slices.forEach((url, i) => downloadDataUrl(url, `${base}_${i + 1}.png`));
 }
 
 export async function exportPagesAsZip(

@@ -36,7 +36,7 @@ const vi: Dict = {
   'template.blank': 'Canvas trống',
   'template.single-phone': 'Một điện thoại',
   'template.dual-phone': 'Hai điện thoại',
-  'template.split-phone': "Điện thoại chia đôi (2 trang)",
+  'template.split-phone': "Điện thoại chia đôi (2 màn hình)",
   'toolbar.addDevice': '+ Thêm thiết bị…',
   'toolbar.align': 'Căn chỉnh',
   'toolbar.alignLeft': 'Căn trái',

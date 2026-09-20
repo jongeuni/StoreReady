@@ -6,7 +6,7 @@ import { useT } from '../i18n';
 import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
 import { DEVICE_PRESETS } from '../devicePresets';
 import { Button } from './ui/Field';
-import { exportPageAsPng, exportPagesAsZip, exportStageToDataUrl } from '../utils/export';
+import { exportPageAsPng, exportPagesAsZip, exportStageToDataUrl, sliceDataUrl } from '../utils/export';
 
 export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | null> }) {
   const { navigate } = useRouter();
@@ -21,14 +21,18 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
 
   const currentPage = project.pages.find((p) => p.id === currentPageId);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     const stage = stageRef.current;
     if (!stage || !currentPage) {
       pushToast(t('top.nothingToExport'), 'error');
       return;
     }
     try {
-      exportPageAsPng(stage, currentPage.label);
+      const spread = currentPage.spread ?? 1;
+      await exportPageAsPng(stage, currentPage.label, spread, {
+        width: currentPage.canvas.width / spread,
+        height: currentPage.canvas.height,
+      });
     } catch (err) {
       console.error(err);
       pushToast(t('top.exportFailed'), 'error');
@@ -45,7 +49,14 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
         selectPage(page.id);
         // Let React re-render this page's canvas before capturing it.
         await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-        entries.push({ label: page.label, dataUrl: exportStageToDataUrl(stage) });
+        const spread = page.spread ?? 1;
+        const whole = exportStageToDataUrl(stage);
+        if (spread <= 1) {
+          entries.push({ label: page.label, dataUrl: whole });
+        } else {
+          const slices = await sliceDataUrl(whole, spread, page.canvas.width / spread, page.canvas.height);
+          slices.forEach((dataUrl, i) => entries.push({ label: `${page.label}_${i + 1}`, dataUrl }));
+        }
       }
       selectPage(originalPageId);
       await exportPagesAsZip(entries, `${project.name || 'app-store-screenshots'}.zip`);

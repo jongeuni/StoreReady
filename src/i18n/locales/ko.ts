@@ -36,7 +36,7 @@ const ko: Dict = {
   'template.blank': '빈 캔버스',
   'template.single-phone': '폰 1개',
   'template.dual-phone': '폰 2개',
-  'template.split-phone': "폰 분할 (2페이지)",
+  'template.split-phone': "폰 분할 (화면 2개)",
   'toolbar.addDevice': '+ 기기 추가…',
   'toolbar.align': '정렬',
   'toolbar.alignLeft': '왼쪽 정렬',

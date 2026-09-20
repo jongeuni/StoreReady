@@ -36,7 +36,7 @@ const zhTW: Dict = {
   'template.blank': '空白畫布',
   'template.single-phone': '單手機',
   'template.dual-phone': '雙手機',
-  'template.split-phone': "分屏手機（2頁）",
+  'template.split-phone': "分屏手機（2屏）",
   'toolbar.addDevice': '+ 新增裝置…',
   'toolbar.align': '對齊',
   'toolbar.alignLeft': '靠左對齊',

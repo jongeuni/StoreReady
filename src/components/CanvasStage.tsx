@@ -184,6 +184,14 @@ export function CanvasStage({ page, stageRef }: Props) {
             />
           </Layer>
         </Stage>
+        {/* Panel seams: editor-only guides, not part of the exported image */}
+        {Array.from({ length: (page.spread ?? 1) - 1 }, (_, i) => (
+          <div
+            key={i}
+            className="pointer-events-none absolute inset-y-0 border-l border-dashed border-blue-400/60"
+            style={{ left: ((i + 1) * displayWidth) / (page.spread ?? 1) }}
+          />
+        ))}
 
         {editingObj && (
           <TextEditOverlay

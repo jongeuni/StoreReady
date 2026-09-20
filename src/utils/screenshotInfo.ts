@@ -4,6 +4,8 @@ import { getDevicePreset } from '../devicePresets';
 type PageInfoData = {
   label: string;
   canvas: { width: number; height: number };
+  /** Present when the page is several export images laid side by side. */
+  spread?: { panels: number; panelWidth: number; note: string };
   background: Page['canvas']['background'];
   headline: ReturnType<typeof describeText> | null;
   subheadline: ReturnType<typeof describeText> | null;
@@ -48,6 +50,15 @@ export function buildPageData(page: Page): PageInfoData {
   return {
     label: page.label,
     canvas: { width: page.canvas.width, height: page.canvas.height },
+    ...((page.spread ?? 1) > 1
+      ? {
+          spread: {
+            panels: page.spread!,
+            panelWidth: page.canvas.width / page.spread!,
+            note: `This page is ${page.spread} screenshots laid side by side on one wide canvas. Export it as ${page.spread} separate PNGs, each ${page.canvas.width / page.spread!}px wide, cut at equal widths from left to right. A device may straddle the cut so the panels read as one continuous scene when placed next to each other.`,
+          },
+        }
+      : {}),
     background: page.canvas.background,
     headline: headline ? describeText(headline) : null,
     subheadline: subheadline ? describeText(subheadline) : null,

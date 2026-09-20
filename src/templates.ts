@@ -7,6 +7,8 @@ export type Template = {
   id: TemplateId;
   label: string;
   description: string;
+  /** Export panels side by side on one page (default 1). `build` gets the width of a single panel. */
+  spread?: number;
   build: (canvasWidth: number, canvasHeight: number) => CanvasObject[];
 };
 
@@ -55,35 +57,35 @@ function subheadlineObject(canvasWidth: number, canvasHeight: number, text: stri
 }
 
 /**
- * One big phone straddling the seam between two neighbouring pages. Both halves are the same device at
- * the same size, offset by one page width, so laid side by side (or swiped in the App Store) they read as one.
- * part 0 = left page (headline + phone's left half), part 1 = right page (phone's right half).
+ * Two export panels side by side with one big phone straddling the seam. Exported as two separate images
+ * that, laid next to each other (or swiped in the App Store), read as a single phone.
+ * `panelWidth` is the width of ONE panel; the objects live on a canvas of 2 × panelWidth.
  */
-export function buildSplitPhone(canvasWidth: number, canvasHeight: number, linkId: string, part: 0 | 1): CanvasObject[] {
-  const phoneWidth = Math.round(canvasWidth * 0.8);
-  const phone: CanvasObject = {
-    id: nanoid(),
-    type: 'phone',
-    screenshotName: 'screen_1',
-    width: phoneWidth,
-    top: Math.round(canvasHeight * 0.3),
-    left: part === 0 ? Math.round(canvasWidth - phoneWidth / 2) : Math.round(-phoneWidth / 2),
-    rotation: 0,
-    zIndex: 1,
-    linkId,
-  };
-  if (part === 1) return [phone];
-  const headline = headlineObject(canvasWidth, canvasHeight, 'One screen,\ntwo pages');
-  const sub = subheadlineObject(canvasWidth, canvasHeight, 'A single phone that flows across two screenshots.');
-  const textWidth = Math.round(canvasWidth * 0.56);
+function buildSplitPhone(panelWidth: number, canvasHeight: number): CanvasObject[] {
+  const phoneWidth = Math.round(panelWidth * 0.8);
+  const headline = headlineObject(panelWidth, canvasHeight, 'One screen,\ntwo pages');
+  const sub = subheadlineObject(panelWidth, canvasHeight, 'A single phone that flows across two screenshots.');
   for (const o of [headline, sub]) {
     if (o.type === 'text') {
-      o.x = Math.round(canvasWidth * 0.06);
-      o.width = textWidth;
+      o.x = Math.round(panelWidth * 0.06);
+      o.width = Math.round(panelWidth * 0.56);
       o.align = 'left';
     }
   }
-  return [headline, sub, phone];
+  return [
+    headline,
+    sub,
+    {
+      id: nanoid(),
+      type: 'phone',
+      screenshotName: 'screen_1',
+      width: phoneWidth,
+      top: Math.round(canvasHeight * 0.3),
+      left: Math.round(panelWidth - phoneWidth / 2),
+      rotation: 0,
+      zIndex: 1,
+    },
+  ];
 }
 
 export const TEMPLATES: Template[] = [
@@ -118,8 +120,9 @@ export const TEMPLATES: Template[] = [
   {
     id: 'split-phone',
     label: 'Split Phone',
-    description: 'One big phone split across this page and a new next page',
-    build: (canvasWidth, canvasHeight) => buildSplitPhone(canvasWidth, canvasHeight, nanoid(), 0),
+    description: 'Two screenshots side by side with one big phone across the seam',
+    spread: 2,
+    build: buildSplitPhone,
   },
   {
     id: 'dual-phone',
@@ -175,4 +178,16 @@ export function createBlankPage(label: string, canvasWidth: number, canvasHeight
     },
     objects: getTemplate('single-phone')!.build(canvasWidth, canvasHeight),
   };
+}
+
+/** Fills `page` with a template's objects, sizing its canvas to the template's panel count. */
+export function layoutPageWithTemplate(page: Page, templateId: string, panelWidth: number, canvasHeight: number) {
+  const tpl = getTemplate(templateId);
+  if (!tpl) return;
+  const spread = tpl.spread ?? 1;
+  page.templateId = templateId;
+  page.spread = spread;
+  page.canvas.width = panelWidth * spread;
+  page.canvas.height = canvasHeight;
+  page.objects = tpl.build(panelWidth, canvasHeight);
 }

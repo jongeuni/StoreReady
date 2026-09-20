@@ -81,8 +81,6 @@ export type PhoneObject = BaseObject & {
   width: number;
   top: number;
   left: number;
-  /** Set on the two halves of a "split phone": one device drawn across two adjacent pages, kept in sync. */
-  linkId?: string;
 };
 
 export type ShapeKind = 'rect' | 'ellipse';
@@ -104,6 +102,8 @@ export type Page = {
   id: string;
   label: string;
   templateId?: string;
+  /** Number of export-sized panels laid side by side on this page (canvas is `spread` × the preset width). Default 1. */
+  spread?: number;
   canvas: {
     width: number;
     height: number;

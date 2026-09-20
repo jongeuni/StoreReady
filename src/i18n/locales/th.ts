@@ -36,7 +36,7 @@ const th: Dict = {
   'template.blank': 'แคนวาสเปล่า',
   'template.single-phone': 'โทรศัพท์เครื่องเดียว',
   'template.dual-phone': 'โทรศัพท์สองเครื่อง',
-  'template.split-phone': "โทรศัพท์แบ่งสองหน้า",
+  'template.split-phone': "โทรศัพท์แบ่ง 2 หน้าจอ",
   'toolbar.addDevice': '+ เพิ่มอุปกรณ์…',
   'toolbar.align': 'จัดแนว',
   'toolbar.alignLeft': 'จัดชิดซ้าย',
