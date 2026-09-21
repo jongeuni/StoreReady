@@ -217,14 +217,14 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
           </Button>
         </div>
         {rows.some((r) => r.hasImage) ? (
-          <div className="flex flex-col gap-0.5">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             {rows.map((r, i) =>
               r.hasImage ? (
                 <div key={i} className="flex items-center gap-1 text-[11px]">
                   <button
                     type="button"
                     onClick={() => setActiveIdx(i)}
-                    className={`min-w-0 truncate text-left ${
+                    className={`max-w-[9rem] min-w-0 truncate text-left ${
                       rows.length > 1 && i === safeActive ? 'text-neutral-100' : 'text-neutral-500 hover:text-neutral-300'
                     }`}
                   >
