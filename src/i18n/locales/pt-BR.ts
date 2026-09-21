@@ -226,6 +226,18 @@ const ptBR: Dict = {
   'feat.export.b': 'Exporte PNG ou ZIP nos tamanhos exigidos pela App Store (6,9"/6,7"/6,5").',
   'cta.title': 'Comece agora',
   'cta.sub': 'Sem conta e sem instalação. Seu trabalho fica salvo no seu navegador.',
+
+  'nav.reference': "Referência",
+  'ref.title': "Feito com StoreReady",
+  'ref.sub': "Apps reais cujas capturas para a loja foram criadas no StoreReady.",
+  'ref.empty': "Ainda não há apps — o seu pode ser o primeiro.",
+  'ref.addTitle': "Adicione seu app",
+  'ref.addBody': "Fez suas capturas com o StoreReady? Abra um pull request com uma pasta contendo o ícone, as capturas, o nome e o link do seu app. Não precisa mexer em código.",
+  'ref.addCta': "Veja como adicionar",
+  'spons.title': "Patrocinadores",
+  'spons.sub': "Obrigado a todos que apoiam o StoreReady.",
+  'spons.empty': "Ainda não há patrocinadores para mostrar.",
+  'spons.cta': "Torne-se patrocinador",
 };
 
 export default ptBR;

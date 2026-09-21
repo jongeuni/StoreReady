@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { DemoSection } from './DemoSection';
 import { useT } from '../i18n';
 import { Rich } from '../i18n/Rich';
 import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
+import { StoreListing } from '../components/StoreListing';
+import { GITHUB_URL } from '../config';
+import { useRouter } from '../router';
 import demo1 from '../assets/hero/demo-1.png';
 import demo2 from '../assets/hero/demo-2.png';
 import demo3 from '../assets/hero/demo-3.png';
@@ -13,7 +15,6 @@ type Props = {
   onStart: () => void;
 };
 
-const GITHUB_URL = 'https://github.com/jongeuni/StoreReady';
 const HERO_IMAGES = [demo1, demo2, demo3, demo4];
 
 function GithubIcon({ className = 'h-4 w-4' }: { className?: string }) {
@@ -35,83 +36,6 @@ function GithubLink({ className = '' }: { className?: string }) {
       <GithubIcon />
       GitHub
     </a>
-  );
-}
-
-const SHOT_W = 136;
-const SHOT_GAP = 12;
-
-/** An App Store product-page look-alike: listing header + a screenshot row that swipes along on its own. */
-function StoreListing() {
-  const t = useT();
-  const [index, setIndex] = useState(0);
-  const [snap, setSnap] = useState(false);
-  const n = HERO_IMAGES.length;
-  // Render the set twice so the row can slide past the last shot and wrap invisibly.
-  const shots = [...HERO_IMAGES, ...HERO_IMAGES];
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setSnap(false);
-      setIndex((i) => i + 1);
-    }, 2400);
-    return () => clearInterval(id);
-  }, []);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="mx-auto w-full max-w-[22rem]"
-    >
-      <div className="mb-3 flex justify-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-          {t('land.madeBadge')}
-        </span>
-      </div>
-      <div className="overflow-hidden rounded-[2rem] border border-neutral-800 bg-neutral-900 p-5 shadow-2xl">
-      <div className="flex items-center gap-3.5">
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.1rem] bg-lime-400 shadow-lg">
-          <span className="text-2xl font-black tracking-tight text-neutral-950">D</span>
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-base font-semibold text-neutral-50">Your App</div>
-          <div className="mt-0.5 text-xs text-neutral-500">
-            <span className="text-amber-400">★★★★★</span> 4.9
-          </div>
-        </div>
-        <span className="rounded-full bg-blue-600 px-5 py-1.5 text-sm font-bold text-white">GET</span>
-      </div>
-
-      <div className="-mr-5 mt-5 overflow-hidden">
-        <motion.div
-          className="flex"
-          style={{ gap: SHOT_GAP }}
-          animate={{ x: -index * (SHOT_W + SHOT_GAP) }}
-          transition={snap ? { duration: 0 } : { type: 'spring', stiffness: 120, damping: 20 }}
-          onAnimationComplete={() => {
-            if (index >= n) {
-              setSnap(true);
-              setIndex(index - n);
-            }
-          }}
-        >
-          {shots.map((src, i) => (
-            <img
-              key={i}
-              src={src}
-              alt=""
-              draggable={false}
-              className="shrink-0 rounded-[1.4rem] border border-neutral-800 object-cover"
-              style={{ width: SHOT_W, height: SHOT_W * (2796 / 1290) }}
-            />
-          ))}
-        </motion.div>
-      </div>
-      </div>
-    </motion.div>
   );
 }
 
@@ -140,6 +64,7 @@ function Feature({ title, body, delay = 0 }: { title: string; body: string; dela
 
 export function LandingPage({ onStart }: Props) {
   const t = useT();
+  const { navigate } = useRouter();
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
@@ -149,6 +74,16 @@ export function LandingPage({ onStart }: Props) {
         </span>
         <div className="flex items-center gap-2">
           <LanguageSwitcher className="py-2" />
+          <a
+            href="/reference"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/reference');
+            }}
+            className="rounded px-3 py-2 text-sm font-medium text-neutral-300 hover:text-neutral-50"
+          >
+            {t('nav.reference')}
+          </a>
           <GithubLink />
           <button
             onClick={onStart}
@@ -178,7 +113,19 @@ export function LandingPage({ onStart }: Props) {
             </div>
           </motion.div>
 
-          <StoreListing />
+          <StoreListing
+            name="Your App"
+            screenshots={HERO_IMAGES}
+            showRating
+            above={
+              <div className="mb-3 flex justify-center">
+                <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+                  {t('land.madeBadge')}
+                </span>
+              </div>
+            }
+          />
         </section>
 
         <DemoSection />

@@ -226,6 +226,18 @@ const fr: Dict = {
   'feat.export.b': "Exportez en PNG ou ZIP aux tailles exigées par l'App Store (6,9\"/6,7\"/6,5\").",
   'cta.title': 'Lancez-vous maintenant',
   'cta.sub': "Ni compte ni installation. Votre travail est enregistré dans votre navigateur.",
+
+  'nav.reference': "Références",
+  'ref.title': "Créé avec StoreReady",
+  'ref.sub': "Des apps réelles dont les captures pour le store ont été conçues dans StoreReady.",
+  'ref.empty': "Aucune app pour l'instant — la vôtre pourrait être la première.",
+  'ref.addTitle': "Ajoutez votre app",
+  'ref.addBody': "Vous avez créé vos captures avec StoreReady ? Ouvrez une pull request avec un dossier contenant l'icône, les captures, le nom et le lien de votre app. Aucun code à modifier.",
+  'ref.addCta': "Voir comment l’ajouter",
+  'spons.title': "Sponsors",
+  'spons.sub': "Merci à toutes les personnes qui soutiennent StoreReady.",
+  'spons.empty': "Aucun sponsor à afficher pour le moment.",
+  'spons.cta': "Devenir sponsor",
 };
 
 export default fr;

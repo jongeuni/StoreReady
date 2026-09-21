@@ -226,6 +226,18 @@ const id: Dict = {
   'feat.export.b': 'Ekspor PNG atau ZIP dalam ukuran yang diwajibkan App Store (6,9"/6,7"/6,5").',
   'cta.title': 'Mulai sekarang',
   'cta.sub': 'Tanpa akun dan tanpa instalasi. Pekerjaan Anda tersimpan di peramban Anda.',
+
+  'nav.reference': "Referensi",
+  'ref.title': "Dibuat dengan StoreReady",
+  'ref.sub': "Aplikasi nyata yang tangkapan layar tokonya dirancang di StoreReady.",
+  'ref.empty': "Belum ada aplikasi — aplikasimu bisa jadi yang pertama.",
+  'ref.addTitle': "Tambahkan aplikasimu",
+  'ref.addBody': "Membuat tangkapan layar dengan StoreReady? Buka pull request berisi folder dengan ikon, tangkapan layar, nama, dan tautan aplikasimu. Tidak perlu mengubah kode.",
+  'ref.addCta': "Lihat cara menambahkan",
+  'spons.title': "Sponsor",
+  'spons.sub': "Terima kasih kepada semua yang mendukung StoreReady.",
+  'spons.empty': "Belum ada sponsor untuk ditampilkan.",
+  'spons.cta': "Jadi sponsor",
 };
 
 export default id;

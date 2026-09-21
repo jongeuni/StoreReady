@@ -225,6 +225,18 @@ const ko: Dict = {
   'feat.export.b': 'App Store 제출 규격(6.9"/6.7"/6.5") 그대로 PNG·ZIP으로 내보내요.',
   'cta.title': '지금 바로 시작해보세요',
   'cta.sub': '가입도, 설치도 필요 없어요. 작업 내용은 브라우저에 바로 저장돼요.',
+
+  'nav.reference': "레퍼런스",
+  'ref.title': "StoreReady로 만든 앱",
+  'ref.sub': "StoreReady에서 스토어 스크린샷을 디자인한 실제 앱들입니다.",
+  'ref.empty': "아직 등록된 앱이 없어요 — 첫 번째가 되어 보세요.",
+  'ref.addTitle': "내 앱 추가하기",
+  'ref.addBody': "StoreReady로 스크린샷을 만드셨나요? 앱 아이콘, 스크린샷, 이름, 링크가 담긴 폴더 하나로 풀 리퀘스트를 열어 주세요. 코드는 건드리지 않아도 됩니다.",
+  'ref.addCta': "추가 방법 보기",
+  'spons.title': "후원자",
+  'spons.sub': "StoreReady를 응원해 주시는 모든 분께 감사드립니다.",
+  'spons.empty': "아직 표시할 후원자가 없습니다.",
+  'spons.cta': "후원하기",
 };
 
 export default ko;

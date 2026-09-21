@@ -226,6 +226,18 @@ const ja: Dict = {
   'feat.export.b': 'App Store の規定サイズ（6.9"/6.7"/6.5"）のまま PNG や ZIP で書き出せます。',
   'cta.title': '今すぐ始めましょう',
   'cta.sub': 'アカウントもインストールも不要。作業内容はブラウザにそのまま保存されます。',
+
+  'nav.reference': "リファレンス",
+  'ref.title': "StoreReadyで作ったアプリ",
+  'ref.sub': "StoreReadyでストア用スクリーンショットをデザインした実在のアプリです。",
+  'ref.empty': "まだアプリがありません — あなたが最初になれます。",
+  'ref.addTitle': "あなたのアプリを追加",
+  'ref.addBody': "StoreReadyでスクリーンショットを作りましたか？アプリのアイコン、スクリーンショット、名前、リンクを入れたフォルダでプルリクエストを送ってください。コードの変更は不要です。",
+  'ref.addCta': "追加方法を見る",
+  'spons.title': "スポンサー",
+  'spons.sub': "StoreReadyを支援してくださるすべての方に感謝します。",
+  'spons.empty': "表示できるスポンサーはまだいません。",
+  'spons.cta': "スポンサーになる",
 };
 
 export default ja;

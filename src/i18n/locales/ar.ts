@@ -226,6 +226,18 @@ const ar: Dict = {
   'feat.export.b': 'صدّر PNG أو ZIP بالأحجام التي يشترطها App Store (6.9"/6.7"/6.5").',
   'cta.title': 'ابدأ الآن',
   'cta.sub': 'بلا حساب وبلا تثبيت. يُحفظ عملك في متصفحك.',
+
+  'nav.reference': "أمثلة",
+  'ref.title': "صُنع باستخدام StoreReady",
+  'ref.sub': "تطبيقات حقيقية صُمّمت لقطات شاشة متجرها في StoreReady.",
+  'ref.empty': "لا توجد تطبيقات بعد — قد يكون تطبيقك الأول.",
+  'ref.addTitle': "أضف تطبيقك",
+  'ref.addBody': "صنعت لقطات الشاشة باستخدام StoreReady؟ افتح طلب سحب (pull request) بمجلد يحتوي على أيقونة تطبيقك ولقطاته واسمه ورابطه. لا حاجة لتعديل الكود.",
+  'ref.addCta': "اطّلع على طريقة الإضافة",
+  'spons.title': "الداعمون",
+  'spons.sub': "شكرًا لكل من يدعم StoreReady.",
+  'spons.empty': "لا يوجد داعمون لعرضهم بعد.",
+  'spons.cta': "كن داعمًا",
 };
 
 export default ar;

@@ -224,6 +224,18 @@ const zhCN: Dict = {
   'feat.export.b': '以 App Store 规定的尺寸（6.9"/6.7"/6.5"）导出 PNG 或 ZIP。',
   'cta.title': '现在就开始吧',
   'cta.sub': '无需账号，无需安装。你的作品会直接保存在浏览器中。',
+
+  'nav.reference': "参考案例",
+  'ref.title': "用 StoreReady 制作",
+  'ref.sub': "在 StoreReady 中设计商店截图的真实应用。",
+  'ref.empty': "还没有应用 — 你可以成为第一个。",
+  'ref.addTitle': "添加你的应用",
+  'ref.addBody': "用 StoreReady 做了截图？提交一个包含应用图标、截图、名称和链接的文件夹作为 Pull Request 即可，无需改代码。",
+  'ref.addCta': "查看添加方法",
+  'spons.title': "赞助者",
+  'spons.sub': "感谢每一位支持 StoreReady 的人。",
+  'spons.empty': "暂时还没有可展示的赞助者。",
+  'spons.cta': "成为赞助者",
 };
 
 export default zhCN;

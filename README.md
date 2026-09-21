@@ -28,3 +28,13 @@ npm run dev
 
 React + TypeScript, Konva / react-konva for the canvas, Zustand (+ Immer) for state, IndexedDB for
 local persistence. No backend, no accounts — everything lives in the browser for Phase 1.
+
+## Reference apps & sponsors
+
+The **Reference** page (`/reference`) lists real apps whose screenshots were made with StoreReady.
+Adding yours is a pull request that only adds a folder — see
+[`src/reference/README.md`](src/reference/README.md).
+
+The sponsors list is read from Buy Me a Coffee by a small serverless function
+(`api/sponsors.js`). Set `BMC_ACCESS_TOKEN` in your host's environment variables; without it the page
+simply shows no sponsors. Set `SPONSOR_URL` in `src/config.ts` to show the "Become a sponsor" button.

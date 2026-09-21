@@ -226,6 +226,18 @@ const tr: Dict = {
   'feat.export.b': 'PNG veya ZIP’i App Store’un istediği boyutlarda (6,9"/6,7"/6,5") dışa aktarın.',
   'cta.title': 'Hemen başlayın',
   'cta.sub': 'Hesap ve kurulum yok. Çalışmanız tarayıcınızda kaydedilir.',
+
+  'nav.reference': "Referanslar",
+  'ref.title': "StoreReady ile yapıldı",
+  'ref.sub': "Mağaza ekran görüntüleri StoreReady'de tasarlanmış gerçek uygulamalar.",
+  'ref.empty': "Henüz uygulama yok — ilki sizinki olabilir.",
+  'ref.addTitle': "Uygulamanızı ekleyin",
+  'ref.addBody': "Ekran görüntülerinizi StoreReady ile mi yaptınız? Uygulamanızın simgesi, ekran görüntüleri, adı ve bağlantısını içeren bir klasörle pull request açın. Kod değiştirmeniz gerekmez.",
+  'ref.addCta': "Nasıl ekleneceğini gör",
+  'spons.title': "Sponsorlar",
+  'spons.sub': "StoreReady'i destekleyen herkese teşekkürler.",
+  'spons.empty': "Henüz gösterilecek sponsor yok.",
+  'spons.cta': "Sponsor ol",
 };
 
 export default tr;

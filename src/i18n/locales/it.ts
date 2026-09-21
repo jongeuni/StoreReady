@@ -226,6 +226,18 @@ const it: Dict = {
   'feat.export.b': 'Esporta PNG o ZIP nelle dimensioni richieste dall’App Store (6,9"/6,7"/6,5").',
   'cta.title': 'Inizia ora',
   'cta.sub': 'Nessun account, nessuna installazione. Il tuo lavoro viene salvato nel tuo browser.',
+
+  'nav.reference': "Riferimenti",
+  'ref.title': "Creato con StoreReady",
+  'ref.sub': "App reali i cui screenshot per lo store sono stati progettati in StoreReady.",
+  'ref.empty': "Ancora nessuna app — la tua potrebbe essere la prima.",
+  'ref.addTitle': "Aggiungi la tua app",
+  'ref.addBody': "Hai creato i tuoi screenshot con StoreReady? Apri una pull request con una cartella contenente icona, screenshot, nome e link della tua app. Non serve toccare il codice.",
+  'ref.addCta': "Scopri come aggiungerla",
+  'spons.title': "Sponsor",
+  'spons.sub': "Grazie a tutti coloro che sostengono StoreReady.",
+  'spons.empty': "Nessuno sponsor da mostrare per ora.",
+  'spons.cta': "Diventa sponsor",
 };
 
 export default it;

@@ -226,6 +226,18 @@ const vi: Dict = {
   'feat.export.b': 'Xuất PNG hoặc ZIP đúng kích thước App Store yêu cầu (6,9"/6,7"/6,5").',
   'cta.title': 'Bắt đầu ngay',
   'cta.sub': 'Không cần tài khoản hay cài đặt. Công việc của bạn được lưu ngay trong trình duyệt.',
+
+  'nav.reference': "Tham khảo",
+  'ref.title': "Làm bằng StoreReady",
+  'ref.sub': "Các ứng dụng thật có ảnh chụp màn hình cửa hàng được thiết kế trong StoreReady.",
+  'ref.empty': "Chưa có ứng dụng nào — của bạn có thể là ứng dụng đầu tiên.",
+  'ref.addTitle': "Thêm ứng dụng của bạn",
+  'ref.addBody': "Đã làm ảnh chụp màn hình bằng StoreReady? Hãy mở pull request với một thư mục chứa biểu tượng, ảnh chụp màn hình, tên và liên kết ứng dụng. Không cần sửa mã.",
+  'ref.addCta': "Xem cách thêm",
+  'spons.title': "Nhà tài trợ",
+  'spons.sub': "Cảm ơn tất cả những ai ủng hộ StoreReady.",
+  'spons.empty': "Chưa có nhà tài trợ để hiển thị.",
+  'spons.cta': "Trở thành nhà tài trợ",
 };
 
 export default vi;

@@ -224,6 +224,18 @@ const zhTW: Dict = {
   'feat.export.b': '以 App Store 規定的尺寸（6.9"/6.7"/6.5"）匯出 PNG 或 ZIP。',
   'cta.title': '現在就開始吧',
   'cta.sub': '不需帳號，不需安裝。你的作品會直接儲存在瀏覽器中。',
+
+  'nav.reference': "參考案例",
+  'ref.title': "用 StoreReady 製作",
+  'ref.sub': "在 StoreReady 中設計商店截圖的真實 App。",
+  'ref.empty': "還沒有 App — 你可以成為第一個。",
+  'ref.addTitle': "新增你的 App",
+  'ref.addBody': "用 StoreReady 做了截圖？提交一個包含 App 圖示、截圖、名稱與連結的資料夾作為 Pull Request 即可，不需要改程式碼。",
+  'ref.addCta': "查看新增方法",
+  'spons.title': "贊助者",
+  'spons.sub': "感謝每一位支持 StoreReady 的人。",
+  'spons.empty': "目前還沒有可展示的贊助者。",
+  'spons.cta': "成為贊助者",
 };
 
 export default zhTW;

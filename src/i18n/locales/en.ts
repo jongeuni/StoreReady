@@ -231,6 +231,18 @@ const en = {
   'feat.export.b': 'Export PNG or ZIP at the exact App Store sizes (6.9", 6.7", 6.5").',
   'cta.title': 'Start right now',
   'cta.sub': 'No account, no install — your work is saved right in the browser.',
+
+  'nav.reference': "Reference",
+  'ref.title': "Made with StoreReady",
+  'ref.sub': "Real apps whose store screenshots were designed in StoreReady.",
+  'ref.empty': "No apps yet — yours could be the first.",
+  'ref.addTitle': "Add your app",
+  'ref.addBody': "Made your screenshots with StoreReady? Open a pull request with a folder containing your app icon, screenshots, name and link — no code needed.",
+  'ref.addCta': "See how to add it",
+  'spons.title': "Sponsors",
+  'spons.sub': "Thank you to everyone supporting StoreReady.",
+  'spons.empty': "No sponsors to show yet.",
+  'spons.cta': "Become a sponsor",
 };
 
 export type TKey = keyof typeof en;
