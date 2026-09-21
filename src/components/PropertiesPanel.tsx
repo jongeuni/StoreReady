@@ -176,6 +176,7 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
 
       <div className="flex flex-col gap-2">
         <div className="text-xs text-neutral-400">{t('panel.screenshotImage')}</div>
+        <span className="text-[11px] leading-snug text-neutral-500">{t('panel.splitHint')}</span>
         <input
           ref={fileInputRef}
           type="file"
@@ -216,48 +217,35 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
           </Button>
         </div>
         {rows.some((r) => r.hasImage) ? (
-          <div className="flex flex-col gap-1">
-            {rows.map((r, i) => (
-              <div
-                key={i}
-                onClick={() => setActiveIdx(i)}
-                className={`flex cursor-pointer flex-col gap-1 rounded border px-2 py-1 ${
-                  rows.length > 1 && i === safeActive ? 'border-blue-500/60 bg-blue-500/5' : 'border-neutral-800'
-                }`}
-              >
-                <div className="flex items-center gap-1.5">
-                  <span className="min-w-0 flex-1 truncate text-[11px] text-neutral-400">
-                    {r.hasImage ? (r.fileName ?? t('panel.uploadedFallback')) : t('panel.noImageShort')}
-                  </span>
+          <div className="flex flex-col gap-0.5">
+            {rows.map((r, i) =>
+              r.hasImage ? (
+                <div key={i} className="flex items-center gap-1 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setActiveIdx(i)}
+                    className={`min-w-0 truncate text-left ${
+                      rows.length > 1 && i === safeActive ? 'text-neutral-100' : 'text-neutral-500 hover:text-neutral-300'
+                    }`}
+                  >
+                    {r.fileName ?? t('panel.uploadedFallback')}
+                  </button>
                   <button
                     type="button"
                     aria-label={t('panel.remove')}
                     title={t('panel.remove')}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeRow(i);
-                    }}
-                    className="shrink-0 rounded px-1.5 text-sm leading-none text-neutral-500 hover:bg-neutral-800 hover:text-neutral-100"
+                    onClick={() => removeRow(i)}
+                    className="shrink-0 rounded px-1 leading-none text-neutral-500 hover:bg-neutral-800 hover:text-neutral-100"
                   >
                     ×
                   </button>
                 </div>
-                {i > 0 && (
-                  <input
-                    value={r.name}
-                    onClick={(e) => e.stopPropagation()}
-                    onChange={(e) => setThemes(themes.map((x, k) => (k === i - 1 ? { ...x, name: e.target.value } : x)))}
-                    aria-label={t('panel.themeName', { n: i + 1 })}
-                    className="w-full rounded border border-neutral-700 bg-neutral-800 px-1.5 py-0.5 font-mono text-[11px] text-neutral-200 focus:border-blue-500 focus:outline-none"
-                  />
-                )}
-              </div>
-            ))}
+              ) : null,
+            )}
           </div>
         ) : (
           <span className="text-[11px] text-neutral-500">{t('panel.noImage')}</span>
         )}
-        <span className="text-[11px] leading-snug text-neutral-500">{t('panel.splitHint')}</span>
       </div>
 
       {rows.length > 1 && (
