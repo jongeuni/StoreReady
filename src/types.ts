@@ -68,6 +68,13 @@ export type TextObject = BaseObject & {
 /** Device placeholder kinds — all share the same object shape, just different frame geometry. */
 export type DeviceKind = 'phone' | 'tablet' | 'watch';
 
+/** An extra screenshot theme shown in its own diagonal band of the same phone screen. */
+export type PhoneTheme = {
+  name: string;
+  image?: string;
+  imageFileName?: string;
+};
+
 export type PhoneObject = BaseObject & {
   type: 'phone';
   deviceKind?: DeviceKind; // defaults to 'phone' when absent (older persisted data)
@@ -78,6 +85,8 @@ export type PhoneObject = BaseObject & {
   screenshotDescription?: string;
   image?: string; // data URL of the uploaded screenshot
   imageFileName?: string;
+  /** More themes beyond the base one (screenshotName/image). With any present, the screen is split into equal diagonal bands. */
+  extraThemes?: PhoneTheme[];
   width: number;
   top: number;
   left: number;

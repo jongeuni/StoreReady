@@ -75,8 +75,13 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
   const clearScreenshotImage = useProjectStore((s) => s.clearScreenshotImage);
   const pushToast = useToastStore((s) => s.push);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const themeFileRef = useRef<HTMLInputElement>(null);
+  const themeUploadIndex = useRef(0);
 
   if (!obj || obj.type !== 'phone') return null;
+
+  const themes = obj.extraThemes ?? [];
+  const setThemes = (next: typeof themes) => updateObject(page.id, obj.id, { extraThemes: next });
 
   const page1 = project.pages[0];
   const page1Reference =
@@ -157,6 +162,68 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
         ) : (
           <span className="text-[11px] text-neutral-500">{t('panel.noImage')}</span>
         )}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <div className="text-xs text-neutral-400">{t('panel.themes')}</div>
+        <p className="text-[11px] leading-snug text-neutral-500">{t('panel.themesHint')}</p>
+        <input
+          ref={themeFileRef}
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          className="hidden"
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            e.target.value = '';
+            if (!file) return;
+            const result = await readImageFile(file);
+            if (!result.ok) {
+              pushToast(t(result.errorKey, result.errorVars), 'error');
+              return;
+            }
+            const i = themeUploadIndex.current;
+            setThemes(themes.map((th, k) => (k === i ? { ...th, image: result.dataUrl, imageFileName: file.name } : th)));
+          }}
+        />
+        {themes.map((th, i) => (
+          <div key={i} className="flex flex-col gap-1.5 rounded border border-neutral-800 p-2">
+            <TextField
+              label={t('panel.themeLabel', { n: i + 2 })}
+              value={th.name}
+              onChange={(v) => setThemes(themes.map((x, k) => (k === i ? { ...x, name: v } : x)))}
+            />
+            <div className="flex flex-wrap gap-1.5">
+              <Button
+                variant="primary"
+                onClick={() => {
+                  themeUploadIndex.current = i;
+                  themeFileRef.current?.click();
+                }}
+              >
+                {th.image ? t('panel.replace') : t('panel.upload')}
+              </Button>
+              {th.image && (
+                <Button
+                  variant="ghost"
+                  onClick={() => setThemes(themes.map((x, k) => (k === i ? { name: x.name } : x)))}
+                >
+                  {t('panel.remove')}
+                </Button>
+              )}
+              <Button variant="danger" onClick={() => setThemes(themes.filter((_, k) => k !== i))}>
+                {t('common.delete')}
+              </Button>
+            </div>
+            {th.image && <span className="truncate text-[11px] text-neutral-500">{th.imageFileName ?? t('panel.uploadedFallback')}</span>}
+          </div>
+        ))}
+        <Button
+          onClick={() =>
+            setThemes([...themes, { name: `${obj.screenshotName || 'screen'}_${themes.length + 2}` }])
+          }
+        >
+          {t('panel.addTheme')}
+        </Button>
       </div>
 
       <div className="grid grid-cols-2 gap-2">

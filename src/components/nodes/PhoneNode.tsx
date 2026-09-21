@@ -1,10 +1,12 @@
 import { forwardRef, useMemo } from 'react';
-import { Circle, Group, Rect, Text, Image as KonvaImage } from 'react-konva';
+import { Circle, Group, Line, Rect, Text, Image as KonvaImage } from 'react-konva';
 import type Konva from 'konva';
 import type { Context } from 'konva/lib/Context';
 import type { PhoneObject } from '../../types';
 import { getDeviceModel } from '../../phoneFrame';
 import { useHtmlImage } from '../../hooks/useHtmlImage';
+import { useHtmlImages } from '../../hooks/useHtmlImages';
+import { bandCentroid, bandPolygon, dividerLines } from '../../utils/diagonalSplit';
 import { useT } from '../../i18n';
 import { composeDevice3d } from '../../utils/device3d';
 
@@ -42,7 +44,10 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
   ref,
 ) {
   const t = useT();
-  const image = useHtmlImage(obj.image);
+  const extra = obj.extraThemes ?? [];
+  const themeImages = useHtmlImages([obj.image, ...extra.map((x) => x.image)]);
+  const image = themeImages[0];
+  const themeCount = 1 + extra.length;
   const deviceKind = obj.deviceKind ?? 'phone';
   const model = getDeviceModel(obj.deviceModel, deviceKind);
   const width = obj.width;
@@ -65,8 +70,20 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
   const noName = t('canvas.noName');
   const hint = t('canvas.placeholder');
   const composite3d = useMemo(
-    () => (r3d && frame3d ? composeDevice3d(r3d, frame3d, image, obj.screenshotName || noName, hint) : null),
-    [r3d, frame3d, image, obj.screenshotName, noName, hint],
+    () =>
+      r3d && frame3d
+        ? composeDevice3d(
+            r3d,
+            frame3d,
+            [
+              { image: themeImages[0], name: obj.screenshotName || noName },
+              ...extra.map((x, i) => ({ image: themeImages[i + 1], name: x.name || noName })),
+            ],
+            hint,
+          )
+        : null,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [r3d, frame3d, themeImages, obj.screenshotName, extra.map((x) => x.name).join('|'), noName, hint],
   );
 
   const crop = image ? coverCrop(image.naturalWidth, image.naturalHeight, screenW, screenH) : null;
@@ -162,7 +179,54 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
 
       {/* Screen */}
       <Group x={insetSide} y={insetTop} clipFunc={(ctx) => roundedRectPath(ctx, screenW, screenH, screenRadius)}>
-        {image && crop ? (
+        {themeCount > 1 ? (
+          <>
+            {Array.from({ length: themeCount }, (_, i) => {
+              const poly = bandPolygon(screenW, screenH, themeCount, i);
+              const img = themeImages[i];
+              const themeName = (i === 0 ? obj.screenshotName : extra[i - 1]?.name) || t('canvas.noName');
+              const [cx, cy] = bandCentroid(poly);
+              return (
+                <Group
+                  key={i}
+                  clipFunc={(ctx) => {
+                    ctx.beginPath();
+                    poly.forEach(([x, y], k) => (k ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+                    ctx.closePath();
+                  }}
+                >
+                  {img ? (
+                    <KonvaImage
+                      image={img}
+                      width={screenW}
+                      height={screenH}
+                      crop={coverCrop(img.naturalWidth, img.naturalHeight, screenW, screenH)}
+                    />
+                  ) : (
+                    <>
+                      <Rect width={screenW} height={screenH} fill={i % 2 ? '#26262a' : '#1c1c1e'} />
+                      <Text
+                        text={themeName}
+                        x={cx - width * 0.3}
+                        y={cy - width * 0.03}
+                        width={width * 0.6}
+                        align="center"
+                        fontSize={Math.max(14, width * 0.045)}
+                        fontStyle="600"
+                        fontFamily="system-ui, sans-serif"
+                        fill="#8e8e93"
+                        listening={false}
+                      />
+                    </>
+                  )}
+                </Group>
+              );
+            })}
+            {dividerLines(screenW, screenH, themeCount).map((pts, i) => (
+              <Line key={i} points={pts} stroke="#ffffff" opacity={0.92} strokeWidth={Math.max(2, width * 0.012)} listening={false} />
+            ))}
+          </>
+        ) : image && crop ? (
           <KonvaImage image={image} width={screenW} height={screenH} crop={crop} />
         ) : (
           <>

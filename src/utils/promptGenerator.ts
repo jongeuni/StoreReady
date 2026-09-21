@@ -11,6 +11,12 @@ function screenshotsFor(pages: Page[]): Pick<PhoneObject, 'screenshotName' | 'sc
   for (const page of pages) {
     for (const obj of page.objects) {
       if (obj.type !== 'phone') continue;
+      for (const th of obj.extraThemes ?? []) {
+        if (!descriptions.has(th.name)) {
+          order.push(th.name);
+          descriptions.set(th.name, undefined);
+        }
+      }
       if (!descriptions.has(obj.screenshotName)) {
         order.push(obj.screenshotName);
         descriptions.set(obj.screenshotName, obj.screenshotDescription);

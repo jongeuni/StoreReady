@@ -1,5 +1,8 @@
 import type { Render3D } from '../phoneFrame';
 import { drawWarped, type Point } from './perspectiveWarp';
+import { bandCentroid, bandPolygon, dividerLines } from './diagonalSplit';
+
+export type ThemeSource = { image?: HTMLImageElement; name: string };
 
 const SRC_W = 640;
 
@@ -21,39 +24,71 @@ function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number
   return lines;
 }
 
-/** The flat, un-warped screen content: the cover-cropped screenshot, or a labelled placeholder. */
-function buildScreenSource(r3d: Render3D, image: HTMLImageElement | undefined, title: string, hint: string) {
+function coverDraw(ctx: CanvasRenderingContext2D, image: HTMLImageElement, w: number, h: number) {
+  const boxRatio = w / h;
+  const imgRatio = image.naturalWidth / image.naturalHeight;
+  let sx = 0;
+  let sy = 0;
+  let sw = image.naturalWidth;
+  let sh = image.naturalHeight;
+  if (imgRatio > boxRatio) {
+    sw = image.naturalHeight * boxRatio;
+    sx = (image.naturalWidth - sw) / 2;
+  } else {
+    sh = image.naturalWidth / boxRatio;
+    sy = (image.naturalHeight - sh) / 2;
+  }
+  ctx.drawImage(image, sx, sy, sw, sh, 0, 0, w, h);
+}
+
+/** The flat, un-warped screen content: cover-cropped screenshot(s) in diagonal bands, or labelled placeholders. */
+function buildScreenSource(r3d: Render3D, themes: ThemeSource[], hint: string) {
   const w = SRC_W;
   const h = Math.round(SRC_W * r3d.screenAspect);
   const c = document.createElement('canvas');
   c.width = w;
   c.height = h;
   const ctx = c.getContext('2d')!;
-  if (image) {
-    const boxRatio = w / h;
-    const imgRatio = image.naturalWidth / image.naturalHeight;
-    let sx = 0;
-    let sy = 0;
-    let sw = image.naturalWidth;
-    let sh = image.naturalHeight;
-    if (imgRatio > boxRatio) {
-      sw = image.naturalHeight * boxRatio;
-      sx = (image.naturalWidth - sw) / 2;
-    } else {
-      sh = image.naturalWidth / boxRatio;
-      sy = (image.naturalHeight - sh) / 2;
+  const n = themes.length;
+
+  themes.forEach((theme, i) => {
+    ctx.save();
+    if (n > 1) {
+      const poly = bandPolygon(w, h, n, i);
+      ctx.beginPath();
+      poly.forEach(([x, y], k) => (k ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+      ctx.closePath();
+      ctx.clip();
     }
-    ctx.drawImage(image, sx, sy, sw, sh, 0, 0, w, h);
-  } else {
-    ctx.fillStyle = '#1c1c1e';
-    ctx.fillRect(0, 0, w, h);
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#8e8e93';
-    ctx.font = '600 38px system-ui, sans-serif';
-    ctx.fillText(title, w / 2, h / 2 - 20, w * 0.9);
-    ctx.fillStyle = '#5b5b60';
-    ctx.font = '26px system-ui, sans-serif';
-    wrapLines(ctx, hint, w * 0.8).forEach((line, i) => ctx.fillText(line, w / 2, h / 2 + 30 + i * 34));
+    if (theme.image) {
+      coverDraw(ctx, theme.image, w, h);
+    } else {
+      ctx.fillStyle = i % 2 ? '#26262a' : '#1c1c1e';
+      ctx.fillRect(0, 0, w, h);
+      const [cx, cy] = n > 1 ? bandCentroid(bandPolygon(w, h, n, i)) : [w / 2, h / 2];
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#8e8e93';
+      ctx.font = '600 38px system-ui, sans-serif';
+      ctx.fillText(theme.name, cx, cy - 20, w * 0.7);
+      if (n === 1) {
+        ctx.fillStyle = '#5b5b60';
+        ctx.font = '26px system-ui, sans-serif';
+        wrapLines(ctx, hint, w * 0.8).forEach((line, k) => ctx.fillText(line, w / 2, cy + 30 + k * 34));
+      }
+    }
+    ctx.restore();
+  });
+
+  if (n > 1) {
+    ctx.strokeStyle = 'rgba(255,255,255,0.92)';
+    ctx.lineWidth = Math.max(3, w * 0.012);
+    ctx.lineCap = 'butt';
+    for (const [x1, y1, x2, y2] of dividerLines(w, h, n)) {
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
   }
   return { canvas: c, w, h };
 }
@@ -62,15 +97,14 @@ function buildScreenSource(r3d: Render3D, image: HTMLImageElement | undefined, t
 export function composeDevice3d(
   r3d: Render3D,
   frame: HTMLImageElement,
-  image: HTMLImageElement | undefined,
-  title: string,
+  themes: ThemeSource[],
   hint: string,
 ): HTMLCanvasElement {
   const out = document.createElement('canvas');
   out.width = r3d.frameWidth;
   out.height = r3d.frameHeight;
   const ctx = out.getContext('2d')!;
-  const src = buildScreenSource(r3d, image, title, hint);
+  const src = buildScreenSource(r3d, themes, hint);
   const quad = r3d.quad.map(([x, y]) => [x * r3d.frameWidth, y * r3d.frameHeight] as Point) as [Point, Point, Point, Point];
   drawWarped(ctx, src.canvas, src.w, src.h, quad);
   ctx.drawImage(frame, 0, 0, r3d.frameWidth, r3d.frameHeight);
