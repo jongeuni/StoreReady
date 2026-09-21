@@ -87,6 +87,10 @@ export type PhoneObject = BaseObject & {
   imageFileName?: string;
   /** More themes beyond the base one (screenshotName/image). With any present, the screen is split into equal diagonal bands. */
   extraThemes?: PhoneTheme[];
+  /** Divider line between diagonal bands: thickness in canvas px (0 = none; unset = auto), colour, dashed. */
+  dividerWidth?: number;
+  dividerColor?: string;
+  dividerDashed?: boolean;
   width: number;
   top: number;
   left: number;

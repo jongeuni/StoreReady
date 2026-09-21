@@ -1,10 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useProjectStore } from '../store/useProjectStore';
 import { useToastStore } from '../store/useToastStore';
 import { useTextEditStore } from '../store/useTextEditStore';
 import type { DeviceKind, Page, PhoneObject, ShapeKind, TextRole } from '../types';
 import { Button, ColorField, NumberField, SelectField, TextField } from './ui/Field';
 import { readImageFile } from '../utils/imageUpload';
+import { DEFAULT_DIVIDER_COLOR, dividerWidthOf } from '../utils/diagonalSplit';
 import { defaultModelForKind, deviceHeightForWidth, getDeviceModel, modelsForKind } from '../phoneFrame';
 import { DEVICE_KIND_KEY, useT, type TKey } from '../i18n';
 
@@ -75,13 +76,58 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
   const clearScreenshotImage = useProjectStore((s) => s.clearScreenshotImage);
   const pushToast = useToastStore((s) => s.push);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const themeFileRef = useRef<HTMLInputElement>(null);
-  const themeUploadIndex = useRef(0);
+  // Which screenshot row "Replace image" acts on; a fresh upload becomes the active one.
+  const [activeIdx, setActiveIdx] = useState(0);
+  const uploadMode = useRef<'replace' | 'add'>('replace');
 
   if (!obj || obj.type !== 'phone') return null;
 
   const themes = obj.extraThemes ?? [];
   const setThemes = (next: typeof themes) => updateObject(page.id, obj.id, { extraThemes: next });
+  // Row 0 is the phone's own screenshot; the rest are the extra diagonal-band themes.
+  const rows = [
+    { name: obj.screenshotName, fileName: obj.imageFileName, hasImage: !!obj.image },
+    ...themes.map((th) => ({ name: th.name, fileName: th.imageFileName, hasImage: !!th.image })),
+  ];
+  const safeActive = Math.min(activeIdx, rows.length - 1);
+
+  const applyUploadedImage = (mode: 'replace' | 'add', dataUrl: string, fileName: string) => {
+    if (mode === 'add') {
+      if (!obj.image) {
+        setScreenshotImage(page.id, obj.id, dataUrl, fileName);
+        setActiveIdx(0);
+        return;
+      }
+      // Fill an empty placeholder theme first (e.g. from the diagonal-split template), otherwise add a new band.
+      const empty = themes.findIndex((th) => !th.image);
+      if (empty !== -1) {
+        setThemes(themes.map((th, k) => (k === empty ? { ...th, image: dataUrl, imageFileName: fileName } : th)));
+        setActiveIdx(empty + 1);
+        return;
+      }
+      const name = `${obj.screenshotName || 'screen'}_${themes.length + 2}`;
+      setThemes([...themes, { name, image: dataUrl, imageFileName: fileName }]);
+      setActiveIdx(themes.length + 1);
+      return;
+    }
+    if (safeActive === 0) setScreenshotImage(page.id, obj.id, dataUrl, fileName);
+    else setThemes(themes.map((th, k) => (k === safeActive - 1 ? { ...th, image: dataUrl, imageFileName: fileName } : th)));
+  };
+
+  const removeRow = (i: number) => {
+    if (i === 0) {
+      if (themes.length === 0) {
+        clearScreenshotImage(page.id, obj.id);
+      } else {
+        // The first extra theme takes over as the phone's own screenshot.
+        const [first, ...rest] = themes;
+        updateObject(page.id, obj.id, { image: first.image, imageFileName: first.imageFileName, extraThemes: rest });
+      }
+    } else {
+      setThemes(themes.filter((_, k) => k !== i - 1));
+    }
+    setActiveIdx(0);
+  };
 
   const page1 = project.pages[0];
   const page1Reference =
@@ -144,87 +190,103 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
               pushToast(t(result.errorKey, result.errorVars), 'error');
               return;
             }
-            setScreenshotImage(page.id, obj.id, result.dataUrl, file.name);
+            applyUploadedImage(uploadMode.current, result.dataUrl, file.name);
           }}
         />
         <div className="flex gap-1.5">
-          <Button variant="primary" onClick={() => fileInputRef.current?.click()}>
-            {obj.image ? t('panel.replace') : t('panel.upload')}
-          </Button>
           {obj.image && (
-            <Button variant="ghost" onClick={() => clearScreenshotImage(page.id, obj.id)}>
-              {t('panel.remove')}
+            <Button
+              variant="primary"
+              onClick={() => {
+                uploadMode.current = 'replace';
+                fileInputRef.current?.click();
+              }}
+            >
+              {t('panel.replace')}
             </Button>
           )}
+          <Button
+            variant={obj.image ? 'default' : 'primary'}
+            onClick={() => {
+              uploadMode.current = 'add';
+              fileInputRef.current?.click();
+            }}
+          >
+            {t('panel.upload')}
+          </Button>
         </div>
-        {obj.image ? (
-          <span className="truncate text-[11px] text-neutral-500">{obj.imageFileName ?? t('panel.uploadedFallback')}</span>
+        {rows.some((r) => r.hasImage) ? (
+          <div className="flex flex-col gap-1">
+            {rows.map((r, i) => (
+              <div
+                key={i}
+                onClick={() => setActiveIdx(i)}
+                className={`flex cursor-pointer flex-col gap-1 rounded border px-2 py-1 ${
+                  rows.length > 1 && i === safeActive ? 'border-blue-500/60 bg-blue-500/5' : 'border-neutral-800'
+                }`}
+              >
+                <div className="flex items-center gap-1.5">
+                  <span className="min-w-0 flex-1 truncate text-[11px] text-neutral-400">
+                    {r.hasImage ? (r.fileName ?? t('panel.uploadedFallback')) : t('panel.noImageShort')}
+                  </span>
+                  <button
+                    type="button"
+                    aria-label={t('panel.remove')}
+                    title={t('panel.remove')}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeRow(i);
+                    }}
+                    className="shrink-0 rounded px-1.5 text-sm leading-none text-neutral-500 hover:bg-neutral-800 hover:text-neutral-100"
+                  >
+                    ×
+                  </button>
+                </div>
+                {i > 0 && (
+                  <input
+                    value={r.name}
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => setThemes(themes.map((x, k) => (k === i - 1 ? { ...x, name: e.target.value } : x)))}
+                    aria-label={t('panel.themeName', { n: i + 1 })}
+                    className="w-full rounded border border-neutral-700 bg-neutral-800 px-1.5 py-0.5 font-mono text-[11px] text-neutral-200 focus:border-blue-500 focus:outline-none"
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         ) : (
           <span className="text-[11px] text-neutral-500">{t('panel.noImage')}</span>
         )}
+        <span className="text-[11px] leading-snug text-neutral-500">{t('panel.splitHint')}</span>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <div className="text-xs text-neutral-400">{t('panel.themes')}</div>
-        <p className="text-[11px] leading-snug text-neutral-500">{t('panel.themesHint')}</p>
-        <input
-          ref={themeFileRef}
-          type="file"
-          accept="image/png,image/jpeg,image/webp"
-          className="hidden"
-          onChange={async (e) => {
-            const file = e.target.files?.[0];
-            e.target.value = '';
-            if (!file) return;
-            const result = await readImageFile(file);
-            if (!result.ok) {
-              pushToast(t(result.errorKey, result.errorVars), 'error');
-              return;
-            }
-            const i = themeUploadIndex.current;
-            setThemes(themes.map((th, k) => (k === i ? { ...th, image: result.dataUrl, imageFileName: file.name } : th)));
-          }}
-        />
-        {themes.map((th, i) => (
-          <div key={i} className="flex flex-col gap-1.5 rounded border border-neutral-800 p-2">
-            <TextField
-              label={t('panel.themeLabel', { n: i + 2 })}
-              value={th.name}
-              onChange={(v) => setThemes(themes.map((x, k) => (k === i ? { ...x, name: v } : x)))}
+      {rows.length > 1 && (
+        <div className="flex flex-col gap-2">
+          <div className="text-xs text-neutral-400">{t('panel.divider')}</div>
+          <div className="grid grid-cols-2 gap-2">
+            <NumberField
+              label={t('panel.dividerThickness')}
+              value={dividerWidthOf(obj)}
+              min={0}
+              onChange={(v) => updateObject(page.id, obj.id, { dividerWidth: Math.max(0, v) })}
             />
-            <div className="flex flex-wrap gap-1.5">
-              <Button
-                variant="primary"
-                onClick={() => {
-                  themeUploadIndex.current = i;
-                  themeFileRef.current?.click();
-                }}
-              >
-                {th.image ? t('panel.replace') : t('panel.upload')}
-              </Button>
-              {th.image && (
-                <Button
-                  variant="ghost"
-                  onClick={() => setThemes(themes.map((x, k) => (k === i ? { name: x.name } : x)))}
-                >
-                  {t('panel.remove')}
-                </Button>
-              )}
-              <Button variant="danger" onClick={() => setThemes(themes.filter((_, k) => k !== i))}>
-                {t('common.delete')}
-              </Button>
-            </div>
-            {th.image && <span className="truncate text-[11px] text-neutral-500">{th.imageFileName ?? t('panel.uploadedFallback')}</span>}
+            <SelectField
+              label={t('panel.dividerStyle')}
+              value={obj.dividerDashed ? 'dashed' : 'solid'}
+              options={[
+                { value: 'solid', label: t('panel.dividerSolid') },
+                { value: 'dashed', label: t('panel.dividerDashed') },
+              ]}
+              onChange={(v) => updateObject(page.id, obj.id, { dividerDashed: v === 'dashed' })}
+            />
           </div>
-        ))}
-        <Button
-          onClick={() =>
-            setThemes([...themes, { name: `${obj.screenshotName || 'screen'}_${themes.length + 2}` }])
-          }
-        >
-          {t('panel.addTheme')}
-        </Button>
-      </div>
+          <ColorField
+            label={t('panel.dividerColor')}
+            value={obj.dividerColor ?? DEFAULT_DIVIDER_COLOR}
+            onChange={(v) => updateObject(page.id, obj.id, { dividerColor: v })}
+          />
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-2">
         {page1Reference && (

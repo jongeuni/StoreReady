@@ -6,7 +6,7 @@ import type { PhoneObject } from '../../types';
 import { getDeviceModel } from '../../phoneFrame';
 import { useHtmlImage } from '../../hooks/useHtmlImage';
 import { useHtmlImages } from '../../hooks/useHtmlImages';
-import { bandCentroid, bandPolygon, dividerLines } from '../../utils/diagonalSplit';
+import { DEFAULT_DIVIDER_COLOR, bandCentroid, bandPolygon, dividerLines, dividerWidthOf } from '../../utils/diagonalSplit';
 import { useT } from '../../i18n';
 import { composeDevice3d } from '../../utils/device3d';
 
@@ -80,10 +80,17 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
               ...extra.map((x, i) => ({ image: themeImages[i + 1], name: x.name || noName })),
             ],
             hint,
+            {
+              // Convert canvas px to the un-warped screen source scale (screen is ~60% of the frame image width).
+              width: dividerWidthOf(obj),
+              phoneWidth: obj.width,
+              color: obj.dividerColor ?? DEFAULT_DIVIDER_COLOR,
+              dashed: !!obj.dividerDashed,
+            },
           )
         : null,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [r3d, frame3d, themeImages, obj.screenshotName, extra.map((x) => x.name).join('|'), noName, hint],
+    [r3d, frame3d, themeImages, obj.width, obj.dividerWidth, obj.dividerColor, obj.dividerDashed, obj.screenshotName, extra.map((x) => x.name).join('|'), noName, hint],
   );
 
   const crop = image ? coverCrop(image.naturalWidth, image.naturalHeight, screenW, screenH) : null;
@@ -222,9 +229,20 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
                 </Group>
               );
             })}
-            {dividerLines(screenW, screenH, themeCount).map((pts, i) => (
-              <Line key={i} points={pts} stroke="#ffffff" opacity={0.92} strokeWidth={Math.max(2, width * 0.012)} listening={false} />
-            ))}
+            {dividerWidthOf(obj) > 0 &&
+              dividerLines(screenW, screenH, themeCount).map((pts, i) => {
+                const lw = dividerWidthOf(obj);
+                return (
+                  <Line
+                    key={i}
+                    points={pts}
+                    stroke={obj.dividerColor ?? DEFAULT_DIVIDER_COLOR}
+                    strokeWidth={lw}
+                    dash={obj.dividerDashed ? [lw * 4, lw * 3] : undefined}
+                    listening={false}
+                  />
+                );
+              })}
           </>
         ) : image && crop ? (
           <KonvaImage image={image} width={screenW} height={screenH} crop={crop} />

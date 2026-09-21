@@ -3,6 +3,7 @@ import { drawWarped, type Point } from './perspectiveWarp';
 import { bandCentroid, bandPolygon, dividerLines } from './diagonalSplit';
 
 export type ThemeSource = { image?: HTMLImageElement; name: string };
+export type DividerStyle = { width: number; phoneWidth: number; color: string; dashed: boolean };
 
 const SRC_W = 640;
 
@@ -42,7 +43,7 @@ function coverDraw(ctx: CanvasRenderingContext2D, image: HTMLImageElement, w: nu
 }
 
 /** The flat, un-warped screen content: cover-cropped screenshot(s) in diagonal bands, or labelled placeholders. */
-function buildScreenSource(r3d: Render3D, themes: ThemeSource[], hint: string) {
+function buildScreenSource(r3d: Render3D, themes: ThemeSource[], hint: string, divider: DividerStyle) {
   const w = SRC_W;
   const h = Math.round(SRC_W * r3d.screenAspect);
   const c = document.createElement('canvas');
@@ -79,10 +80,13 @@ function buildScreenSource(r3d: Render3D, themes: ThemeSource[], hint: string) {
     ctx.restore();
   });
 
-  if (n > 1) {
-    ctx.strokeStyle = 'rgba(255,255,255,0.92)';
-    ctx.lineWidth = Math.max(3, w * 0.012);
+  if (n > 1 && divider.width > 0) {
+    // The un-warped screen is roughly 60% of the phone's drawn width, so scale canvas px into source px.
+    const lw = Math.max(1, divider.width * (w / (divider.phoneWidth * 0.6)));
+    ctx.strokeStyle = divider.color;
+    ctx.lineWidth = lw;
     ctx.lineCap = 'butt';
+    ctx.setLineDash(divider.dashed ? [lw * 4, lw * 3] : []);
     for (const [x1, y1, x2, y2] of dividerLines(w, h, n)) {
       ctx.beginPath();
       ctx.moveTo(x1, y1);
@@ -99,12 +103,13 @@ export function composeDevice3d(
   frame: HTMLImageElement,
   themes: ThemeSource[],
   hint: string,
+  divider: DividerStyle,
 ): HTMLCanvasElement {
   const out = document.createElement('canvas');
   out.width = r3d.frameWidth;
   out.height = r3d.frameHeight;
   const ctx = out.getContext('2d')!;
-  const src = buildScreenSource(r3d, themes, hint);
+  const src = buildScreenSource(r3d, themes, hint, divider);
   const quad = r3d.quad.map(([x, y]) => [x * r3d.frameWidth, y * r3d.frameHeight] as Point) as [Point, Point, Point, Point];
   drawWarped(ctx, src.canvas, src.w, src.h, quad);
   ctx.drawImage(frame, 0, 0, r3d.frameWidth, r3d.frameHeight);

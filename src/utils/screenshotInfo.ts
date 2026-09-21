@@ -2,6 +2,7 @@ import { panelWidthOf, spreadGap } from './spread';
 import type { Page, PhoneObject, Project, TextObject } from '../types';
 import { getDevicePreset } from '../devicePresets';
 import { getDeviceModel } from '../phoneFrame';
+import { DEFAULT_DIVIDER_COLOR, dividerWidthOf } from './diagonalSplit';
 
 type PageInfoData = {
   label: string;
@@ -35,7 +36,7 @@ function describePhone(p: PhoneObject) {
     ...((p.extraThemes ?? []).length > 0
       ? {
           themes: [p.screenshotName, ...(p.extraThemes ?? []).map((th) => th.name)],
-          split: `The phone's screen is divided into ${1 + (p.extraThemes ?? []).length} equal diagonal bands at 45 degrees ('/' direction, running from the top-left corner to the bottom-right corner, in the order of "themes"). Each band shows one theme's screen as if the full screen were cut along the diagonals, and a thin white divider line (about 1.2% of the phone width) is drawn along every boundary.`,
+          split: `The phone's screen is divided into ${1 + (p.extraThemes ?? []).length} equal diagonal bands at 45 degrees ('/' direction, running from the top-left corner to the bottom-right corner, in the order of "themes"). Each band shows one theme's screen as if the full screen were cut along the diagonals, ${dividerWidthOf(p) > 0 ? `and a ${p.dividerDashed ? 'dashed ' : ''}divider line (${dividerWidthOf(p)}px thick, colour ${p.dividerColor ?? DEFAULT_DIVIDER_COLOR}) is drawn along every boundary.` : 'with no divider line between them.'}`,
         }
       : {}),
     ...(p.screenshotDescription ? { desc: p.screenshotDescription } : {}),

@@ -51,3 +51,10 @@ export function dividerLines(w: number, h: number, n: number): [number, number, 
   }
   return lines;
 }
+
+export const DEFAULT_DIVIDER_COLOR = '#ffffff';
+
+/** Divider thickness in canvas px: the user's value, or a thin default relative to the phone's width. */
+export function dividerWidthOf(obj: { width: number; dividerWidth?: number }): number {
+  return obj.dividerWidth ?? Math.max(1, Math.round(obj.width * 0.004));
+}

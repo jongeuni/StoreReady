@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import type { CanvasObject, Page, Background } from './types';
 import { canvasWidthFor, spreadGap } from './utils/spread';
 
-export type TemplateId = 'single-phone' | 'dual-phone' | 'split-phone' | 'split-phone-3d' | 'phone-3d' | 'blank';
+export type TemplateId = 'single-phone' | 'dual-phone' | 'split-phone' | 'split-phone-3d' | 'diagonal-split' | 'phone-3d' | 'blank';
 
 export type Template = {
   id: TemplateId;
@@ -151,6 +151,29 @@ export const TEMPLATES: Template[] = [
           screenshotName: 'screen_1',
           width: phoneWidth,
           top: Math.round(canvasHeight * 0.31),
+          left: Math.round((canvasWidth - phoneWidth) / 2),
+          rotation: 0,
+          zIndex: 1,
+        },
+      ];
+    },
+  },
+  {
+    id: 'diagonal-split',
+    label: 'Diagonal Split',
+    description: 'Headline, subheadline, and one phone whose screen is split diagonally between three themes',
+    build: (canvasWidth, canvasHeight) => {
+      const phoneWidth = Math.round(canvasWidth * 0.62);
+      return [
+        headlineObject(canvasWidth, canvasHeight, 'Your app,\nyour theme'),
+        subheadlineObject(canvasWidth, canvasHeight, 'Show several looks of the same screen in one phone.'),
+        {
+          id: nanoid(),
+          type: 'phone',
+          screenshotName: 'theme_1',
+          extraThemes: [{ name: 'theme_2' }, { name: 'theme_3' }],
+          width: phoneWidth,
+          top: Math.round(canvasHeight * 0.35),
           left: Math.round((canvasWidth - phoneWidth) / 2),
           rotation: 0,
           zIndex: 1,
