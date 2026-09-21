@@ -38,6 +38,7 @@ const fr: Dict = {
   'template.dual-phone': 'Deux téléphones',
   'template.split-phone': "Téléphone scindé (2 écrans)",
   'template.phone-3d': "Téléphone 3D",
+  'template.split-phone-3d': "Téléphone 3D scindé (2 écrans)",
   'toolbar.addDevice': '+ Ajouter un appareil…',
   'toolbar.align': 'Aligner',
   'toolbar.alignLeft': 'Aligner à gauche',

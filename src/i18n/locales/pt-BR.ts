@@ -38,6 +38,7 @@ const ptBR: Dict = {
   'template.dual-phone': 'Dois celulares',
   'template.split-phone': "Celular dividido (2 telas)",
   'template.phone-3d': "Celular 3D",
+  'template.split-phone-3d': "Celular 3D dividido (2 telas)",
   'toolbar.addDevice': '+ Adicionar dispositivo…',
   'toolbar.align': 'Alinhar',
   'toolbar.alignLeft': 'Alinhar à esquerda',

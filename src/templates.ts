@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import type { CanvasObject, Page, Background } from './types';
 import { canvasWidthFor, spreadGap } from './utils/spread';
 
-export type TemplateId = 'single-phone' | 'dual-phone' | 'split-phone' | 'phone-3d' | 'blank';
+export type TemplateId = 'single-phone' | 'dual-phone' | 'split-phone' | 'split-phone-3d' | 'phone-3d' | 'blank';
 
 export type Template = {
   id: TemplateId;
@@ -62,8 +62,9 @@ function subheadlineObject(canvasWidth: number, canvasHeight: number, text: stri
  * that, laid next to each other (or swiped in the App Store), read as a single phone.
  * `panelWidth` is the width of ONE panel; the objects live on a canvas of 2 × panelWidth.
  */
-function buildSplitPhone(panelWidth: number, canvasHeight: number): CanvasObject[] {
-  const phoneWidth = Math.round(panelWidth * 0.8);
+function buildSplitPhone(panelWidth: number, canvasHeight: number, model3d = false): CanvasObject[] {
+  // The baked 3D phone image has empty margins around the device, so its frame is drawn wider.
+  const phoneWidth = Math.round(panelWidth * (model3d ? 1.05 : 0.8));
   const headline = headlineObject(panelWidth, canvasHeight, 'One screen,\ntwo pages');
   const sub = subheadlineObject(panelWidth, canvasHeight, 'A single phone that flows across two screenshots.');
   for (const o of [headline, sub]) {
@@ -79,9 +80,10 @@ function buildSplitPhone(panelWidth: number, canvasHeight: number): CanvasObject
     {
       id: nanoid(),
       type: 'phone',
+      ...(model3d ? { deviceKind: 'phone' as const, deviceModel: 'phone-3d' } : {}),
       screenshotName: 'screen_1',
       width: phoneWidth,
-      top: Math.round(canvasHeight * 0.3),
+      top: Math.round(canvasHeight * (model3d ? 0.27 : 0.3)),
       left: Math.round(panelWidth + spreadGap(panelWidth) / 2 - phoneWidth / 2),
       rotation: 0,
       zIndex: 1,
@@ -123,7 +125,14 @@ export const TEMPLATES: Template[] = [
     label: 'Split Phone',
     description: 'Two screenshots side by side with one big phone across the seam',
     spread: 2,
-    build: buildSplitPhone,
+    build: (w, h) => buildSplitPhone(w, h),
+  },
+  {
+    id: 'split-phone-3d',
+    label: 'Split 3D Phone',
+    description: 'Two screenshots side by side with one big tilted 3D phone across the seam',
+    spread: 2,
+    build: (w, h) => buildSplitPhone(w, h, true),
   },
   {
     id: 'phone-3d',

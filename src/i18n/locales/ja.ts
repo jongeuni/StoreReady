@@ -38,6 +38,7 @@ const ja: Dict = {
   'template.dual-phone': 'スマホ2台',
   'template.split-phone': "スマホ分割（2画面）",
   'template.phone-3d': "3Dスマホ",
+  'template.split-phone-3d': "3Dスマホ分割（2画面）",
   'toolbar.addDevice': '+ デバイスを追加…',
   'toolbar.align': '整列',
   'toolbar.alignLeft': '左揃え',

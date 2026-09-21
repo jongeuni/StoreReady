@@ -38,6 +38,7 @@ const hi: Dict = {
   'template.dual-phone': 'दो फ़ोन',
   'template.split-phone': "बँटा हुआ फ़ोन (2 स्क्रीन)",
   'template.phone-3d': "3D फ़ोन",
+  'template.split-phone-3d': "बँटा हुआ 3D फ़ोन (2 स्क्रीन)",
   'toolbar.addDevice': '+ डिवाइस जोड़ें…',
   'toolbar.align': 'संरेखित करें',
   'toolbar.alignLeft': 'बाएँ संरेखित करें',

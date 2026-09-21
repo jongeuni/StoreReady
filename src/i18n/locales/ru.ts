@@ -38,6 +38,7 @@ const ru: Dict = {
   'template.dual-phone': 'Два телефона',
   'template.split-phone': "Телефон на 2 экрана",
   'template.phone-3d': "3D-телефон",
+  'template.split-phone-3d': "3D-телефон на 2 экрана",
   'toolbar.addDevice': '+ Добавить устройство…',
   'toolbar.align': 'Выравнивание',
   'toolbar.alignLeft': 'По левому краю',

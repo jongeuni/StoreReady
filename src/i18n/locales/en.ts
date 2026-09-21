@@ -38,6 +38,7 @@ const en = {
   'template.dual-phone': 'Dual Phone',
   'template.split-phone': "Split phone (2 screens)",
   'template.phone-3d': "3D phone",
+  'template.split-phone-3d': "Split 3D phone (2 screens)",
   'toolbar.addDevice': '+ Add device…',
   'toolbar.align': 'Align',
   'toolbar.alignLeft': 'Align left',
