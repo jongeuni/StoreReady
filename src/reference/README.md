@@ -46,3 +46,8 @@ Only add or change files inside your own `src/reference/apps/<your-app>/` folder
 PR, run `npm run dev` and check http://localhost:5173/reference to see your card.
 
 Please only submit apps you own or have permission to show.
+
+## Want your app featured on the main page?
+
+The Reference page is open to everyone via pull request. Featured spots on the main page are arranged
+directly — email **hello@app-ready.store**.
