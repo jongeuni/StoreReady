@@ -169,7 +169,7 @@ const ptBR: Dict = {
     'Não é um editor para enfeitar capturas que você já tem. Você projeta primeiro o layout das imagens promocionais — títulos, subtítulos e posição dos celulares — e depois preenche o conteúdo das telas.',
   'land.start': 'Começar grátis',
   'land.noSignup': 'Sem cadastro',
-  'land.footer': 'Projete primeiro, gere depois.',
+  'land.footer': "Mostre seu app do seu jeito, de forma simples",
   'land.madeBadge': "Você mesmo pode criar isto",
 
   'demo.hint': 'Role a página — a prévia à direita muda a cada etapa.',

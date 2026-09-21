@@ -169,7 +169,7 @@ const it: Dict = {
     'Non è un editor per abbellire screenshot che hai già. Prima progetti il layout delle immagini promozionali — titoli, sottotitoli e posizione dei telefoni — e poi riempi il contenuto delle schermate.',
   'land.start': 'Inizia gratis',
   'land.noSignup': 'Nessuna registrazione',
-  'land.footer': 'Prima progetta, poi genera.',
+  'land.footer': "Mostra la tua app a modo tuo, in modo semplice",
   'land.madeBadge': "Puoi crearlo anche tu",
 
   'demo.hint': 'Scorri verso il basso: l’anteprima a destra cambia a ogni passaggio.',

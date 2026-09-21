@@ -169,7 +169,7 @@ const fr: Dict = {
     "Ce n'est pas un éditeur pour embellir des captures existantes. Vous concevez d'abord la mise en page de vos visuels promotionnels — titres, sous-titres et placement des téléphones — puis vous remplissez le contenu des écrans.",
   'land.start': 'Commencer gratuitement',
   'land.noSignup': "Sans inscription",
-  'land.footer': "Concevez d'abord, générez ensuite.",
+  'land.footer': "Présentez votre app à votre façon, simplement",
   'land.madeBadge': "Vous pouvez créer ça vous-même",
 
   'demo.hint': "Faites défiler : l'aperçu à droite change à chaque étape.",

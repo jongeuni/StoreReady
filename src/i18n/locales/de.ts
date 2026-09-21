@@ -169,7 +169,7 @@ const de: Dict = {
     'Das ist kein Editor, um vorhandene Screenshots aufzuhübschen. Du gestaltest zuerst das Layout deiner Werbebilder — Überschriften, Unterüberschriften und die Platzierung der Smartphones — und füllst danach die Bildschirminhalte.',
   'land.start': 'Kostenlos starten',
   'land.noSignup': 'Keine Registrierung nötig',
-  'land.footer': 'Erst gestalten, dann generieren.',
+  'land.footer': "Zeige deine App, wie du willst — ganz einfach",
   'land.madeBadge': "Das kannst du selbst bauen",
 
   'demo.hint': 'Scrolle nach unten — die Vorschau rechts ändert sich mit jedem Schritt.',

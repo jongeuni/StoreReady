@@ -169,7 +169,7 @@ const tr: Dict = {
     'Bu, elinizdeki ekran görüntülerini süslemek için bir düzenleyici değil. Önce tanıtım görsellerinin yerleşimini — başlıklar, alt başlıklar ve telefonların yeri — tasarlarsınız, ardından ekranların içeriğini doldurursunuz.',
   'land.start': 'Ücretsiz başla',
   'land.noSignup': 'Kayıt gerekmez',
-  'land.footer': 'Önce tasarla, sonra oluştur.',
+  'land.footer': "Uygulamanızı istediğiniz gibi, kolayca gösterin",
   'land.madeBadge': "Bunu kendiniz yapabilirsiniz",
 
   'demo.hint': 'Aşağı kaydırın — sağdaki önizleme her adımda değişir.',

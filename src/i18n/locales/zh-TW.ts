@@ -167,7 +167,7 @@ const zhTW: Dict = {
     '這不是用來美化現成截圖的編輯器。先設計宣傳圖的版面 — 標題、副標題與手機的位置 — 再填入螢幕內容。',
   'land.start': '免費開始',
   'land.noSignup': '不需註冊',
-  'land.footer': '先設計，再生成。',
+  'land.footer': "隨心所欲，輕鬆展示你的 App",
   'land.madeBadge': "這樣的畫面，你自己也能做",
 
   'demo.hint': '向下捲動 — 右側預覽會隨每個步驟改變。',

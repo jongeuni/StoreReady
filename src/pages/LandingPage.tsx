@@ -259,9 +259,15 @@ export function LandingPage({ onStart }: Props) {
           <span>
             Store<span className="text-blue-400">Ready</span> — {t('land.footer')}
           </span>
-          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-neutral-300">
-            <GithubIcon className="h-3.5 w-3.5" />
-            github.com/jongeuni/StoreReady
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            title="GitHub"
+            className="inline-flex items-center hover:text-neutral-300"
+          >
+            <GithubIcon className="h-4 w-4" />
           </a>
         </div>
       </footer>

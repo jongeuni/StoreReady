@@ -169,7 +169,7 @@ const id: Dict = {
     'Ini bukan editor untuk mempercantik tangkapan layar yang sudah ada. Anda merancang tata letak gambar promosi lebih dulu — judul, subjudul, dan penempatan ponsel — lalu mengisi konten layarnya.',
   'land.start': 'Mulai gratis',
   'land.noSignup': 'Tanpa pendaftaran',
-  'land.footer': 'Rancang dulu, hasilkan kemudian.',
+  'land.footer': "Tampilkan aplikasimu sesukamu, dengan mudah",
   'land.madeBadge': "Anda bisa membuatnya sendiri",
 
   'demo.hint': 'Gulir ke bawah — pratinjau di kanan berubah di setiap langkah.',

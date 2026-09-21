@@ -169,7 +169,7 @@ const es: Dict = {
     'No es un editor para embellecer capturas que ya tienes. Diseña primero la maquetación de tus imágenes promocionales —titulares, subtítulos y colocación de los teléfonos— y rellena el contenido de las pantallas después.',
   'land.start': 'Empezar gratis',
   'land.noSignup': 'Sin registro',
-  'land.footer': 'Diseña primero, genera después.',
+  'land.footer': "Muestra tu app a tu manera, de forma sencilla",
   'land.madeBadge': "Tú mismo puedes crear esto",
 
   'demo.hint': 'Desplázate: la vista previa de la derecha cambia con cada paso.',

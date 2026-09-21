@@ -169,7 +169,7 @@ const vi: Dict = {
     'Đây không phải trình chỉnh sửa để làm đẹp ảnh chụp có sẵn. Bạn thiết kế trước bố cục ảnh quảng bá — tiêu đề, tiêu đề phụ và vị trí điện thoại — rồi mới điền nội dung màn hình.',
   'land.start': 'Bắt đầu miễn phí',
   'land.noSignup': 'Không cần đăng ký',
-  'land.footer': 'Thiết kế trước, tạo sau.',
+  'land.footer': "Giới thiệu ứng dụng theo cách của bạn, thật đơn giản",
   'land.madeBadge': "Bạn có thể tự làm được",
 
   'demo.hint': 'Cuộn xuống — bản xem trước bên phải thay đổi theo từng bước.',

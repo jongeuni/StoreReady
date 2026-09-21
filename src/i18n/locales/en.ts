@@ -170,7 +170,7 @@ const en = {
     "This isn't an editor for decorating screenshots you already have. You first design the layout of the marketing image — headline, subheadline, where the phones go — and fill in the screens afterwards.",
   'land.start': 'Start for free',
   'land.noSignup': 'No sign-up needed',
-  'land.footer': 'Design first, generate later.',
+  'land.footer': "Show your app your way, simply.",
   'land.madeBadge': "You can build this yourself",
 
   'demo.hint': 'Keep scrolling — the preview on the right changes with every step.',
