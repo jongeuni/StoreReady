@@ -13,9 +13,9 @@ const OUT_W = 900;
 const OUT_H = 1500;
 const params = new URLSearchParams(location.search);
 const ROT = {
-  x: Number(params.get('rx') ?? 0.1),
+  x: Number(params.get('rx') ?? 0),
   y: Number(params.get('ry') ?? -0.4),
-  z: Number(params.get('rz') ?? -0.14),
+  z: Number(params.get('rz') ?? -0.12),
 };
 const RECEIVER = 'http://localhost:5599/';
 
@@ -109,7 +109,7 @@ button(W / 2 + 0.01, 0.4, 0.28); // power
 phone.rotation.order = 'YXZ';
 phone.rotation.set(ROT.x, ROT.y, ROT.z);
 
-const camera = new THREE.PerspectiveCamera(Number(params.get('fov') ?? 32), OUT_W / OUT_H, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(Number(params.get('fov') ?? 14), OUT_W / OUT_H, 0.1, 100);
 camera.position.set(0, 0, 12);
 camera.lookAt(0, 0, 0);
 
