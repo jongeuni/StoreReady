@@ -37,6 +37,7 @@ const ko: Dict = {
   'template.single-phone': '폰 1개',
   'template.dual-phone': '폰 2개',
   'template.split-phone': "폰 분할 (화면 2개)",
+  'template.phone-3d': "3D 폰",
   'toolbar.addDevice': '+ 기기 추가…',
   'toolbar.align': '정렬',
   'toolbar.alignLeft': '왼쪽 정렬',

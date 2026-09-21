@@ -37,6 +37,7 @@ const tr: Dict = {
   'template.single-phone': 'Tek telefon',
   'template.dual-phone': 'İki telefon',
   'template.split-phone': "Bölünmüş telefon (2 ekran)",
+  'template.phone-3d': "3D telefon",
   'toolbar.addDevice': '+ Cihaz ekle…',
   'toolbar.align': 'Hizala',
   'toolbar.alignLeft': 'Sola hizala',

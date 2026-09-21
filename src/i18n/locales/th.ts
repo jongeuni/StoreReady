@@ -37,6 +37,7 @@ const th: Dict = {
   'template.single-phone': 'โทรศัพท์เครื่องเดียว',
   'template.dual-phone': 'โทรศัพท์สองเครื่อง',
   'template.split-phone': "โทรศัพท์แบ่ง 2 หน้าจอ",
+  'template.phone-3d': "โทรศัพท์ 3 มิติ",
   'toolbar.addDevice': '+ เพิ่มอุปกรณ์…',
   'toolbar.align': 'จัดแนว',
   'toolbar.alignLeft': 'จัดชิดซ้าย',

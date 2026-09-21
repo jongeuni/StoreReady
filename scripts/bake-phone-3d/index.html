@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bake 3D phone</title>
+    <style>
+      body { margin: 0; background: #444; color: #ddd; font: 12px monospace; }
+      canvas { display: block; height: 96vh !important; width: auto !important; background: repeating-conic-gradient(#555 0% 25%, #666 0% 50%) 50% / 24px 24px; }
+    </style>
+  </head>
+  <body>
+    <!--
+      One-off tool: renders the tilted 3D phone used by the "3D phone" device model to a transparent PNG
+      (screen area left as a see-through hole) and reports where the screen's four corners landed.
+      Open /scripts/bake-phone-3d/ on the dev server; the result is POSTed to a local receiver (see bake.js).
+    -->
+    <script type="module" src="./bake.js"></script>
+  </body>
+</html>

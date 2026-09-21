@@ -37,6 +37,7 @@ const zhCN: Dict = {
   'template.single-phone': '单手机',
   'template.dual-phone': '双手机',
   'template.split-phone': "分屏手机（2屏）",
+  'template.phone-3d': "3D 手机",
   'toolbar.addDevice': '+ 添加设备…',
   'toolbar.align': '对齐',
   'toolbar.alignLeft': '左对齐',

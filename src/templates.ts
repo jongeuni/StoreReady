@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import type { CanvasObject, Page, Background } from './types';
 import { canvasWidthFor, spreadGap } from './utils/spread';
 
-export type TemplateId = 'single-phone' | 'dual-phone' | 'split-phone' | 'blank';
+export type TemplateId = 'single-phone' | 'dual-phone' | 'split-phone' | 'phone-3d' | 'blank';
 
 export type Template = {
   id: TemplateId;
@@ -124,6 +124,30 @@ export const TEMPLATES: Template[] = [
     description: 'Two screenshots side by side with one big phone across the seam',
     spread: 2,
     build: buildSplitPhone,
+  },
+  {
+    id: 'phone-3d',
+    label: '3D Phone',
+    description: 'Headline, subheadline, and one tilted 3D phone',
+    build: (canvasWidth, canvasHeight) => {
+      const phoneWidth = Math.round(canvasWidth * 0.92);
+      return [
+        headlineObject(canvasWidth, canvasHeight, 'Your headline\ngoes here'),
+        subheadlineObject(canvasWidth, canvasHeight, 'A short supporting line that explains the value of this screen.'),
+        {
+          id: nanoid(),
+          type: 'phone',
+          deviceKind: 'phone',
+          deviceModel: 'phone-3d',
+          screenshotName: 'screen_1',
+          width: phoneWidth,
+          top: Math.round(canvasHeight * 0.31),
+          left: Math.round((canvasWidth - phoneWidth) / 2),
+          rotation: 0,
+          zIndex: 1,
+        },
+      ];
+    },
   },
   {
     id: 'dual-phone',

@@ -37,6 +37,7 @@ const id: Dict = {
   'template.single-phone': 'Satu ponsel',
   'template.dual-phone': 'Dua ponsel',
   'template.split-phone': "Ponsel terbelah (2 layar)",
+  'template.phone-3d': "Ponsel 3D",
   'toolbar.addDevice': '+ Tambah perangkat…',
   'toolbar.align': 'Ratakan',
   'toolbar.alignLeft': 'Rata kiri',

@@ -1,10 +1,22 @@
 import type { DeviceKind } from './types';
+import phone3dFrame from './assets/phone3d/frame.png';
 
 // Shared geometry for device placeholder graphics. Each DeviceModel is a specific,
 // freely-swappable look (e.g. "iPhone SE" vs "iPhone Pro Max") within a broader
 // DeviceKind (phone/tablet/watch). Kind drives the JSON export label and which model
 // list an object can pick from; model drives the actual frame shape/aspect drawn.
 export type DeviceChrome = 'island' | 'homeButton' | 'crown' | 'none';
+
+/** A pre-rendered (baked) 3D device: a transparent-screen frame image plus where its screen's corners are. */
+export type Render3D = {
+  frameUrl: string;
+  frameWidth: number;
+  frameHeight: number;
+  /** Screen corners TL, TR, BR, BL as 0..1 fractions of the frame image. */
+  quad: [[number, number], [number, number], [number, number], [number, number]];
+  /** Screen height / width when un-warped, so a screenshot is cover-cropped to the right shape. */
+  screenAspect: number;
+};
 
 export type DeviceModel = {
   id: string;
@@ -16,6 +28,7 @@ export type DeviceModel = {
   screenInsetBottomRatio: number; // relative to width (bottom — larger for home-button phones)
   screenCornerRadiusRatio: number; // relative to width
   chrome: DeviceChrome;
+  render3d?: Render3D;
 };
 
 // Within each kind, the FIRST entry is the default used for freshly-added objects and for
@@ -53,6 +66,24 @@ export const DEVICE_MODELS: DeviceModel[] = [
     screenInsetBottomRatio: 0.13,
     screenCornerRadiusRatio: 0.015,
     chrome: 'homeButton',
+  },
+  {
+    id: 'phone-3d',
+    kind: 'phone',
+    label: 'iPhone 3D (tilted)',
+    aspect: 1.66667,
+    cornerRadiusRatio: 0,
+    screenInsetRatio: 0,
+    screenInsetBottomRatio: 0,
+    screenCornerRadiusRatio: 0,
+    chrome: 'none',
+    render3d: {
+      frameUrl: phone3dFrame,
+      frameWidth: 900,
+      frameHeight: 1500,
+      quad: [[0.21843, 0.04989], [0.6989, 0.08766], [0.67576, 0.95595], [0.23471, 0.84961]],
+      screenAspect: 2.2532,
+    },
   },
   {
     id: 'tablet-standard',

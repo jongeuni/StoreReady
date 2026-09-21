@@ -1,6 +1,7 @@
 import { panelWidthOf, spreadGap } from './spread';
 import type { Page, PhoneObject, Project, TextObject } from '../types';
 import { getDevicePreset } from '../devicePresets';
+import { getDeviceModel } from '../phoneFrame';
 
 type PageInfoData = {
   label: string;
@@ -33,6 +34,9 @@ function describePhone(p: PhoneObject) {
     img: p.screenshotName,
     ...(p.screenshotDescription ? { desc: p.screenshotDescription } : {}),
     kind: p.deviceKind ?? 'phone',
+    ...(getDeviceModel(p.deviceModel, p.deviceKind ?? 'phone').render3d
+      ? { look: '3D-rendered iPhone turned about 45 degrees to the right (slight top tilt), showing its right edge and thickness; the screen content is in perspective' }
+      : {}),
     width: p.width,
     top: p.top,
     left: p.left,

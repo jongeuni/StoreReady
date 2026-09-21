@@ -37,6 +37,7 @@ const de: Dict = {
   'template.single-phone': 'Ein Smartphone',
   'template.dual-phone': 'Zwei Smartphones',
   'template.split-phone': "Geteiltes Smartphone (2 Screens)",
+  'template.phone-3d': "3D-Smartphone",
   'toolbar.addDevice': '+ Gerät hinzufügen…',
   'toolbar.align': 'Ausrichten',
   'toolbar.alignLeft': 'Links ausrichten',

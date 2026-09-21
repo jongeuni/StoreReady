@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
 import { Circle, Group, Rect, Text, Image as KonvaImage } from 'react-konva';
 import type Konva from 'konva';
 import type { Context } from 'konva/lib/Context';
@@ -6,6 +6,7 @@ import type { PhoneObject } from '../../types';
 import { getDeviceModel } from '../../phoneFrame';
 import { useHtmlImage } from '../../hooks/useHtmlImage';
 import { useT } from '../../i18n';
+import { composeDevice3d } from '../../utils/device3d';
 
 function roundedRectPath(ctx: Context, w: number, h: number, r: number) {
   ctx.beginPath();
@@ -59,7 +60,54 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
   const crownH = height * 0.14;
   const homeButtonRadius = width * 0.055;
 
+  const r3d = model.render3d;
+  const frame3d = useHtmlImage(r3d?.frameUrl);
+  const noName = t('canvas.noName');
+  const hint = t('canvas.placeholder');
+  const composite3d = useMemo(
+    () => (r3d && frame3d ? composeDevice3d(r3d, frame3d, image, obj.screenshotName || noName, hint) : null),
+    [r3d, frame3d, image, obj.screenshotName, noName, hint],
+  );
+
   const crop = image ? coverCrop(image.naturalWidth, image.naturalHeight, screenW, screenH) : null;
+
+  if (r3d) {
+    return (
+      <Group
+        ref={ref}
+        x={obj.left}
+        y={obj.top}
+        rotation={obj.rotation}
+        draggable
+        onClick={onSelect}
+        onTap={onSelect}
+        onDragEnd={(e) => onDragEnd(e.target.x(), e.target.y())}
+        onTransformEnd={(e) => {
+          const node = e.target;
+          const scaleX = node.scaleX();
+          node.scaleX(1);
+          node.scaleY(1);
+          onTransformEnd({
+            width: Math.max(40, Math.round(width * scaleX)),
+            left: Math.round(node.x()),
+            top: Math.round(node.y()),
+            rotation: Math.round(node.rotation()),
+          });
+        }}
+      >
+        <Text
+          text={obj.screenshotName || t('canvas.unnamed')}
+          x={0}
+          y={-Math.max(28, height * 0.028)}
+          fontSize={Math.max(18, width * 0.045)}
+          fontFamily="ui-monospace, monospace"
+          fill={isSelected ? '#5b8def' : '#8a8a93'}
+          listening={false}
+        />
+        {composite3d && <KonvaImage image={composite3d} width={width} height={height} />}
+      </Group>
+    );
+  }
 
   return (
     <Group

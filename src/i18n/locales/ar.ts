@@ -37,6 +37,7 @@ const ar: Dict = {
   'template.single-phone': 'هاتف واحد',
   'template.dual-phone': 'هاتفان',
   'template.split-phone': "هاتف مقسوم (شاشتان)",
+  'template.phone-3d': "هاتف ثلاثي الأبعاد",
   'toolbar.addDevice': '+ إضافة جهاز…',
   'toolbar.align': 'محاذاة',
   'toolbar.alignLeft': 'محاذاة لليسار',

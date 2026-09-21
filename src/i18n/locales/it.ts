@@ -37,6 +37,7 @@ const it: Dict = {
   'template.single-phone': 'Un telefono',
   'template.dual-phone': 'Due telefoni',
   'template.split-phone': "Telefono diviso (2 schermate)",
+  'template.phone-3d': "Telefono 3D",
   'toolbar.addDevice': '+ Aggiungi dispositivo…',
   'toolbar.align': 'Allinea',
   'toolbar.alignLeft': 'Allinea a sinistra',
