@@ -64,8 +64,8 @@ const fr: Dict = {
   'panel.deviceKind': "Type d'appareil",
   'panel.model': 'Modèle',
   'panel.screenshotName': 'Nom de la capture',
-  'panel.nameHintPre': "Ce nom indique à l'agent de code IA quel écran concevoir sur ce téléphone. Dans le prompt généré, il apparaît sous la forme",
-  'panel.nameHintPost': '.',
+  'panel.nameHint': "Ce nom indique à l'agent de code IA quel écran capturer et placer dans ce téléphone.",
+  'panel.aiCapture': "Utiliser la capture IA",
   'panel.description': 'Description de la capture (facultatif)',
   'panel.descriptionPlaceholder': "ex. : Écran d'accueil avec 3 tâches terminées et une bannière de série",
   'panel.screenshotImage': 'Image de la capture',
@@ -133,8 +133,7 @@ const fr: Dict = {
   'bg.color1': 'Couleur 1',
   'bg.color2': 'Couleur 2',
   'bg.angle': 'Angle',
-  'bg.note':
-    "Les arrière-plans image sont prévus comme future fonctionnalité premium. Les fonds transparents ne sont pas pris en charge : les captures de l'App Store ne peuvent pas être transparentes.",
+  'bg.note': "Les fonds transparents ne sont pas pris en charge : les captures de l'App Store ne peuvent pas être transparentes.",
 
   'upload.errType': 'Type de fichier non pris en charge (« {type} »). Utilisez PNG, JPEG ou WebP.',
   'upload.errSize': "L'image est trop volumineuse ({size} Mo). La taille maximale est de 20 Mo.",

@@ -35,7 +35,6 @@ export function PageInfoBar({ page }: { page: Page }) {
       >
         <span className={`transition-transform ${expanded ? 'rotate-90' : ''}`}>▸</span>
         {t('info.title')}
-        <span className="text-neutral-600">{t('info.hint')}</span>
       </button>
       {expanded && (
         <div className="flex flex-col gap-2 px-3 pb-3">

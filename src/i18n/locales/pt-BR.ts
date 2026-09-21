@@ -64,8 +64,8 @@ const ptBR: Dict = {
   'panel.deviceKind': 'Tipo de dispositivo',
   'panel.model': 'Modelo',
   'panel.screenshotName': 'Nome da captura',
-  'panel.nameHintPre': 'Este nome diz ao agente de código com IA qual tela desenhar neste celular. No prompt gerado, ele aparece como',
-  'panel.nameHintPost': '.',
+  'panel.nameHint': "Este nome diz ao agente de código com IA qual tela capturar e colocar neste celular.",
+  'panel.aiCapture': "Usar captura com IA",
   'panel.description': 'Descrição da captura (opcional)',
   'panel.descriptionPlaceholder': 'ex.: Tela inicial com 3 tarefas concluídas e um banner de sequência',
   'panel.screenshotImage': 'Imagem da captura',
@@ -133,8 +133,7 @@ const ptBR: Dict = {
   'bg.color1': 'Cor 1',
   'bg.color2': 'Cor 2',
   'bg.angle': 'Ângulo',
-  'bg.note':
-    'Fundos de imagem estão previstos como um recurso premium futuro. Fundos transparentes não são compatíveis — as capturas da App Store não podem ter transparência.',
+  'bg.note': "Fundos transparentes não são compatíveis — as capturas da App Store não podem ter transparência.",
 
   'upload.errType': 'Tipo de arquivo não compatível (“{type}”). Use PNG, JPEG ou WebP.',
   'upload.errSize': 'A imagem é grande demais ({size} MB). O tamanho máximo é 20 MB.',

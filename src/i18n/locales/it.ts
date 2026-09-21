@@ -64,8 +64,8 @@ const it: Dict = {
   'panel.deviceKind': 'Tipo di dispositivo',
   'panel.model': 'Modello',
   'panel.screenshotName': 'Nome dello screenshot',
-  'panel.nameHintPre': 'Questo nome dice all’agente di codice IA quale schermata progettare su questo telefono. Nel prompt generato compare come',
-  'panel.nameHintPost': '.',
+  'panel.nameHint': "Questo nome dice all’agente di codice IA quale schermata catturare e inserire in questo telefono.",
+  'panel.aiCapture': "Usa cattura IA",
   'panel.description': 'Descrizione dello screenshot (facoltativa)',
   'panel.descriptionPlaceholder': 'es.: Schermata home con 3 attività completate e un banner della serie',
   'panel.screenshotImage': 'Immagine dello screenshot',
@@ -133,8 +133,7 @@ const it: Dict = {
   'bg.color1': 'Colore 1',
   'bg.color2': 'Colore 2',
   'bg.angle': 'Angolo',
-  'bg.note':
-    'Gli sfondi con immagine sono previsti come futura funzione premium. Gli sfondi trasparenti non sono supportati: gli screenshot dell’App Store non possono avere trasparenza.',
+  'bg.note': "Gli sfondi trasparenti non sono supportati: gli screenshot dell’App Store non possono avere trasparenza.",
 
   'upload.errType': 'Tipo di file non supportato («{type}»). Usa PNG, JPEG o WebP.',
   'upload.errSize': 'L’immagine è troppo grande ({size} MB). La dimensione massima è 20 MB.',

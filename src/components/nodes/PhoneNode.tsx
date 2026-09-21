@@ -40,7 +40,7 @@ type Props = {
 };
 
 export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
-  { obj, isSelected, onSelect, onDragEnd, onTransformEnd },
+  { obj, onSelect, onDragEnd, onTransformEnd },
   ref,
 ) {
   const t = useT();
@@ -119,15 +119,6 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
           });
         }}
       >
-        <Text
-          text={obj.screenshotName || t('canvas.unnamed')}
-          x={0}
-          y={-Math.max(28, height * 0.028)}
-          fontSize={Math.max(18, width * 0.045)}
-          fontFamily="ui-monospace, monospace"
-          fill={isSelected ? '#5b8def' : '#8a8a93'}
-          listening={false}
-        />
         {composite3d && <KonvaImage image={composite3d} width={width} height={height} />}
       </Group>
     );
@@ -156,17 +147,6 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
         });
       }}
     >
-      {/* Selection label */}
-      <Text
-        text={obj.screenshotName || t('canvas.unnamed')}
-        x={0}
-        y={-Math.max(28, height * 0.028)}
-        fontSize={Math.max(18, width * 0.045)}
-        fontFamily="ui-monospace, monospace"
-        fill={isSelected ? '#5b8def' : '#8a8a93'}
-        listening={false}
-      />
-
       {/* Device body */}
       <Rect width={width} height={height} cornerRadius={bodyRadius} fill="#0a0a0c" stroke="#38383c" strokeWidth={1} />
 

@@ -64,8 +64,8 @@ const ko: Dict = {
   'panel.deviceKind': '기기 종류',
   'panel.model': '모델',
   'panel.screenshotName': '스크린샷 이름',
-  'panel.nameHintPre': '이 이름은 AI 코딩 에이전트에게 이 폰에 어떤 화면을 디자인할지 알려줘요 — 생성된 프롬프트에는',
-  'panel.nameHintPost': '로 들어가요.',
+  'panel.nameHint': "이 이름은 AI 코딩 에이전트에게 이 폰에 어떤 화면을 캡처해서 넣을지 알려줘요.",
+  'panel.aiCapture': "AI 캡처 사용",
   'panel.description': '스크린샷 설명 (선택)',
   'panel.descriptionPlaceholder': '예: 완료한 할 일 3개와 연속 달성 배너가 보이는 홈 화면',
   'panel.screenshotImage': '스크린샷 이미지',
@@ -133,8 +133,7 @@ const ko: Dict = {
   'bg.color1': '색상 1',
   'bg.color2': '색상 2',
   'bg.angle': '각도',
-  'bg.note':
-    '이미지 배경은 향후 프리미엄 기능으로 준비 중이에요. 투명 배경은 지원하지 않아요 — App Store 스크린샷은 투명할 수 없어요.',
+  'bg.note': "투명 배경은 지원하지 않습니다 — App Store 스크린샷에는 투명도를 쓸 수 없습니다.",
 
   'upload.errType': '지원하지 않는 파일 형식이에요 ("{type}"). PNG, JPEG, WebP를 사용해주세요.',
   'upload.errSize': '이미지가 너무 커요 ({size}MB). 최대 20MB까지 가능해요.',

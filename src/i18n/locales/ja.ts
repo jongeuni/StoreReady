@@ -64,8 +64,8 @@ const ja: Dict = {
   'panel.deviceKind': 'デバイスの種類',
   'panel.model': 'モデル',
   'panel.screenshotName': 'スクリーンショット名',
-  'panel.nameHintPre': 'この名前は、このスマホにどの画面をデザインするかをAIコーディングエージェントに伝えます。生成されるプロンプトでは',
-  'panel.nameHintPost': 'として入ります。',
+  'panel.nameHint': "この名前は、このスマホにどの画面をキャプチャして入れるかをAIコーディングエージェントに伝えます。",
+  'panel.aiCapture': "AIキャプチャを使う",
   'panel.description': 'スクリーンショットの説明（任意）',
   'panel.descriptionPlaceholder': '例：完了したタスク3件と連続達成バナーが見えるホーム画面',
   'panel.screenshotImage': 'スクリーンショット画像',
@@ -133,8 +133,7 @@ const ja: Dict = {
   'bg.color1': '色 1',
   'bg.color2': '色 2',
   'bg.angle': '角度',
-  'bg.note':
-    '画像背景は今後のプレミアム機能として予定しています。透明な背景には対応していません — App Store のスクリーンショットは透過にできません。',
+  'bg.note': "透明な背景には対応していません — App Store のスクリーンショットは透過にできません。",
 
   'upload.errType': '未対応のファイル形式です（"{type}"）。PNG、JPEG、WebP をご利用ください。',
   'upload.errSize': '画像が大きすぎます（{size}MB）。最大サイズは20MBです。',

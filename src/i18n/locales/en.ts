@@ -64,8 +64,8 @@ const en = {
   'panel.deviceKind': 'Device kind',
   'panel.model': 'Model',
   'panel.screenshotName': 'Screenshot name',
-  'panel.nameHintPre': 'This name tells your AI coding agent which screen to design for this phone — it will appear as',
-  'panel.nameHintPost': 'in the generated prompt.',
+  'panel.nameHint': "This name tells your AI coding agent which screen to capture and place in this phone.",
+  'panel.aiCapture': "Use AI capture",
   'panel.description': 'Screenshot description (optional)',
   'panel.descriptionPlaceholder': 'e.g. Home screen with 3 completed tasks and the streak banner visible',
   'panel.screenshotImage': 'Screenshot image',
@@ -133,8 +133,7 @@ const en = {
   'bg.color1': 'Color 1',
   'bg.color2': 'Color 2',
   'bg.angle': 'Angle',
-  'bg.note':
-    "Image backgrounds are planned as a future premium feature. Transparent backgrounds aren't supported — App Store screenshots can't have transparency.",
+  'bg.note': "Transparent backgrounds aren't supported — App Store screenshots can't have transparency.",
 
   'upload.errType': 'Unsupported file type "{type}". Use PNG, JPEG, or WebP.',
   'upload.errSize': 'Image is too large ({size}MB). Max size is 20MB.',

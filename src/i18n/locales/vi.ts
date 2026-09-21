@@ -64,8 +64,8 @@ const vi: Dict = {
   'panel.deviceKind': 'Loại thiết bị',
   'panel.model': 'Mẫu máy',
   'panel.screenshotName': 'Tên ảnh chụp màn hình',
-  'panel.nameHintPre': 'Tên này cho tác nhân lập trình AI biết cần thiết kế màn hình nào trên chiếc điện thoại này. Trong prompt được tạo, nó xuất hiện dưới dạng',
-  'panel.nameHintPost': '.',
+  'panel.nameHint': "Tên này cho tác nhân lập trình AI biết cần chụp màn hình nào để đưa vào chiếc điện thoại này.",
+  'panel.aiCapture': "Dùng chụp bằng AI",
   'panel.description': 'Mô tả ảnh chụp màn hình (không bắt buộc)',
   'panel.descriptionPlaceholder': 'vd: Màn hình chính với 3 việc đã hoàn thành và biểu ngữ chuỗi ngày',
   'panel.screenshotImage': 'Ảnh chụp màn hình',
@@ -133,8 +133,7 @@ const vi: Dict = {
   'bg.color1': 'Màu 1',
   'bg.color2': 'Màu 2',
   'bg.angle': 'Góc',
-  'bg.note':
-    'Nền hình ảnh được dự kiến là tính năng cao cấp trong tương lai. Không hỗ trợ nền trong suốt — ảnh chụp màn hình App Store không được có độ trong suốt.',
+  'bg.note': "Không hỗ trợ nền trong suốt — ảnh chụp màn hình App Store không được có độ trong suốt.",
 
   'upload.errType': 'Loại tệp không được hỗ trợ (“{type}”). Hãy dùng PNG, JPEG hoặc WebP.',
   'upload.errSize': 'Ảnh quá lớn ({size} MB). Kích thước tối đa là 20 MB.',

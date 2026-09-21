@@ -64,8 +64,8 @@ const id: Dict = {
   'panel.deviceKind': 'Jenis perangkat',
   'panel.model': 'Model',
   'panel.screenshotName': 'Nama tangkapan layar',
-  'panel.nameHintPre': 'Nama ini memberi tahu agen kode AI layar mana yang harus dirancang di ponsel ini. Di prompt yang dihasilkan, nama ini muncul sebagai',
-  'panel.nameHintPost': '.',
+  'panel.nameHint': "Nama ini memberi tahu agen kode AI layar mana yang harus ditangkap dan dimasukkan ke ponsel ini.",
+  'panel.aiCapture': "Gunakan tangkapan AI",
   'panel.description': 'Deskripsi tangkapan layar (opsional)',
   'panel.descriptionPlaceholder': 'mis., Layar beranda dengan 3 tugas selesai dan spanduk rangkaian hari',
   'panel.screenshotImage': 'Gambar tangkapan layar',
@@ -133,8 +133,7 @@ const id: Dict = {
   'bg.color1': 'Warna 1',
   'bg.color2': 'Warna 2',
   'bg.angle': 'Sudut',
-  'bg.note':
-    'Latar belakang gambar direncanakan sebagai fitur premium mendatang. Latar transparan tidak didukung — tangkapan layar App Store tidak boleh transparan.',
+  'bg.note': "Latar transparan tidak didukung — tangkapan layar App Store tidak boleh transparan.",
 
   'upload.errType': 'Jenis file tidak didukung (“{type}”). Gunakan PNG, JPEG, atau WebP.',
   'upload.errSize': 'Gambar terlalu besar ({size} MB). Ukuran maksimum adalah 20 MB.',

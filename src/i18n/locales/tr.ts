@@ -64,8 +64,8 @@ const tr: Dict = {
   'panel.deviceKind': 'Cihaz türü',
   'panel.model': 'Model',
   'panel.screenshotName': 'Ekran görüntüsü adı',
-  'panel.nameHintPre': 'Bu ad, yapay zeka kodlama ajanına bu telefonda hangi ekranı tasarlayacağını söyler. Oluşturulan istemde şu şekilde yer alır:',
-  'panel.nameHintPost': '.',
+  'panel.nameHint': "Bu ad, yapay zeka kodlama ajanına bu telefona hangi ekranı yakalayıp yerleştireceğini söyler.",
+  'panel.aiCapture': "Yapay zeka yakalamayı kullan",
   'panel.description': 'Ekran görüntüsü açıklaması (isteğe bağlı)',
   'panel.descriptionPlaceholder': 'ör. 3 tamamlanmış görevi ve seri bannerı olan ana ekran',
   'panel.screenshotImage': 'Ekran görüntüsü resmi',
@@ -133,8 +133,7 @@ const tr: Dict = {
   'bg.color1': 'Renk 1',
   'bg.color2': 'Renk 2',
   'bg.angle': 'Açı',
-  'bg.note':
-    'Resim arka planlar ileride premium özellik olarak planlanıyor. Saydam arka planlar desteklenmez — App Store ekran görüntüleri saydam olamaz.',
+  'bg.note': "Saydam arka planlar desteklenmez — App Store ekran görüntüleri saydam olamaz.",
 
   'upload.errType': 'Desteklenmeyen dosya türü (“{type}”). PNG, JPEG veya WebP kullanın.',
   'upload.errSize': 'Resim çok büyük ({size} MB). En büyük boyut 20 MB.',

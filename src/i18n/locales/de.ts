@@ -64,8 +64,8 @@ const de: Dict = {
   'panel.deviceKind': 'Gerätetyp',
   'panel.model': 'Modell',
   'panel.screenshotName': 'Screenshot-Name',
-  'panel.nameHintPre': 'Dieser Name sagt dem KI-Coding-Agenten, welcher Bildschirm auf diesem Smartphone gestaltet werden soll. Im erzeugten Prompt erscheint er als',
-  'panel.nameHintPost': '.',
+  'panel.nameHint': "Dieser Name sagt dem KI-Coding-Agenten, welcher Bildschirm aufgenommen und in dieses Smartphone eingesetzt werden soll.",
+  'panel.aiCapture': "KI-Aufnahme nutzen",
   'panel.description': 'Screenshot-Beschreibung (optional)',
   'panel.descriptionPlaceholder': 'z. B. Startbildschirm mit 3 erledigten Aufgaben und einem Serien-Banner',
   'panel.screenshotImage': 'Screenshot-Bild',
@@ -133,8 +133,7 @@ const de: Dict = {
   'bg.color1': 'Farbe 1',
   'bg.color2': 'Farbe 2',
   'bg.angle': 'Winkel',
-  'bg.note':
-    'Bildhintergründe sind als künftige Premium-Funktion geplant. Transparente Hintergründe werden nicht unterstützt — App-Store-Screenshots dürfen keine Transparenz enthalten.',
+  'bg.note': "Transparente Hintergründe werden nicht unterstützt — App-Store-Screenshots dürfen keine Transparenz enthalten.",
 
   'upload.errType': 'Nicht unterstützter Dateityp („{type}“). Verwende PNG, JPEG oder WebP.',
   'upload.errSize': 'Das Bild ist zu groß ({size} MB). Die maximale Größe beträgt 20 MB.',

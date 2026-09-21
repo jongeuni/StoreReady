@@ -79,6 +79,7 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
   // Which screenshot row "Replace image" acts on; a fresh upload becomes the active one.
   const [activeIdx, setActiveIdx] = useState(0);
   const uploadMode = useRef<'replace' | 'add'>('replace');
+  const [aiOpen, setAiOpen] = useState(false);
 
   if (!obj || obj.type !== 'phone') return null;
 
@@ -151,28 +152,40 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
         onChange={(v) => updateObject(page.id, obj.id, { deviceModel: v })}
       />
 
-      <div>
-        <TextField
-          label={t('panel.screenshotName')}
-          value={obj.screenshotName}
-          onChange={(v) => updateObject(page.id, obj.id, { screenshotName: v })}
-        />
-        <p className="mt-1 text-[11px] leading-snug text-neutral-500">
-          {t('panel.nameHintPre')}{' '}
-          <code className="text-neutral-400">"img": "{obj.screenshotName || 'name'}"</code> {t('panel.nameHintPost')}
-        </p>
-      </div>
+      <div className="flex flex-col gap-3">
+        <button
+          type="button"
+          onClick={() => setAiOpen((v) => !v)}
+          aria-expanded={aiOpen}
+          className="flex items-center gap-1.5 text-left text-xs text-neutral-300 hover:text-neutral-100"
+        >
+          <span className={`text-[10px] transition-transform ${aiOpen ? 'rotate-180' : ''}`}>▾</span>
+          {t('panel.aiCapture')}
+        </button>
+        {aiOpen && (
+          <>
+            <div>
+              <TextField
+                label={t('panel.screenshotName')}
+                value={obj.screenshotName}
+                onChange={(v) => updateObject(page.id, obj.id, { screenshotName: v })}
+              />
+              <p className="mt-1 text-[11px] leading-snug text-neutral-500">{t('panel.nameHint')}</p>
+            </div>
 
-      <label className="flex flex-col gap-1 text-xs text-neutral-400">
-        <span>{t('panel.description')}</span>
-        <textarea
-          value={obj.screenshotDescription ?? ''}
-          onChange={(e) => updateObject(page.id, obj.id, { screenshotDescription: e.target.value })}
-          rows={2}
-          placeholder={t('panel.descriptionPlaceholder')}
-          className="w-full resize-none rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
-        />
-      </label>
+            <label className="flex flex-col gap-1 text-xs text-neutral-400">
+              <span>{t('panel.description')}</span>
+              <textarea
+                value={obj.screenshotDescription ?? ''}
+                onChange={(e) => updateObject(page.id, obj.id, { screenshotDescription: e.target.value })}
+                rows={2}
+                placeholder={t('panel.descriptionPlaceholder')}
+                className="w-full resize-none rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
+              />
+            </label>
+          </>
+        )}
+      </div>
 
       <div className="flex flex-col gap-2">
         <div className="text-xs text-neutral-400">{t('panel.screenshotImage')}</div>
