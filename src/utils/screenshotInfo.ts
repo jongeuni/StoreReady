@@ -35,7 +35,7 @@ function describePhone(p: PhoneObject) {
     ...(p.screenshotDescription ? { desc: p.screenshotDescription } : {}),
     kind: p.deviceKind ?? 'phone',
     ...(getDeviceModel(p.deviceModel, p.deviceKind ?? 'phone').render3d
-      ? { look: '3D-rendered iPhone turned about 45 degrees to the right (slight top tilt), showing its right edge and thickness; the screen content is in perspective' }
+      ? { look: '3D-rendered iPhone turned about 25 degrees (slightly tilted, with strong perspective), showing only a thin sliver of its right edge; the screen content is in perspective' }
       : {}),
     width: p.width,
     top: p.top,

@@ -4,7 +4,7 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 // Phone geometry in "width = 1" units, matching the flat iPhone model in src/phoneFrame.ts.
 const W = 1;
 const H = 2.168;
-const D = 0.11; // body thickness
+const D = 0.07; // body thickness
 const BEZEL = 0.034;
 const SCREEN_W = W - BEZEL * 2;
 const SCREEN_H = H - BEZEL * 2;
@@ -13,9 +13,9 @@ const OUT_W = 900;
 const OUT_H = 1500;
 const params = new URLSearchParams(location.search);
 const ROT = {
-  x: Number(params.get('rx') ?? 0.16),
-  y: Number(params.get('ry') ?? -0.62),
-  z: Number(params.get('rz') ?? -0.16),
+  x: Number(params.get('rx') ?? 0.1),
+  y: Number(params.get('ry') ?? -0.4),
+  z: Number(params.get('rz') ?? -0.14),
 };
 const RECEIVER = 'http://localhost:5599/';
 
@@ -62,8 +62,8 @@ scene.add(phone);
 const frameGeo = new THREE.ExtrudeGeometry(roundedRectShape(W, H, 0.13), {
   depth: D,
   bevelEnabled: true,
-  bevelThickness: 0.022,
-  bevelSize: 0.022,
+  bevelThickness: 0.014,
+  bevelSize: 0.014,
   bevelSegments: 8,
   curveSegments: 48,
 });
@@ -71,7 +71,7 @@ frameGeo.translate(0, 0, -D / 2);
 const frameMat = new THREE.MeshStandardMaterial({ color: 0x4a4b50, metalness: 1, roughness: 0.3 });
 phone.add(new THREE.Mesh(frameGeo, frameMat));
 
-const zFront = D / 2 + 0.022;
+const zFront = D / 2 + 0.014;
 
 // Black front glass (the bezel area around the screen)
 const glassGeo = new THREE.ShapeGeometry(roundedRectShape(W - 0.006, H - 0.006, 0.124), 48);
@@ -97,19 +97,19 @@ phone.add(island);
 
 // Side buttons
 function button(x, y, h) {
-  const b = new THREE.Mesh(new THREE.BoxGeometry(0.024, h, 0.05), frameMat);
+  const b = new THREE.Mesh(new THREE.BoxGeometry(0.02, h, 0.04), frameMat);
   b.position.set(x, y, 0);
   phone.add(b);
 }
-button(-W / 2 - 0.012, 0.62, 0.09); // action
-button(-W / 2 - 0.012, 0.42, 0.17); // volume up
-button(-W / 2 - 0.012, 0.18, 0.17); // volume down
-button(W / 2 + 0.012, 0.4, 0.28); // power
+button(-W / 2 - 0.01, 0.62, 0.09); // action
+button(-W / 2 - 0.01, 0.42, 0.17); // volume up
+button(-W / 2 - 0.01, 0.18, 0.17); // volume down
+button(W / 2 + 0.01, 0.4, 0.28); // power
 
 phone.rotation.order = 'YXZ';
 phone.rotation.set(ROT.x, ROT.y, ROT.z);
 
-const camera = new THREE.PerspectiveCamera(20, OUT_W / OUT_H, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(Number(params.get('fov') ?? 32), OUT_W / OUT_H, 0.1, 100);
 camera.position.set(0, 0, 12);
 camera.lookAt(0, 0, 0);
 

@@ -81,7 +81,7 @@ export const DEVICE_MODELS: DeviceModel[] = [
       frameUrl: phone3dFrame,
       frameWidth: 900,
       frameHeight: 1500,
-      quad: [[0.21843, 0.04989], [0.6989, 0.08766], [0.67576, 0.95595], [0.23471, 0.84961]],
+      quad: [[0.22854, 0.04393], [0.84483, 0.06125], [0.68836, 0.95545], [0.12559, 0.87075]],
       screenAspect: 2.2532,
     },
   },
