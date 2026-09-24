@@ -166,8 +166,9 @@ document.body.appendChild(label);
 
 if (params.get('save') === '1') {
   renderer.domElement.toBlob(async (blob) => {
-    await fetch(RECEIVER + 'frame.png', { method: 'POST', body: blob });
-    await fetch(RECEIVER + 'frame.json', { method: 'POST', body: JSON.stringify(meta, null, 2) });
+    const name = params.get('name') ?? 'frame';
+    await fetch(RECEIVER + name + '.png', { method: 'POST', body: blob });
+    await fetch(RECEIVER + name + '.json', { method: 'POST', body: JSON.stringify(meta, null, 2) });
     label.textContent += '  — saved';
   }, 'image/png');
 }

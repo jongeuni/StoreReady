@@ -1,5 +1,6 @@
 import type { DeviceKind } from './types';
 import phone3dFrame from './assets/phone3d/frame.png';
+import phone3dMirrorFrame from './assets/phone3d/frame-mirror.png';
 
 // Shared geometry for device placeholder graphics. Each DeviceModel is a specific,
 // freely-swappable look (e.g. "iPhone SE" vs "iPhone Pro Max") within a broader
@@ -82,6 +83,24 @@ export const DEVICE_MODELS: DeviceModel[] = [
       frameWidth: 900,
       frameHeight: 1500,
       quad: [[0.2664, 0.0443], [0.86008, 0.07452], [0.69442, 0.95415], [0.11245, 0.89272]],
+      screenAspect: 2.2532,
+    },
+  },
+  {
+    id: 'phone-3d-mirror',
+    kind: 'phone',
+    label: 'iPhone 3D (tilted, mirrored)',
+    aspect: 1.66667,
+    cornerRadiusRatio: 0,
+    screenInsetRatio: 0,
+    screenInsetBottomRatio: 0,
+    screenCornerRadiusRatio: 0,
+    chrome: 'none',
+    render3d: {
+      frameUrl: phone3dMirrorFrame,
+      frameWidth: 900,
+      frameHeight: 1500,
+      quad: [[0.13992, 0.07452], [0.7336, 0.0443], [0.88755, 0.89272], [0.30558, 0.95415]],
       screenAspect: 2.2532,
     },
   },
