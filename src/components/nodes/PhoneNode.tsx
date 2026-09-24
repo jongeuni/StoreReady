@@ -86,11 +86,12 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
               phoneWidth: obj.width,
               color: obj.dividerColor ?? DEFAULT_DIVIDER_COLOR,
               dashed: !!obj.dividerDashed,
+              shift: obj.dividerShift ?? 0,
             },
           )
         : null,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [r3d, frame3d, themeImages, obj.width, obj.dividerWidth, obj.dividerColor, obj.dividerDashed, obj.screenshotName, extra.map((x) => x.name).join('|'), noName, hint],
+    [r3d, frame3d, themeImages, obj.width, obj.dividerWidth, obj.dividerColor, obj.dividerDashed, obj.dividerShift, obj.screenshotName, extra.map((x) => x.name).join('|'), noName, hint],
   );
 
   const crop = image ? coverCrop(image.naturalWidth, image.naturalHeight, screenW, screenH) : null;
@@ -169,7 +170,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
         {themeCount > 1 ? (
           <>
             {Array.from({ length: themeCount }, (_, i) => {
-              const poly = bandPolygon(screenW, screenH, themeCount, i);
+              const poly = bandPolygon(screenW, screenH, themeCount, i, obj.dividerShift ?? 0);
               const img = themeImages[i];
               const themeName = (i === 0 ? obj.screenshotName : extra[i - 1]?.name) || t('canvas.noName');
               const [cx, cy] = bandCentroid(poly);
@@ -210,7 +211,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
               );
             })}
             {dividerWidthOf(obj) > 0 &&
-              dividerLines(screenW, screenH, themeCount).map((pts, i) => {
+              dividerLines(screenW, screenH, themeCount, obj.dividerShift ?? 0).map((pts, i) => {
                 const lw = dividerWidthOf(obj);
                 return (
                   <Line

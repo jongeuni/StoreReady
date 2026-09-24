@@ -116,6 +116,7 @@ const ja: Dict = {
   'panel.dividerSolid': "実線",
   'panel.dividerDashed': "点線",
   'panel.dividerColor': "色",
+  'panel.dividerPosition': "線の位置（上下）",
   'panel.addDeviceHint': 'スマホ・タブレット・ウォッチは、上のツールバーの「+ デバイスを追加」から追加できます。',
   'panel.addHeadline': '+ 見出し',
   'panel.addSubheadline': '+ サブ見出し',

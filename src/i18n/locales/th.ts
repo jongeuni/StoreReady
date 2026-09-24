@@ -116,6 +116,7 @@ const th: Dict = {
   'panel.dividerSolid': "เส้นทึบ",
   'panel.dividerDashed': "เส้นประ",
   'panel.dividerColor': "สี",
+  'panel.dividerPosition': "ตำแหน่งเส้น (บน / ล่าง)",
   'panel.addDeviceHint': 'เพิ่มโทรศัพท์ แท็บเล็ต และนาฬิกาได้จาก “+ เพิ่มอุปกรณ์” บนแถบเครื่องมือด้านบน',
   'panel.addHeadline': '+ พาดหัว',
   'panel.addSubheadline': '+ พาดหัวรอง',

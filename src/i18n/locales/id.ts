@@ -116,6 +116,7 @@ const id: Dict = {
   'panel.dividerSolid': "Solid",
   'panel.dividerDashed': "Putus-putus",
   'panel.dividerColor': "Warna",
+  'panel.dividerPosition': "Posisi garis (atas / bawah)",
   'panel.addDeviceHint': 'Ponsel, tablet, dan jam tangan ditambahkan lewat “+ Tambah perangkat” di bilah atas.',
   'panel.addHeadline': '+ Judul',
   'panel.addSubheadline': '+ Subjudul',

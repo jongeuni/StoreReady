@@ -116,6 +116,7 @@ const zhCN: Dict = {
   'panel.dividerSolid': "实线",
   'panel.dividerDashed': "虚线",
   'panel.dividerColor': "颜色",
+  'panel.dividerPosition': "分隔线位置（上/下）",
   'panel.addDeviceHint': '手机、平板和手表请通过上方工具栏的“+ 添加设备”添加。',
   'panel.addHeadline': '+ 标题',
   'panel.addSubheadline': '+ 副标题',

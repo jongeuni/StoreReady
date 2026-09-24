@@ -116,6 +116,7 @@ const ar: Dict = {
   'panel.dividerSolid': "متصل",
   'panel.dividerDashed': "متقطع",
   'panel.dividerColor': "اللون",
+  'panel.dividerPosition': "موضع الخط (أعلى / أسفل)",
   'panel.addDeviceHint': 'تُضاف الهواتف والأجهزة اللوحية والساعات عبر «+ إضافة جهاز» في الشريط العلوي.',
   'panel.addHeadline': '+ عنوان',
   'panel.addSubheadline': '+ عنوان فرعي',

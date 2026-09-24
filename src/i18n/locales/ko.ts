@@ -116,6 +116,7 @@ const ko: Dict = {
   'panel.dividerSolid': "실선",
   'panel.dividerDashed': "점선",
   'panel.dividerColor': "색상",
+  'panel.dividerPosition': "선 위치 (위 / 아래)",
   'panel.addDeviceHint': '기기(폰/태블릿/워치)는 상단 툴바의 "+ 기기 추가" 드롭다운에서 추가하세요.',
   'panel.addHeadline': '+ 헤드라인',
   'panel.addSubheadline': '+ 서브헤드라인',

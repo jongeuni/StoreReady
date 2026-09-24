@@ -116,6 +116,7 @@ const en = {
   'panel.dividerSolid': "Solid",
   'panel.dividerDashed': "Dashed",
   'panel.dividerColor': "Color",
+  'panel.dividerPosition': "Line position (up / down)",
   'panel.addDeviceHint': 'Add phones, tablets and watches from the "+ Add device" dropdown in the toolbar above.',
   'panel.addHeadline': '+ Headline',
   'panel.addSubheadline': '+ Subheadline',

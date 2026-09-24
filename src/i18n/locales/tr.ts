@@ -116,6 +116,7 @@ const tr: Dict = {
   'panel.dividerSolid': "Düz",
   'panel.dividerDashed': "Kesikli",
   'panel.dividerColor': "Renk",
+  'panel.dividerPosition': "Çizgi konumu (yukarı / aşağı)",
   'panel.addDeviceHint': 'Telefon, tablet ve saatler üstteki araç çubuğundaki “+ Cihaz ekle” ile eklenir.',
   'panel.addHeadline': '+ Başlık',
   'panel.addSubheadline': '+ Alt başlık',

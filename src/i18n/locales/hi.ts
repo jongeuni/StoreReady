@@ -116,6 +116,7 @@ const hi: Dict = {
   'panel.dividerSolid': "ठोस",
   'panel.dividerDashed': "बिंदीदार",
   'panel.dividerColor': "रंग",
+  'panel.dividerPosition': "रेखा की स्थिति (ऊपर / नीचे)",
   'panel.addDeviceHint': 'फ़ोन, टैबलेट और घड़ी ऊपर टूलबार के “+ डिवाइस जोड़ें” से जोड़े जाते हैं।',
   'panel.addHeadline': '+ शीर्षक',
   'panel.addSubheadline': '+ उप-शीर्षक',

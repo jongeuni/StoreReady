@@ -116,6 +116,7 @@ const zhTW: Dict = {
   'panel.dividerSolid': "實線",
   'panel.dividerDashed': "虛線",
   'panel.dividerColor': "顏色",
+  'panel.dividerPosition': "分隔線位置（上/下）",
   'panel.addDeviceHint': '手機、平板與手錶請從上方工具列的「+ 新增裝置」加入。',
   'panel.addHeadline': '+ 標題',
   'panel.addSubheadline': '+ 副標題',

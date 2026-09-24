@@ -116,6 +116,7 @@ const vi: Dict = {
   'panel.dividerSolid': "Liền",
   'panel.dividerDashed': "Nét đứt",
   'panel.dividerColor': "Màu",
+  'panel.dividerPosition': "Vị trí đường kẻ (lên / xuống)",
   'panel.addDeviceHint': 'Điện thoại, máy tính bảng và đồng hồ được thêm qua “+ Thêm thiết bị” trên thanh công cụ phía trên.',
   'panel.addHeadline': '+ Tiêu đề',
   'panel.addSubheadline': '+ Tiêu đề phụ',

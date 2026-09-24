@@ -116,6 +116,7 @@ const ru: Dict = {
   'panel.dividerSolid': "Сплошная",
   'panel.dividerDashed': "Пунктирная",
   'panel.dividerColor': "Цвет",
+  'panel.dividerPosition': "Положение линии (вверх / вниз)",
   'panel.addDeviceHint': 'Телефоны, планшеты и часы добавляются через «+ Добавить устройство» на верхней панели.',
   'panel.addHeadline': '+ Заголовок',
   'panel.addSubheadline': '+ Подзаголовок',

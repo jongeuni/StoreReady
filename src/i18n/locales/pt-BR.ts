@@ -116,6 +116,7 @@ const ptBR: Dict = {
   'panel.dividerSolid': "Contínua",
   'panel.dividerDashed': "Tracejada",
   'panel.dividerColor': "Cor",
+  'panel.dividerPosition': "Posição da linha (cima / baixo)",
   'panel.addDeviceHint': 'Celulares, tablets e relógios são adicionados em “+ Adicionar dispositivo” na barra superior.',
   'panel.addHeadline': '+ Título',
   'panel.addSubheadline': '+ Subtítulo',

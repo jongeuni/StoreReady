@@ -21,16 +21,25 @@ function clipPolygon(poly: Pt[], keep: (p: Pt) => number): Pt[] {
   return out;
 }
 
-export function bandPolygon(w: number, h: number, n: number, i: number): Pt[] {
-  const step = (w + h) / n;
+/** Positions (as x + y) of the n - 1 dividers: equally spaced, then slid along the diagonal by `shift` % of one band. */
+function cutPositions(w: number, h: number, n: number, shift: number): number[] {
+  const total = w + h;
+  const step = total / n;
+  const cuts: number[] = [];
+  for (let k = 1; k < n; k++) cuts.push(Math.min(total, Math.max(0, k * step + (shift / 100) * step)));
+  return cuts;
+}
+
+export function bandPolygon(w: number, h: number, n: number, i: number, shift = 0): Pt[] {
+  const cuts = cutPositions(w, h, n, shift);
   let poly: Pt[] = [
     [0, 0],
     [w, 0],
     [w, h],
     [0, h],
   ];
-  if (i > 0) poly = clipPolygon(poly, (p) => p[0] + p[1] - i * step);
-  if (i < n - 1) poly = clipPolygon(poly, (p) => (i + 1) * step - (p[0] + p[1]));
+  if (i > 0) poly = clipPolygon(poly, (p) => p[0] + p[1] - cuts[i - 1]);
+  if (i < n - 1) poly = clipPolygon(poly, (p) => cuts[i] - (p[0] + p[1]));
   return poly;
 }
 
@@ -40,16 +49,12 @@ export function bandCentroid(poly: Pt[]): Pt {
 }
 
 /** The divider segments between neighbouring bands (n - 1 of them), each as [x1, y1, x2, y2]. */
-export function dividerLines(w: number, h: number, n: number): [number, number, number, number][] {
-  const step = (w + h) / n;
-  const lines: [number, number, number, number][] = [];
-  for (let k = 1; k < n; k++) {
-    const c = k * step;
+export function dividerLines(w: number, h: number, n: number, shift = 0): [number, number, number, number][] {
+  return cutPositions(w, h, n, shift).map((c) => {
     const x1 = Math.max(0, c - h);
     const x2 = Math.min(w, c);
-    lines.push([x1, c - x1, x2, c - x2]);
-  }
-  return lines;
+    return [x1, c - x1, x2, c - x2];
+  });
 }
 
 export const DEFAULT_DIVIDER_COLOR = '#ffffff';

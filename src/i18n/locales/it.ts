@@ -116,6 +116,7 @@ const it: Dict = {
   'panel.dividerSolid': "Continua",
   'panel.dividerDashed': "Tratteggiata",
   'panel.dividerColor': "Colore",
+  'panel.dividerPosition': "Posizione della linea (su / giù)",
   'panel.addDeviceHint': 'Telefoni, tablet e orologi si aggiungono da «+ Aggiungi dispositivo» nella barra superiore.',
   'panel.addHeadline': '+ Titolo',
   'panel.addSubheadline': '+ Sottotitolo',
