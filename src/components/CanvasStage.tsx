@@ -132,6 +132,7 @@ export function CanvasStage({ page, stageRef }: Props) {
                       onSelect={handleSelect(obj.id)}
                       onDragEnd={(x, y) => updateObject(page.id, obj.id, { left: Math.round(x), top: Math.round(y) })}
                       onTransformEnd={(attrs) => updateObject(page.id, obj.id, attrs)}
+                      onDividerChange={(cuts) => updateObject(page.id, obj.id, { dividerCuts: cuts })}
                     />
                   );
                 }

@@ -1,7 +1,43 @@
 export type Point = [number, number];
 
+/** Inverse of `unitSquareToQuad`: a point inside the quad -> (u, v) in the unit square. */
+export function quadToUnitSquare(q: [Point, Point, Point, Point]) {
+  const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = q;
+  const sx = x0 - x1 + x2 - x3;
+  const sy = y0 - y1 + y2 - y3;
+  let g = 0;
+  let h = 0;
+  if (Math.abs(sx) > 1e-9 || Math.abs(sy) > 1e-9) {
+    const dx1 = x1 - x2;
+    const dx2 = x3 - x2;
+    const dy1 = y1 - y2;
+    const dy2 = y3 - y2;
+    const den = dx1 * dy2 - dx2 * dy1;
+    g = (sx * dy2 - dx2 * sy) / den;
+    h = (dx1 * sy - sx * dy1) / den;
+  }
+  const a = x1 - x0 + g * x1;
+  const b = x3 - x0 + h * x3;
+  const d = y1 - y0 + g * y1;
+  const e = y3 - y0 + h * y3;
+  // Homography H = [[a, b, x0], [d, e, y0], [g, h, 1]]; its inverse is the adjugate (overall scale cancels).
+  const A = e - y0 * h;
+  const B = x0 * h - b;
+  const C = b * y0 - x0 * e;
+  const D = y0 * g - d;
+  const E = a - x0 * g;
+  const F = x0 * d - a * y0;
+  const G = d * h - e * g;
+  const H = b * g - a * h;
+  const I = a * e - b * d;
+  return (x: number, y: number): Point => {
+    const w = G * x + H * y + I;
+    return [(A * x + B * y + C) / w, (D * x + E * y + F) / w];
+  };
+}
+
 /** Maps the unit square onto an arbitrary convex quad (corners TL, TR, BR, BL) with true perspective. */
-function unitSquareToQuad(q: [Point, Point, Point, Point]) {
+export function unitSquareToQuad(q: [Point, Point, Point, Point]) {
   const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = q;
   const sx = x0 - x1 + x2 - x3;
   const sy = y0 - y1 + y2 - y3;

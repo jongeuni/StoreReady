@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, useCallback, useMemo, useRef } from 'react';
 import { Circle, Group, Line, Rect, Text, Image as KonvaImage } from 'react-konva';
 import type Konva from 'konva';
 import type { Context } from 'konva/lib/Context';
@@ -6,9 +6,18 @@ import type { PhoneObject } from '../../types';
 import { getDeviceModel } from '../../phoneFrame';
 import { useHtmlImage } from '../../hooks/useHtmlImage';
 import { useHtmlImages } from '../../hooks/useHtmlImages';
-import { DEFAULT_DIVIDER_COLOR, bandCentroid, bandPolygon, dividerLines, dividerWidthOf } from '../../utils/diagonalSplit';
+import {
+  DEFAULT_DIVIDER_COLOR,
+  bandCentroid,
+  bandPolygon,
+  dividerLines,
+  dividerWidthOf,
+  moveCut,
+  resolveCuts,
+} from '../../utils/diagonalSplit';
 import { useT } from '../../i18n';
-import { composeDevice3d } from '../../utils/device3d';
+import { SRC_W, composeDevice3d } from '../../utils/device3d';
+import { quadToUnitSquare, unitSquareToQuad, type Point } from '../../utils/perspectiveWarp';
 
 function roundedRectPath(ctx: Context, w: number, h: number, r: number) {
   ctx.beginPath();
@@ -37,13 +46,23 @@ type Props = {
   onSelect: (e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => void;
   onDragEnd: (x: number, y: number) => void;
   onTransformEnd: (attrs: { width: number; left: number; top: number; rotation: number }) => void;
+  onDividerChange: (cuts: number[]) => void;
 };
 
 export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
-  { obj, onSelect, onDragEnd, onTransformEnd },
+  { obj, isSelected, onSelect, onDragEnd, onTransformEnd, onDividerChange },
   ref,
 ) {
   const t = useT();
+  const groupRef = useRef<Konva.Group | null>(null);
+  const setGroupRef = useCallback(
+    (node: Konva.Group | null) => {
+      groupRef.current = node;
+      if (typeof ref === 'function') ref(node);
+      else if (ref) ref.current = node;
+    },
+    [ref],
+  );
   const extra = obj.extraThemes ?? [];
   const themeImages = useHtmlImages([obj.image, ...extra.map((x) => x.image)]);
   const image = themeImages[0];
@@ -86,20 +105,104 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
               phoneWidth: obj.width,
               color: obj.dividerColor ?? DEFAULT_DIVIDER_COLOR,
               dashed: !!obj.dividerDashed,
-              shift: obj.dividerShift ?? 0,
+              cuts: obj.dividerCuts,
             },
           )
         : null,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [r3d, frame3d, themeImages, obj.width, obj.dividerWidth, obj.dividerColor, obj.dividerDashed, obj.dividerShift, obj.screenshotName, extra.map((x) => x.name).join('|'), noName, hint],
+    [r3d, frame3d, themeImages, obj.width, obj.dividerWidth, obj.dividerColor, obj.dividerDashed, obj.dividerCuts, obj.screenshotName, extra.map((x) => x.name).join('|'), noName, hint],
   );
+
+  // ---- Direct manipulation of the diagonal dividers (drag a line's handle on the canvas)
+  const objRef = useRef(obj);
+  objRef.current = obj;
+  const sourceH = r3d ? Math.round(SRC_W * r3d.screenAspect) : 0;
+  const quadPx = useMemo(
+    () =>
+      r3d ? (r3d.quad.map(([x, y]) => [x * r3d.frameWidth, y * r3d.frameHeight]) as [Point, Point, Point, Point]) : null,
+    [r3d],
+  );
+  const toFrame = useMemo(() => (quadPx ? unitSquareToQuad(quadPx) : null), [quadPx]);
+  const fromFrame = useMemo(() => (quadPx ? quadToUnitSquare(quadPx) : null), [quadPx]);
+
+  const startDividerDrag = (index: number) => {
+    const group = groupRef.current;
+    const stage = group?.getStage();
+    if (!group || !stage) return;
+    const move = () => {
+      const pos = stage.getPointerPosition();
+      if (!pos) return;
+      const local = group.getAbsoluteTransform().copy().invert().point(pos);
+      let fraction: number;
+      if (r3d && fromFrame) {
+        const [u, v] = fromFrame((local.x * r3d.frameWidth) / width, (local.y * r3d.frameHeight) / height);
+        fraction = (u * SRC_W + v * sourceH) / (SRC_W + sourceH);
+      } else {
+        fraction = (local.x - insetSide + (local.y - insetTop)) / (screenW + screenH);
+      }
+      const cur = resolveCuts(1 + (objRef.current.extraThemes?.length ?? 0), objRef.current.dividerCuts);
+      onDividerChange(moveCut(cur, index, fraction));
+    };
+    const stop = () => {
+      stage.off('mousemove.dividerdrag touchmove.dividerdrag');
+      window.removeEventListener('mouseup', stop);
+      window.removeEventListener('touchend', stop);
+      stage.container().style.cursor = '';
+    };
+    stage.on('mousemove.dividerdrag touchmove.dividerdrag', move);
+    window.addEventListener('mouseup', stop);
+    window.addEventListener('touchend', stop);
+    stage.container().style.cursor = 'nwse-resize';
+  };
+
+  /** Handle + fat invisible hit line for each divider; `pts` are screen-space [x1, y1, x2, y2] in the given group's space. */
+  const renderDividerHandles = (lines: [number, number, number, number][], scale = 1) => {
+    if (!isSelected || themeCount < 2) return null;
+    const handleR = Math.max(10, width * 0.028);
+    return lines.map(([x1, y1, x2, y2], i) => {
+      const mx = ((x1 + x2) / 2) * scale;
+      const my = ((y1 + y2) / 2) * scale;
+      const setCursor = (c: string) => (e: Konva.KonvaEventObject<MouseEvent>) => {
+        e.target.getStage()!.container().style.cursor = c;
+      };
+      const begin = (e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
+        e.cancelBubble = true; // don't let the phone's own drag start
+        startDividerDrag(i);
+      };
+      return (
+        <Group key={i}>
+          <Line
+            points={[x1 * scale, y1 * scale, x2 * scale, y2 * scale]}
+            stroke="rgba(0,0,0,0.001)"
+            strokeWidth={Math.max(24, width * 0.05)}
+            onMouseEnter={setCursor('nwse-resize')}
+            onMouseLeave={setCursor('')}
+            onMouseDown={begin}
+            onTouchStart={begin}
+          />
+          <Circle
+            x={mx}
+            y={my}
+            radius={handleR}
+            fill="#5b8def"
+            stroke="#ffffff"
+            strokeWidth={Math.max(2, width * 0.006)}
+            onMouseEnter={setCursor('nwse-resize')}
+            onMouseLeave={setCursor('')}
+            onMouseDown={begin}
+            onTouchStart={begin}
+          />
+        </Group>
+      );
+    });
+  };
 
   const crop = image ? coverCrop(image.naturalWidth, image.naturalHeight, screenW, screenH) : null;
 
   if (r3d) {
     return (
       <Group
-        ref={ref}
+        ref={setGroupRef}
         x={obj.left}
         y={obj.top}
         rotation={obj.rotation}
@@ -121,13 +224,23 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
         }}
       >
         {composite3d && <KonvaImage image={composite3d} width={width} height={height} />}
+        {r3d &&
+          toFrame &&
+          renderDividerHandles(
+            dividerLines(SRC_W, sourceH, themeCount, obj.dividerCuts).map(([x1, y1, x2, y2]) => {
+              const a = toFrame(x1 / SRC_W, y1 / sourceH);
+              const b = toFrame(x2 / SRC_W, y2 / sourceH);
+              return [a[0], a[1], b[0], b[1]] as [number, number, number, number];
+            }),
+            width / r3d.frameWidth,
+          )}
       </Group>
     );
   }
 
   return (
     <Group
-      ref={ref}
+      ref={setGroupRef}
       x={obj.left}
       y={obj.top}
       rotation={obj.rotation}
@@ -170,7 +283,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
         {themeCount > 1 ? (
           <>
             {Array.from({ length: themeCount }, (_, i) => {
-              const poly = bandPolygon(screenW, screenH, themeCount, i, obj.dividerShift ?? 0);
+              const poly = bandPolygon(screenW, screenH, themeCount, i, obj.dividerCuts);
               const img = themeImages[i];
               const themeName = (i === 0 ? obj.screenshotName : extra[i - 1]?.name) || t('canvas.noName');
               const [cx, cy] = bandCentroid(poly);
@@ -211,7 +324,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
               );
             })}
             {dividerWidthOf(obj) > 0 &&
-              dividerLines(screenW, screenH, themeCount, obj.dividerShift ?? 0).map((pts, i) => {
+              dividerLines(screenW, screenH, themeCount, obj.dividerCuts).map((pts, i) => {
                 const lw = dividerWidthOf(obj);
                 return (
                   <Line
@@ -252,6 +365,11 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
             />
           </>
         )}
+      </Group>
+
+      {/* Drag handles for the diagonal dividers (selected phone only) */}
+      <Group x={insetSide} y={insetTop}>
+        {renderDividerHandles(dividerLines(screenW, screenH, themeCount, obj.dividerCuts))}
       </Group>
 
       {/* Dynamic island (Face ID phones), drawn on top for realism whether or not an image is set */}

@@ -281,19 +281,14 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
               onChange={(v) => updateObject(page.id, obj.id, { dividerDashed: v === 'dashed' })}
             />
           </div>
-          <label className="flex flex-col gap-1 text-xs text-neutral-400">
-            <span>{t('panel.dividerPosition')}</span>
-            <input
-              type="range"
-              min={-100}
-              max={100}
-              step={1}
-              value={obj.dividerShift ?? 0}
-              onChange={(e) => updateObject(page.id, obj.id, { dividerShift: Number(e.target.value) })}
-              onDoubleClick={() => updateObject(page.id, obj.id, { dividerShift: 0 })}
-              className="w-full accent-blue-500"
-            />
-          </label>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] leading-snug text-neutral-500">{t('panel.dividerDragHint')}</span>
+            {obj.dividerCuts && (
+              <Button variant="ghost" onClick={() => updateObject(page.id, obj.id, { dividerCuts: undefined })}>
+                {t('panel.dividerReset')}
+              </Button>
+            )}
+          </div>
           <ColorField
             label={t('panel.dividerColor')}
             value={obj.dividerColor ?? DEFAULT_DIVIDER_COLOR}

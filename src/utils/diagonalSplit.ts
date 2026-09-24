@@ -21,25 +21,39 @@ function clipPolygon(poly: Pt[], keep: (p: Pt) => number): Pt[] {
   return out;
 }
 
-/** Positions (as x + y) of the n - 1 dividers: equally spaced, then slid along the diagonal by `shift` % of one band. */
-function cutPositions(w: number, h: number, n: number, shift: number): number[] {
-  const total = w + h;
-  const step = total / n;
-  const cuts: number[] = [];
-  for (let k = 1; k < n; k++) cuts.push(Math.min(total, Math.max(0, k * step + (shift / 100) * step)));
-  return cuts;
+/** Smallest allowed gap between two neighbouring dividers (fraction of w + h). */
+export const MIN_BAND_GAP = 0.04;
+
+/** Equally spaced divider positions, as fractions of (w + h), for n bands. */
+export function equalCuts(n: number): number[] {
+  return Array.from({ length: Math.max(0, n - 1) }, (_, k) => (k + 1) / n);
 }
 
-export function bandPolygon(w: number, h: number, n: number, i: number, shift = 0): Pt[] {
-  const cuts = cutPositions(w, h, n, shift);
+/** The stored positions if they fit `n` bands, otherwise the equal split. */
+export function resolveCuts(n: number, cuts?: number[]): number[] {
+  return cuts && cuts.length === n - 1 ? cuts : equalCuts(n);
+}
+
+/** Moves divider `index` to `fraction`, keeping it inside the screen and clear of its neighbours. */
+export function moveCut(cuts: number[], index: number, fraction: number): number[] {
+  const lo = (index > 0 ? cuts[index - 1] : 0) + MIN_BAND_GAP;
+  const hi = (index < cuts.length - 1 ? cuts[index + 1] : 1) - MIN_BAND_GAP;
+  const next = cuts.slice();
+  next[index] = Math.min(hi, Math.max(lo, fraction));
+  return next;
+}
+
+export function bandPolygon(w: number, h: number, n: number, i: number, cuts?: number[]): Pt[] {
+  const total = w + h;
+  const c = resolveCuts(n, cuts).map((f) => f * total);
   let poly: Pt[] = [
     [0, 0],
     [w, 0],
     [w, h],
     [0, h],
   ];
-  if (i > 0) poly = clipPolygon(poly, (p) => p[0] + p[1] - cuts[i - 1]);
-  if (i < n - 1) poly = clipPolygon(poly, (p) => cuts[i] - (p[0] + p[1]));
+  if (i > 0) poly = clipPolygon(poly, (p) => p[0] + p[1] - c[i - 1]);
+  if (i < n - 1) poly = clipPolygon(poly, (p) => c[i] - (p[0] + p[1]));
   return poly;
 }
 
@@ -49,8 +63,9 @@ export function bandCentroid(poly: Pt[]): Pt {
 }
 
 /** The divider segments between neighbouring bands (n - 1 of them), each as [x1, y1, x2, y2]. */
-export function dividerLines(w: number, h: number, n: number, shift = 0): [number, number, number, number][] {
-  return cutPositions(w, h, n, shift).map((c) => {
+export function dividerLines(w: number, h: number, n: number, cuts?: number[]): [number, number, number, number][] {
+  return resolveCuts(n, cuts).map((f) => {
+    const c = f * (w + h);
     const x1 = Math.max(0, c - h);
     const x2 = Math.min(w, c);
     return [x1, c - x1, x2, c - x2];

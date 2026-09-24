@@ -91,8 +91,8 @@ export type PhoneObject = BaseObject & {
   dividerWidth?: number;
   dividerColor?: string;
   dividerDashed?: boolean;
-  /** Slides all dividers along the diagonal, in % of one band (-100..100, default 0 = equal bands). */
-  dividerShift?: number;
+  /** Divider positions along the diagonal, as fractions (0..1) of the screen's width + height. Unset = equal bands. */
+  dividerCuts?: number[];
   width: number;
   top: number;
   left: number;

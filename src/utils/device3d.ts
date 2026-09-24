@@ -3,9 +3,9 @@ import { drawWarped, type Point } from './perspectiveWarp';
 import { bandCentroid, bandPolygon, dividerLines } from './diagonalSplit';
 
 export type ThemeSource = { image?: HTMLImageElement; name: string };
-export type DividerStyle = { width: number; phoneWidth: number; color: string; dashed: boolean; shift: number };
+export type DividerStyle = { width: number; phoneWidth: number; color: string; dashed: boolean; cuts?: number[] };
 
-const SRC_W = 640;
+export const SRC_W = 640;
 
 function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
   const tokens = text.includes(' ') ? text.split(' ') : Array.from(text);
@@ -55,7 +55,7 @@ function buildScreenSource(r3d: Render3D, themes: ThemeSource[], hint: string, d
   themes.forEach((theme, i) => {
     ctx.save();
     if (n > 1) {
-      const poly = bandPolygon(w, h, n, i, divider.shift);
+      const poly = bandPolygon(w, h, n, i, divider.cuts);
       ctx.beginPath();
       poly.forEach(([x, y], k) => (k ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
       ctx.closePath();
@@ -66,7 +66,7 @@ function buildScreenSource(r3d: Render3D, themes: ThemeSource[], hint: string, d
     } else {
       ctx.fillStyle = i % 2 ? '#26262a' : '#1c1c1e';
       ctx.fillRect(0, 0, w, h);
-      const [cx, cy] = n > 1 ? bandCentroid(bandPolygon(w, h, n, i, divider.shift)) : [w / 2, h / 2];
+      const [cx, cy] = n > 1 ? bandCentroid(bandPolygon(w, h, n, i, divider.cuts)) : [w / 2, h / 2];
       ctx.textAlign = 'center';
       ctx.fillStyle = '#8e8e93';
       ctx.font = '600 38px system-ui, sans-serif';
@@ -87,7 +87,7 @@ function buildScreenSource(r3d: Render3D, themes: ThemeSource[], hint: string, d
     ctx.lineWidth = lw;
     ctx.lineCap = 'butt';
     ctx.setLineDash(divider.dashed ? [lw * 4, lw * 3] : []);
-    for (const [x1, y1, x2, y2] of dividerLines(w, h, n, divider.shift)) {
+    for (const [x1, y1, x2, y2] of dividerLines(w, h, n, divider.cuts)) {
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
