@@ -124,6 +124,8 @@ const id: Dict = {
   'panel.addBody': '+ Teks isi',
   'panel.addRect': '+ Persegi panjang',
   'panel.addCircle': '+ Lingkaran',
+  'panel.addImage': "+ Gambar",
+  'panel.imageTitle': "Gambar",
   'panel.multiSelected':
     '{count} objek dipilih. Gunakan bilah perataan di kanvas untuk meratakannya, atau klik area kosong untuk membatalkan pilihan.',
 

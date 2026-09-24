@@ -111,7 +111,19 @@ export type ShapeObject = BaseObject & {
   cornerRadius?: number; // rect only
 };
 
-export type CanvasObject = TextObject | PhoneObject | ShapeObject;
+/** A free picture or logo placed on the page (not inside a device). */
+export type ImageObject = BaseObject & {
+  type: 'image';
+  image: string; // data URL
+  fileName?: string;
+  width: number;
+  height: number;
+  top: number;
+  left: number;
+  cornerRadius?: number;
+};
+
+export type CanvasObject = TextObject | PhoneObject | ShapeObject | ImageObject;
 
 export type Page = {
   id: string;

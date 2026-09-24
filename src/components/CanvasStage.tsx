@@ -8,6 +8,7 @@ import { BackgroundNode } from './nodes/BackgroundNode';
 import { PhoneNode } from './nodes/PhoneNode';
 import { TextNode } from './nodes/TextNode';
 import { RichTextNode } from './nodes/RichTextNode';
+import { ImageNode } from './nodes/ImageNode';
 import { ShapeNode } from './nodes/ShapeNode';
 import { TextEditOverlay } from './TextEditOverlay';
 import { runsHaveMultipleColors } from '../utils/richText';
@@ -55,14 +56,14 @@ export function CanvasStage({ page, stageRef }: Props) {
       const obj = page.objects.find((o) => o.id === selectedObjectIds[0]);
       if (node && obj) {
         tr.nodes([node]);
-        tr.keepRatio(obj.type === 'phone');
+        tr.keepRatio(obj.type === 'phone' || obj.type === 'image');
         tr.rotateEnabled(true);
         // Text's own bounding box hugs the glyphs tightly (no breathing room like the
         // double-click edit box has); pad the selection outline a bit so it doesn't feel
         // cramped. Other object types keep a flush, exact-fit outline.
         tr.padding(obj.type === 'text' ? Math.max(4, Math.round(obj.fontSize * 0.18)) : 0);
         tr.enabledAnchors(
-          obj.type === 'phone'
+          obj.type === 'phone' || obj.type === 'image'
             ? ['top-left', 'top-right', 'bottom-left', 'bottom-right']
             : obj.type === 'shape'
               ? ['top-left', 'top-right', 'bottom-left', 'bottom-right', 'middle-left', 'middle-right', 'top-center', 'bottom-center']
@@ -133,6 +134,18 @@ export function CanvasStage({ page, stageRef }: Props) {
                       onDragEnd={(x, y) => updateObject(page.id, obj.id, { left: Math.round(x), top: Math.round(y) })}
                       onTransformEnd={(attrs) => updateObject(page.id, obj.id, attrs)}
                       onDividerChange={(cuts) => updateObject(page.id, obj.id, { dividerCuts: cuts })}
+                    />
+                  );
+                }
+                if (obj.type === 'image') {
+                  return (
+                    <ImageNode
+                      key={obj.id}
+                      obj={obj}
+                      ref={setRef}
+                      onSelect={handleSelect(obj.id)}
+                      onDragEnd={(x, y) => updateObject(page.id, obj.id, { left: Math.round(x), top: Math.round(y) })}
+                      onTransformEnd={(attrs) => updateObject(page.id, obj.id, attrs)}
                     />
                   );
                 }

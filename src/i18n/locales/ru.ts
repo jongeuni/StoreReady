@@ -124,6 +124,8 @@ const ru: Dict = {
   'panel.addBody': '+ Основной текст',
   'panel.addRect': '+ Прямоугольник',
   'panel.addCircle': '+ Круг',
+  'panel.addImage': "+ Изображение",
+  'panel.imageTitle': "Изображение",
   'panel.multiSelected':
     'Выбрано объектов: {count}. Выровняйте их панелью выравнивания на холсте или щёлкните по пустому месту, чтобы снять выделение.',
 

@@ -124,6 +124,8 @@ const it: Dict = {
   'panel.addBody': '+ Testo del corpo',
   'panel.addRect': '+ Rettangolo',
   'panel.addCircle': '+ Cerchio',
+  'panel.addImage': "+ Immagine",
+  'panel.imageTitle': "Immagine",
   'panel.multiSelected':
     '{count} oggetti selezionati. Usa la barra di allineamento sulla tela per allinearli oppure clicca in uno spazio vuoto per deselezionare.',
 

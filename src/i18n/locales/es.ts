@@ -124,6 +124,8 @@ const es: Dict = {
   'panel.addBody': '+ Texto de cuerpo',
   'panel.addRect': '+ Rectángulo',
   'panel.addCircle': '+ Círculo',
+  'panel.addImage': "+ Imagen",
+  'panel.imageTitle': "Imagen",
   'panel.multiSelected':
     '{count} objetos seleccionados. Usa la barra de alineación del lienzo para alinearlos o haz clic en un espacio vacío para deseleccionar.',
 

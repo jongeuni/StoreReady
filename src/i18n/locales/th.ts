@@ -124,6 +124,8 @@ const th: Dict = {
   'panel.addBody': '+ ข้อความเนื้อหา',
   'panel.addRect': '+ สี่เหลี่ยม',
   'panel.addCircle': '+ วงกลม',
+  'panel.addImage': "+ รูปภาพ",
+  'panel.imageTitle': "รูปภาพ",
   'panel.multiSelected':
     'เลือกอยู่ {count} วัตถุ ใช้แถบจัดแนวบนแคนวาสเพื่อจัดเรียง หรือคลิกที่ว่างเพื่อยกเลิกการเลือก',
 

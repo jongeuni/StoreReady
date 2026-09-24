@@ -124,6 +124,8 @@ const ja: Dict = {
   'panel.addBody': '+ 本文テキスト',
   'panel.addRect': '+ 四角形',
   'panel.addCircle': '+ 円',
+  'panel.addImage': "+ 画像",
+  'panel.imageTitle': "画像",
   'panel.multiSelected':
     '{count}個のオブジェクトを選択中です。キャンバス上の整列ツールバーで揃えるか、空白をクリックして選択を解除してください。',
 

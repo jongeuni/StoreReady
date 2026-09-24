@@ -124,6 +124,8 @@ const vi: Dict = {
   'panel.addBody': '+ Văn bản nội dung',
   'panel.addRect': '+ Hình chữ nhật',
   'panel.addCircle': '+ Hình tròn',
+  'panel.addImage': "+ Hình ảnh",
+  'panel.imageTitle': "Hình ảnh",
   'panel.multiSelected':
     'Đã chọn {count} đối tượng. Dùng thanh căn chỉnh trên canvas để căn chúng, hoặc nhấp vào khoảng trống để bỏ chọn.',
 

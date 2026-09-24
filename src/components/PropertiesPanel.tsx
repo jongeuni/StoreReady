@@ -441,6 +441,101 @@ function ShapePanel({ page, objectId }: { page: Page; objectId: string }) {
   );
 }
 
+function ImagePanel({ page, objectId }: { page: Page; objectId: string }) {
+  const t = useT();
+  const obj = page.objects.find((o) => o.id === objectId);
+  const updateObject = useProjectStore((s) => s.updateObject);
+  const pushToast = useToastStore((s) => s.push);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  if (!obj || obj.type !== 'image') return null;
+
+  const ratio = obj.height / obj.width;
+
+  return (
+    <div className="flex flex-col gap-4">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        className="hidden"
+        onChange={async (e) => {
+          const file = e.target.files?.[0];
+          e.target.value = '';
+          if (!file) return;
+          const result = await readImageFile(file);
+          if (!result.ok) {
+            pushToast(t(result.errorKey, result.errorVars), 'error');
+            return;
+          }
+          updateObject(page.id, obj.id, { image: result.dataUrl, fileName: file.name });
+        }}
+      />
+      <div className="flex flex-col gap-1.5">
+        <Button variant="primary" onClick={() => fileInputRef.current?.click()}>
+          {t('panel.replace')}
+        </Button>
+        {obj.fileName && <span className="truncate text-[11px] text-neutral-500">{obj.fileName}</span>}
+      </div>
+
+      <NumberField
+        label={t('panel.cornerRadius')}
+        value={obj.cornerRadius ?? 0}
+        min={0}
+        onChange={(v) => updateObject(page.id, obj.id, { cornerRadius: Math.max(0, v) })}
+      />
+
+      <div className="grid grid-cols-2 gap-2">
+        <NumberField
+          label={t('panel.width')}
+          value={obj.width}
+          min={20}
+          onChange={(v) => updateObject(page.id, obj.id, { width: Math.max(20, v), height: Math.max(20, Math.round(v * ratio)) })}
+        />
+        <NumberField label={t('panel.heightAuto')} value={obj.height} onChange={() => {}} />
+        <NumberField label={t('panel.posX')} value={obj.left} onChange={(v) => updateObject(page.id, obj.id, { left: v })} />
+        <NumberField label={t('panel.posY')} value={obj.top} onChange={(v) => updateObject(page.id, obj.id, { top: v })} />
+        <NumberField label={t('panel.rotation')} value={obj.rotation} onChange={(v) => updateObject(page.id, obj.id, { rotation: v })} />
+      </div>
+
+      <LayerControls pageId={page.id} objectId={obj.id} />
+      <ObjectActions pageId={page.id} objectId={obj.id} />
+    </div>
+  );
+}
+
+function AddImageButton({ pageId }: { pageId: string }) {
+  const t = useT();
+  const addImageObject = useProjectStore((s) => s.addImageObject);
+  const pushToast = useToastStore((s) => s.push);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  return (
+    <>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        className="hidden"
+        onChange={async (e) => {
+          const file = e.target.files?.[0];
+          e.target.value = '';
+          if (!file) return;
+          const result = await readImageFile(file);
+          if (!result.ok) {
+            pushToast(t(result.errorKey, result.errorVars), 'error');
+            return;
+          }
+          const img = new Image();
+          img.onload = () => addImageObject(pageId, result.dataUrl, file.name, img.naturalWidth, img.naturalHeight);
+          img.onerror = () => pushToast(t('upload.errRead'), 'error');
+          img.src = result.dataUrl;
+        }}
+      />
+      <Button onClick={() => fileInputRef.current?.click()}>{t('panel.addImage')}</Button>
+    </>
+  );
+}
+
 function BackgroundPanel({ page }: { page: Page }) {
   const t = useT();
   const setBackground = useProjectStore((s) => s.setBackground);
@@ -553,12 +648,16 @@ export function PropertiesPanel({ page }: { page: Page }) {
               ? t(DEVICE_KIND_KEY[singleSelected.deviceKind ?? 'phone'])
               : singleSelected.type === 'shape'
                 ? t('panel.shapeTitle', { kind: t(SHAPE_KEY[singleSelected.shapeKind]) })
-                : t('panel.textTitle', { role: t(ROLE_KEY[singleSelected.role]) })}
+                : singleSelected.type === 'image'
+                  ? t('panel.imageTitle')
+                  : t('panel.textTitle', { role: t(ROLE_KEY[singleSelected.role]) })}
           </h2>
           {singleSelected.type === 'phone' ? (
             <PhonePanel page={page} objectId={singleSelected.id} />
           ) : singleSelected.type === 'shape' ? (
             <ShapePanel page={page} objectId={singleSelected.id} />
+          ) : singleSelected.type === 'image' ? (
+            <ImagePanel page={page} objectId={singleSelected.id} />
           ) : (
             <TextPanel page={page} objectId={singleSelected.id} />
           )}
@@ -571,6 +670,7 @@ export function PropertiesPanel({ page }: { page: Page }) {
             <div className="flex flex-col gap-3">
               <AddTextMenu pageId={page.id} />
               <AddShapeMenu pageId={page.id} />
+              <AddImageButton pageId={page.id} />
             </div>
           </div>
           <div className="border-t border-neutral-800 pt-4">

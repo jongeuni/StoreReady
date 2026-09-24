@@ -124,6 +124,8 @@ const zhTW: Dict = {
   'panel.addBody': '+ 內文文字',
   'panel.addRect': '+ 矩形',
   'panel.addCircle': '+ 圓形',
+  'panel.addImage': "+ 圖片",
+  'panel.imageTitle': "圖片",
   'panel.multiSelected': '已選取 {count} 個物件。請使用畫布上的對齊工具列對齊，或點擊空白處取消選取。',
 
   'bg.title': '背景',

@@ -124,6 +124,8 @@ const fr: Dict = {
   'panel.addBody': '+ Texte courant',
   'panel.addRect': '+ Rectangle',
   'panel.addCircle': '+ Cercle',
+  'panel.addImage': "+ Image",
+  'panel.imageTitle': "Image",
   'panel.multiSelected':
     "{count} objets sélectionnés. Utilisez la barre d'alignement du canevas pour les aligner, ou cliquez dans un espace vide pour désélectionner.",
 

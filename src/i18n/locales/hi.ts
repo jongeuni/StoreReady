@@ -124,6 +124,8 @@ const hi: Dict = {
   'panel.addBody': '+ मुख्य टेक्स्ट',
   'panel.addRect': '+ आयत',
   'panel.addCircle': '+ वृत्त',
+  'panel.addImage': "+ छवि",
+  'panel.imageTitle': "छवि",
   'panel.multiSelected':
     '{count} ऑब्जेक्ट चुने गए हैं। इन्हें संरेखित करने के लिए कैनवास का संरेखण टूलबार इस्तेमाल करें, या चयन हटाने के लिए खाली जगह पर क्लिक करें।',
 

@@ -124,6 +124,8 @@ const ptBR: Dict = {
   'panel.addBody': '+ Texto de corpo',
   'panel.addRect': '+ Retângulo',
   'panel.addCircle': '+ Círculo',
+  'panel.addImage': "+ Imagem",
+  'panel.imageTitle': "Imagem",
   'panel.multiSelected':
     '{count} objetos selecionados. Use a barra de alinhamento da tela para alinhá-los ou clique em um espaço vazio para desmarcar.',
 

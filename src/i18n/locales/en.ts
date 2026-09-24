@@ -124,6 +124,8 @@ const en = {
   'panel.addBody': '+ Body text',
   'panel.addRect': '+ Rectangle',
   'panel.addCircle': '+ Circle',
+  'panel.addImage': "+ Image",
+  'panel.imageTitle': "Image",
   'panel.multiSelected':
     '{count} objects selected. Use the align toolbar above the canvas to line them up, or click empty space to deselect.',
 

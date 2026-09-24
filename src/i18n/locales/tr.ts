@@ -124,6 +124,8 @@ const tr: Dict = {
   'panel.addBody': '+ Gövde metni',
   'panel.addRect': '+ Dikdörtgen',
   'panel.addCircle': '+ Daire',
+  'panel.addImage': "+ Görsel",
+  'panel.imageTitle': "Görsel",
   'panel.multiSelected':
     '{count} nesne seçildi. Hizalamak için tuvaldeki hizalama çubuğunu kullanın veya seçimi kaldırmak için boş bir alana tıklayın.',
 

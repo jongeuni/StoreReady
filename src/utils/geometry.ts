@@ -13,7 +13,7 @@ export function getObjectBBox(obj: CanvasObject): BBox {
   if (obj.type === 'phone') {
     return { x: obj.left, y: obj.top, width: obj.width, height: deviceHeightForWidth(obj.width, obj.deviceKind, obj.deviceModel) };
   }
-  if (obj.type === 'shape') {
+  if (obj.type === 'shape' || obj.type === 'image') {
     return { x: obj.left, y: obj.top, width: obj.width, height: obj.height };
   }
   return { x: obj.x, y: obj.y, width: obj.width, height: estimateTextHeight(obj) };
@@ -28,7 +28,7 @@ export function unionBBox(boxes: BBox[]): BBox {
 }
 
 export function setObjectPosition(obj: CanvasObject, x: number, y: number): CanvasObject {
-  if (obj.type === 'phone' || obj.type === 'shape') {
+  if (obj.type === 'phone' || obj.type === 'shape' || obj.type === 'image') {
     return { ...obj, left: x, top: y };
   }
   return { ...obj, x, y };

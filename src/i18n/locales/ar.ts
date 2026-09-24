@@ -124,6 +124,8 @@ const ar: Dict = {
   'panel.addBody': '+ نص أساسي',
   'panel.addRect': '+ مستطيل',
   'panel.addCircle': '+ دائرة',
+  'panel.addImage': "+ صورة",
+  'panel.imageTitle': "صورة",
   'panel.multiSelected':
     'تم تحديد {count} عناصر. استخدم شريط المحاذاة في اللوحة لمحاذاتها، أو انقر على مساحة فارغة لإلغاء التحديد.',
 

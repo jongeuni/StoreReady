@@ -124,6 +124,8 @@ const de: Dict = {
   'panel.addBody': '+ Fließtext',
   'panel.addRect': '+ Rechteck',
   'panel.addCircle': '+ Kreis',
+  'panel.addImage': "+ Bild",
+  'panel.imageTitle': "Bild",
   'panel.multiSelected':
     '{count} Objekte ausgewählt. Nutze die Ausrichtungsleiste in der Arbeitsfläche zum Ausrichten oder klicke auf eine leere Stelle, um die Auswahl aufzuheben.',
 

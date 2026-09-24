@@ -1,5 +1,5 @@
 import { panelWidthOf, spreadGap } from './spread';
-import type { Page, PhoneObject, Project, TextObject } from '../types';
+import type { ImageObject, Page, PhoneObject, Project, TextObject } from '../types';
 import { getDevicePreset } from '../devicePresets';
 import { getDeviceModel } from '../phoneFrame';
 import { DEFAULT_DIVIDER_COLOR, dividerWidthOf } from './diagonalSplit';
@@ -14,6 +14,9 @@ type PageInfoData = {
   subheadline: ReturnType<typeof describeText> | null;
   otherText: ReturnType<typeof describeText>[];
   phones: ReturnType<typeof describePhone>[];
+  /** Pictures or logos the user placed directly on the page. */
+  images?: ReturnType<typeof describeImage>[];
+  imagesNote?: string;
 };
 
 function describeText(t: TextObject) {
@@ -27,6 +30,19 @@ function describeText(t: TextObject) {
     color: t.color,
     align: t.align,
     rotate: t.rotation,
+  };
+}
+
+function describeImage(o: ImageObject) {
+  return {
+    file: o.fileName ?? 'image',
+    top: o.top,
+    left: o.left,
+    width: o.width,
+    height: o.height,
+    rotate: o.rotation,
+    ...(o.cornerRadius ? { cornerRadius: o.cornerRadius } : {}),
+    layer: o.zIndex,
   };
 }
 
@@ -58,6 +74,7 @@ export function buildPageData(page: Page): PageInfoData {
     (o): o is TextObject => o.type === 'text' && o.role !== 'headline' && o.role !== 'subheadline',
   );
   const phones = page.objects.filter((o): o is PhoneObject => o.type === 'phone');
+  const images = page.objects.filter((o): o is ImageObject => o.type === 'image');
 
   return {
     label: page.label,
@@ -76,6 +93,13 @@ export function buildPageData(page: Page): PageInfoData {
     subheadline: subheadline ? describeText(subheadline) : null,
     otherText: otherText.map(describeText),
     phones: phones.map(describePhone),
+    ...(images.length > 0
+      ? {
+          images: images.map(describeImage),
+          imagesNote:
+            'These are pictures or logos the user placed on the page. The files are NOT included in this prompt: reserve exactly this box for each (a neutral placeholder is fine) and ask the user to supply the file, or use an image they already have with that name. Draw them in layer order together with the phones.',
+        }
+      : {}),
   };
 }
 

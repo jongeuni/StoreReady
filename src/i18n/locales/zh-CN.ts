@@ -124,6 +124,8 @@ const zhCN: Dict = {
   'panel.addBody': '+ 正文文本',
   'panel.addRect': '+ 矩形',
   'panel.addCircle': '+ 圆形',
+  'panel.addImage': "+ 图片",
+  'panel.imageTitle': "图片",
   'panel.multiSelected': '已选中 {count} 个对象。使用画布上的对齐工具栏进行对齐，或点击空白处取消选择。',
 
   'bg.title': '背景',

@@ -124,6 +124,8 @@ const ko: Dict = {
   'panel.addBody': '+ 본문 텍스트',
   'panel.addRect': '+ 사각형',
   'panel.addCircle': '+ 원',
+  'panel.addImage': "+ 사진",
+  'panel.imageTitle': "사진",
   'panel.multiSelected':
     '{count}개 오브젝트가 선택됐어요. 캔버스 위 정렬 툴바로 맞추거나, 빈 곳을 클릭해서 선택을 해제하세요.',
 

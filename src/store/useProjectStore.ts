@@ -17,6 +17,7 @@ import type {
   Project,
   ShapeKind,
   ShapeObject,
+  ImageObject,
   TextObject,
   TextRole,
 } from '../types';
@@ -64,6 +65,7 @@ type Actions = {
   addTextObject: (pageId: string, role: TextRole) => void;
   addPhoneObject: (pageId: string, deviceKind?: DeviceKind) => void;
   addShapeObject: (pageId: string, shapeKind: ShapeKind) => void;
+  addImageObject: (pageId: string, dataUrl: string, fileName: string, naturalWidth: number, naturalHeight: number) => void;
   updateObject: (pageId: string, objectId: string, patch: Partial<CanvasObject>) => void;
   moveObjectBy: (pageId: string, objectId: string, dx: number, dy: number) => void;
   removeObject: (pageId: string, objectId: string) => void;
@@ -131,7 +133,7 @@ export const useProjectStore = create<State & Actions>()(
                 obj.left = Math.round(obj.left * scaleX);
                 obj.top = Math.round(obj.top * scaleY);
                 obj.width = Math.round(obj.width * scaleX);
-              } else if (obj.type === 'shape') {
+              } else if (obj.type === 'shape' || obj.type === 'image') {
                 obj.left = Math.round(obj.left * scaleX);
                 obj.top = Math.round(obj.top * scaleY);
                 obj.width = Math.round(obj.width * scaleX);
@@ -303,6 +305,31 @@ export const useProjectStore = create<State & Actions>()(
           s.selectedObjectIds = [obj.id];
         }),
 
+      addImageObject: (pageId, dataUrl, fileName, naturalWidth, naturalHeight) =>
+        set((s) => {
+          const page = s.project.pages.find((p) => p.id === pageId);
+          if (!page || naturalWidth <= 0 || naturalHeight <= 0) return;
+          const maxZ = Math.max(0, ...page.objects.map((o) => o.zIndex));
+          // Fit within 60% of the canvas width and 40% of its height, never upscaling past the file's own size.
+          const scale = Math.min(1, (page.canvas.width * 0.6) / naturalWidth, (page.canvas.height * 0.4) / naturalHeight);
+          const width = Math.max(40, Math.round(naturalWidth * scale));
+          const height = Math.max(40, Math.round(naturalHeight * scale));
+          const obj: ImageObject = {
+            id: makeId(),
+            type: 'image',
+            image: dataUrl,
+            fileName,
+            width,
+            height,
+            left: Math.round((page.canvas.width - width) / 2),
+            top: Math.round((page.canvas.height - height) / 2),
+            rotation: 0,
+            zIndex: maxZ + 1,
+          };
+          page.objects.push(obj);
+          s.selectedObjectIds = [obj.id];
+        }),
+
       updateObject: (pageId, objectId, patch) =>
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
@@ -316,7 +343,7 @@ export const useProjectStore = create<State & Actions>()(
           const page = s.project.pages.find((p) => p.id === pageId);
           const obj = page?.objects.find((o) => o.id === objectId);
           if (!obj) return;
-          if (obj.type === 'phone' || obj.type === 'shape') {
+          if (obj.type === 'phone' || obj.type === 'shape' || obj.type === 'image') {
             obj.left += dx;
             obj.top += dy;
           } else {
@@ -349,7 +376,7 @@ export const useProjectStore = create<State & Actions>()(
           if (!page || !obj) return;
           const maxZ = Math.max(0, ...page.objects.map((o) => o.zIndex));
           const clone: CanvasObject =
-            obj.type === 'phone' || obj.type === 'shape'
+            obj.type === 'phone' || obj.type === 'shape' || obj.type === 'image'
               ? { ...obj, id: makeId(), left: obj.left + 24, top: obj.top + 24, zIndex: maxZ + 1 }
               : { ...obj, id: makeId(), x: obj.x + 24, y: obj.y + 24, zIndex: maxZ + 1 };
           page.objects.push(clone);
