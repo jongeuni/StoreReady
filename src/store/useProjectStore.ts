@@ -7,11 +7,12 @@ import { DEFAULT_DEVICE_PRESET_ID, getDevicePreset } from '../devicePresets';
 import { canvasWidthFor, panelWidthOf } from '../utils/spread';
 import { createBlankPage, layoutPageWithTemplate, type TemplateId } from '../templates';
 import { getObjectBBox, unionBBox, computeAlignedPosition, setObjectPosition, type AlignType } from '../utils/geometry';
-import { DEVICE_DEFAULT_WIDTH_RATIO, defaultModelForKind } from '../phoneFrame';
+import { DEVICE_DEFAULT_WIDTH_RATIO, defaultModelForPreset, getDeviceModel } from '../phoneFrame';
 import type {
   Background,
   CanvasObject,
   DeviceKind,
+  DevicePreset,
   Page,
   PhoneObject,
   Project,
@@ -21,6 +22,34 @@ import type {
   TextObject,
   TextRole,
 } from '../types';
+
+/**
+ * When a page's screenshot size targets a different device (phone -> iPad / Watch) or orientation,
+ * swap its device mockups for the matching kind and refit them so they stay inside the canvas.
+ * Spread pages and pages already using the right kind are left alone.
+ */
+function fitDevicesToPreset(page: Page, preset: DevicePreset) {
+  if ((page.spread ?? 1) > 1) return;
+  const landscape = preset.width > preset.height;
+  const target = defaultModelForPreset(preset.kind, landscape);
+  for (const obj of page.objects) {
+    if (obj.type !== 'phone') continue;
+    const current = getDeviceModel(obj.deviceModel, obj.deviceKind ?? 'phone');
+    const kindOk = (obj.deviceKind ?? 'phone') === preset.kind;
+    const orientationOk = preset.kind === 'phone' ? true : preset.kind === 'watch' ? true : current.aspect < 1 === landscape;
+    if (kindOk && orientationOk) continue;
+
+    obj.deviceKind = preset.kind;
+    obj.deviceModel = target.id;
+    const maxWidth = page.canvas.width * (preset.kind === 'watch' ? 0.7 : 0.86);
+    const top = Math.min(obj.top, Math.round(page.canvas.height * 0.4));
+    const availableHeight = page.canvas.height - top - page.canvas.height * 0.04;
+    obj.width = Math.max(40, Math.round(Math.min(maxWidth, availableHeight / target.aspect)));
+    obj.top = top;
+    obj.left = Math.round((page.canvas.width - obj.width) / 2);
+    obj.rotation = 0;
+  }
+}
 
 function nextPageLabel(pages: Page[]): string {
   return `Page ${pages.length + 1}`;
@@ -124,6 +153,9 @@ export const useProjectStore = create<State & Actions>()(
           const prevPreset = getDevicePreset(s.project.devicePresetId);
           const scaleX = preset.width / prevPreset.width;
           const scaleY = preset.height / prevPreset.height;
+          // Text follows the canvas as a whole, not just its width: when the shape changes (portrait -> landscape,
+          // phone -> watch) scaling by width alone makes headlines overflow the shorter side.
+          const textScale = Math.min(Math.sqrt(scaleX * scaleY), Math.min(scaleX, scaleY) * 1.3);
           s.project.devicePresetId = id;
           for (const page of s.project.pages) {
             page.canvas.width = canvasWidthFor(preset.width, page.spread ?? 1);
@@ -142,9 +174,10 @@ export const useProjectStore = create<State & Actions>()(
                 obj.x = Math.round(obj.x * scaleX);
                 obj.y = Math.round(obj.y * scaleY);
                 obj.width = Math.round(obj.width * scaleX);
-                obj.fontSize = Math.round(obj.fontSize * scaleX);
+                obj.fontSize = Math.max(6, Math.round(obj.fontSize * textScale));
               }
             }
+            fitDevicesToPreset(page, preset);
           }
         }),
 
@@ -158,6 +191,7 @@ export const useProjectStore = create<State & Actions>()(
           const preset = getDevicePreset(s.project.devicePresetId);
           const page = createBlankPage(nextPageLabel(s.project.pages), preset.width, preset.height);
           layoutPageWithTemplate(page, templateId, preset.width, preset.height);
+          fitDevicesToPreset(page, preset);
           s.project.pages.push(page);
           s.currentPageId = page.id;
           s.selectedObjectIds = [];
@@ -219,6 +253,7 @@ export const useProjectStore = create<State & Actions>()(
           if (!page) return;
           const panelWidth = panelWidthOf(page);
           layoutPageWithTemplate(page, templateId, panelWidth, page.canvas.height);
+          fitDevicesToPreset(page, getDevicePreset(s.project.devicePresetId));
           s.selectedObjectIds = [];
         }),
 
@@ -263,18 +298,23 @@ export const useProjectStore = create<State & Actions>()(
           const page = s.project.pages.find((p) => p.id === pageId);
           if (!page) return;
           const maxZ = Math.max(0, ...page.objects.map((o) => o.zIndex));
-          const width = Math.round(page.canvas.width * DEVICE_DEFAULT_WIDTH_RATIO[deviceKind]);
+          // Pick the mockup that matches this page's orientation, and keep it inside the canvas.
+          const panelWidth = panelWidthOf(page);
+          const model = defaultModelForPreset(deviceKind, panelWidth > page.canvas.height);
+          const top = Math.round(page.canvas.height * 0.32);
+          const fitWidth = Math.floor((page.canvas.height - top - page.canvas.height * 0.04) / model.aspect);
+          const width = Math.max(40, Math.min(Math.round(panelWidth * DEVICE_DEFAULT_WIDTH_RATIO[deviceKind]), fitWidth));
           const existingCount = page.objects.filter((o) => o.type === 'phone' && (o.deviceKind ?? 'phone') === deviceKind).length;
           const namePrefix = deviceKind === 'phone' ? 'screen' : deviceKind;
           const obj: PhoneObject = {
             id: makeId(),
             type: 'phone',
             deviceKind,
-            deviceModel: defaultModelForKind(deviceKind).id,
+            deviceModel: model.id,
             screenshotName: `${namePrefix}_${existingCount + 1}`,
             width,
-            left: Math.round((page.canvas.width - width) / 2),
-            top: Math.round(page.canvas.height * 0.32),
+            left: Math.round((panelWidth - width) / 2),
+            top,
             rotation: 0,
             zIndex: maxZ + 1,
           };

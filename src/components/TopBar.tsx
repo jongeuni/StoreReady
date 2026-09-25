@@ -4,10 +4,10 @@ import { useToastStore } from '../store/useToastStore';
 import { useRouter } from '../router';
 import { useT } from '../i18n';
 import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
-import { DEVICE_PRESETS } from '../devicePresets';
+import { DEVICE_PRESETS, DEVICE_PRESET_GROUPS } from '../devicePresets';
 import { Button } from './ui/Field';
 import { panelWidthOf, spreadGap } from '../utils/spread';
-import { exportPageAsPng, exportPagesAsZip, exportStageToDataUrl, sliceDataUrl } from '../utils/export';
+import { exportPageAsPng, exportPagesAsZip, exportStageToDataUrl, preloadProjectImages, sliceDataUrl } from '../utils/export';
 
 export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | null> }) {
   const { navigate } = useRouter();
@@ -43,14 +43,21 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
 
   const handleExportAll = async () => {
     const stage = stageRef.current;
-    if (!stage) return;
+    if (!stage) {
+      pushToast(t('top.nothingToExport'), 'error');
+      return;
+    }
+    const originalPageId = currentPageId;
     try {
+      // Warm the browser's image cache first, so each page's pictures are ready the moment it is shown.
+      await preloadProjectImages(project.pages);
+
       const entries: { label: string; dataUrl: string }[] = [];
-      const originalPageId = currentPageId;
       for (const page of project.pages) {
         selectPage(page.id);
-        // Let React re-render this page's canvas before capturing it.
+        // Let React re-render this page's canvas, and its images finish loading, before capturing it.
         await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        await new Promise((resolve) => setTimeout(resolve, 150));
         const spread = page.spread ?? 1;
         const whole = exportStageToDataUrl(stage);
         if (spread <= 1) {
@@ -60,12 +67,16 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
           slices.forEach((dataUrl, i) => entries.push({ label: `${page.label}_${i + 1}`, dataUrl }));
         }
       }
-      selectPage(originalPageId);
       await exportPagesAsZip(entries, `${project.name || 'app-store-screenshots'}.zip`);
       pushToast(t('top.zipDone'), 'success');
     } catch (err) {
       console.error(err);
-      pushToast(t('top.zipFailed'), 'error');
+      // Include the underlying reason so a failure on someone's machine can actually be diagnosed.
+      const reason = err instanceof Error && err.message ? ` (${err.message})` : '';
+      pushToast(`${t('top.zipFailed')}${reason}`, 'error');
+    } finally {
+      // Always return to the page the user was on, even if an export step threw.
+      selectPage(originalPageId);
     }
   };
 
@@ -91,10 +102,14 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
           title={t('top.deviceTitle')}
           className="rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs text-neutral-200"
         >
-          {DEVICE_PRESETS.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.label} ({p.width}×{p.height})
-            </option>
+          {DEVICE_PRESET_GROUPS.map((g) => (
+            <optgroup key={g.kind} label={g.label}>
+              {DEVICE_PRESETS.filter((p) => p.kind === g.kind).map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.label} ({p.width}×{p.height})
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
       </div>

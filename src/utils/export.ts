@@ -1,4 +1,6 @@
 import type Konva from 'konva';
+import type { Page } from '../types';
+import { DEVICE_MODELS } from '../phoneFrame';
 
 function sanitizeFileName(name: string): string {
   return name.replace(/[^a-z0-9-_]+/gi, '_').toLowerCase();
@@ -69,6 +71,33 @@ export async function exportPagesAsZip(
     const base64 = entry.dataUrl.split(',')[1];
     zip.file(`${String(i + 1).padStart(2, '0')}-${sanitizeFileName(entry.label)}.png`, base64, { base64: true });
   });
-  const blob = await zip.generateAsync({ type: 'blob' });
+  // PNGs are already compressed; storing them as-is is much faster and uses far less memory than DEFLATE.
+  const blob = await zip.generateAsync({ type: 'blob', compression: 'STORE', streamFiles: true });
   saveAs(blob, zipFileName);
+}
+
+/** Decodes every picture the pages use (screenshots, free images, 3D phone frames) so exports never catch one half-loaded. */
+export async function preloadProjectImages(pages: Page[]): Promise<void> {
+  const urls = new Set<string>(DEVICE_MODELS.flatMap((m) => (m.render3d ? [m.render3d.frameUrl] : [])));
+  for (const page of pages) {
+    for (const obj of page.objects) {
+      if (obj.type === 'phone') {
+        if (obj.image) urls.add(obj.image);
+        for (const th of obj.extraThemes ?? []) if (th.image) urls.add(th.image);
+      } else if (obj.type === 'image' && obj.image) {
+        urls.add(obj.image);
+      }
+    }
+  }
+  await Promise.all(
+    [...urls].map(
+      (src) =>
+        new Promise<void>((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve();
+          img.onerror = () => resolve(); // a broken image shouldn't block the whole export
+          img.src = src;
+        }),
+    ),
+  );
 }

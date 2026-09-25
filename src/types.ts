@@ -10,6 +10,8 @@ export type DevicePreset = {
   label: string;
   /** Marketing copy shown next to the preset, e.g. "iPhone 6.9" (16 Pro Max, ...)" */
   description: string;
+  /** Which kind of device this screenshot size is for; drives the default mockup and the dropdown group. */
+  kind: DeviceKind;
   width: number;
   height: number;
 };

@@ -149,6 +149,28 @@ export const DEVICE_MODELS: DeviceModel[] = [
     chrome: 'none',
   },
   {
+    id: 'tablet-standard-landscape',
+    kind: 'tablet',
+    label: 'iPad (landscape)',
+    aspect: 0.695,
+    cornerRadiusRatio: 0.035,
+    screenInsetRatio: 0.021,
+    screenInsetBottomRatio: 0.021,
+    screenCornerRadiusRatio: 0.021,
+    chrome: 'none',
+  },
+  {
+    id: 'tablet-pro-129-landscape',
+    kind: 'tablet',
+    label: 'iPad Pro 12.9" (landscape)',
+    aspect: 0.75,
+    cornerRadiusRatio: 0.03,
+    screenInsetRatio: 0.019,
+    screenInsetBottomRatio: 0.019,
+    screenCornerRadiusRatio: 0.019,
+    chrome: 'none',
+  },
+  {
     id: 'watch-45',
     kind: 'watch',
     label: 'Apple Watch 45mm',
@@ -195,6 +217,12 @@ export const DEVICE_DEFAULT_WIDTH_RATIO: Record<DeviceKind, number> = {
   tablet: 0.85,
   watch: 0.28,
 };
+
+/** The mockup a fresh page should use for a screenshot size: same kind, matching orientation. */
+export function defaultModelForPreset(kind: DeviceKind, landscape: boolean): DeviceModel {
+  const models = modelsForKind(kind);
+  return models.find((m) => m.render3d === undefined && m.aspect < 1 === landscape) ?? models[0];
+}
 
 export function modelsForKind(kind: DeviceKind): DeviceModel[] {
   return DEVICE_MODELS.filter((m) => m.kind === kind);
