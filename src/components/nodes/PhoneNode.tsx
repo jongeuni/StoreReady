@@ -17,6 +17,7 @@ import {
 } from '../../utils/diagonalSplit';
 import { useT } from '../../i18n';
 import { SRC_W, composeDevice3d } from '../../utils/device3d';
+import { usePendingRender } from '../../utils/renderGate';
 import { quadToUnitSquare, unitSquareToQuad, type Point } from '../../utils/perspectiveWarp';
 
 function roundedRectPath(ctx: Context, w: number, h: number, r: number) {
@@ -170,7 +171,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
         startDividerDrag(i);
       };
       return (
-        <Group key={i}>
+        <Group key={i} name="editor-only">
           <Line
             points={[x1 * scale, y1 * scale, x2 * scale, y2 * scale]}
             stroke="rgba(0,0,0,0.001)"
@@ -196,6 +197,11 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
       );
     });
   };
+
+  usePendingRender(
+    obj.id,
+    (!!r3d && !composite3d) || [obj.image, ...extra.map((x) => x.image)].some((src, i) => !!src && !themeImages[i]),
+  );
 
   const crop = image ? coverCrop(image.naturalWidth, image.naturalHeight, screenW, screenH) : null;
 
@@ -368,7 +374,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
       </Group>
 
       {/* Drag handles for the diagonal dividers (selected phone only) */}
-      <Group x={insetSide} y={insetTop}>
+      <Group x={insetSide} y={insetTop} name="editor-only">
         {renderDividerHandles(dividerLines(screenW, screenH, themeCount, obj.dividerCuts))}
       </Group>
 

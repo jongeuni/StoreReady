@@ -1,13 +1,8 @@
 import type { CanvasObject } from '../types';
 import { deviceHeightForWidth } from '../phoneFrame';
+import { measureTextInk } from './richText';
 
 export type BBox = { x: number; y: number; width: number; height: number };
-
-/** Rough single-line text height estimate, good enough for alignment (not rendering). */
-function estimateTextHeight(obj: Extract<CanvasObject, { type: 'text' }>): number {
-  const lines = obj.text.split('\n').length;
-  return Math.round(obj.fontSize * obj.lineHeight * lines);
-}
 
 export function getObjectBBox(obj: CanvasObject): BBox {
   if (obj.type === 'phone') {
@@ -16,7 +11,9 @@ export function getObjectBBox(obj: CanvasObject): BBox {
   if (obj.type === 'shape' || obj.type === 'image') {
     return { x: obj.left, y: obj.top, width: obj.width, height: obj.height };
   }
-  return { x: obj.x, y: obj.y, width: obj.width, height: estimateTextHeight(obj) };
+  // Text: the box hugs the glyphs, so aligning/centering acts on what is actually visible.
+  const ink = measureTextInk(obj);
+  return { x: obj.x + ink.offsetX, y: obj.y, width: ink.width, height: ink.height };
 }
 
 export function unionBBox(boxes: BBox[]): BBox {
@@ -31,7 +28,7 @@ export function setObjectPosition(obj: CanvasObject, x: number, y: number): Canv
   if (obj.type === 'phone' || obj.type === 'shape' || obj.type === 'image') {
     return { ...obj, left: x, top: y };
   }
-  return { ...obj, x, y };
+  return { ...obj, x: x - measureTextInk(obj).offsetX, y };
 }
 
 export type AlignType = 'left' | 'center-h' | 'right' | 'top' | 'center-v' | 'bottom';

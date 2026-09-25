@@ -52,7 +52,7 @@ function domToRuns(root: HTMLElement, baseColor: string): { text: string; runs: 
 type Props = {
   obj: TextObject;
   viewScale: number;
-  onCommit: (patch: { text: string; runs?: TextRun[] }) => void;
+  onCommit: (patch: { text: string; runs?: TextRun[]; color?: string }) => void;
   onCancel: () => void;
 };
 
@@ -60,6 +60,7 @@ export function TextEditOverlay({ obj, viewScale, onCommit, onCancel }: Props) {
   const divRef = useRef<HTMLDivElement>(null);
   const savedRangeRef = useRef<Range | null>(null);
   const setApplyColorToSelection = useTextEditStore((s) => s.setApplyColorToSelection);
+  const setCommitEdit = useTextEditStore((s) => s.setCommitEdit);
 
   useEffect(() => {
     const el = divRef.current;
@@ -98,11 +99,16 @@ export function TextEditOverlay({ obj, viewScale, onCommit, onCancel }: Props) {
 
   const applyColor = (color: string) => {
     const el = divRef.current;
-    const range = savedRangeRef.current;
-    if (!el || !range) return;
+    if (!el) return;
     el.focus();
     const sel = window.getSelection();
     if (!sel) return;
+    // Nothing dragged-over (just a caret, or no selection at all) means "recolor the whole text".
+    let range = savedRangeRef.current;
+    if (!range || range.collapsed) {
+      range = document.createRange();
+      range.selectNodeContents(el);
+    }
     sel.removeAllRanges();
     sel.addRange(range);
     try {
@@ -126,12 +132,28 @@ export function TextEditOverlay({ obj, viewScale, onCommit, onCancel }: Props) {
     const el = divRef.current;
     if (!el) return;
     const { text, runs } = domToRuns(el, obj.color);
-    onCommit({ text, runs: runsHaveMultipleColors(runs) ? runs : undefined });
+    const multi: boolean = runsHaveMultipleColors(runs);
+    if (multi) {
+      onCommit({ text, runs });
+    } else {
+      // One colour throughout: keep it as the object's colour (it may differ from the old one after a recolor).
+      onCommit({ text, runs: undefined, color: runs[0]?.color ?? obj.color });
+    }
   };
+
+  // Let the canvas finish this edit when the user clicks anywhere outside the editor.
+  const commitRef = useRef(commit);
+  commitRef.current = commit;
+  useEffect(() => {
+    setCommitEdit(() => commitRef.current());
+    return () => setCommitEdit(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div
       ref={divRef}
+      data-text-editor
       contentEditable
       suppressContentEditableWarning
       onMouseUp={saveSelection}

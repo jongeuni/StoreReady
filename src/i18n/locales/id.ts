@@ -230,6 +230,12 @@ const id: Dict = {
   'feat.export.b': 'Ekspor PNG atau ZIP dalam ukuran yang diwajibkan App Store (6,9"/6,7"/6,5").',
   'cta.title': 'Mulai sekarang',
   'cta.sub': 'Tanpa akun dan tanpa instalasi. Pekerjaan Anda tersimpan di peramban Anda.',
+  'tabs.deleteConfirmTitle': "Hapus halaman ini?",
+  'tabs.deleteConfirmMessage': "Hapus “{name}”? Tindakan ini tidak dapat dibatalkan.",
+  'top.preview': "Pratinjau",
+  'top.previewBuilding': "Menyiapkan pratinjau…",
+  'preview.title': "Pratinjau App Store",
+  'preview.hint': "Kurang lebih begini tampilan tangkapan layarmu di App Store. Gulir ke samping untuk melihat semuanya.",
 
   'nav.reference': "Referensi",
   'ref.title': "Dibuat dengan StoreReady",

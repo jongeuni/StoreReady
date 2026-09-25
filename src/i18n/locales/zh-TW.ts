@@ -228,6 +228,12 @@ const zhTW: Dict = {
   'feat.export.b': '以 App Store 規定的尺寸（6.9"/6.7"/6.5"）匯出 PNG 或 ZIP。',
   'cta.title': '現在就開始吧',
   'cta.sub': '不需帳號，不需安裝。你的作品會直接儲存在瀏覽器中。',
+  'tabs.deleteConfirmTitle': "刪除此頁面？",
+  'tabs.deleteConfirmMessage': "要刪除「{name}」嗎？此操作無法復原。",
+  'top.preview': "預覽",
+  'top.previewBuilding': "正在準備預覽…",
+  'preview.title': "App Store 預覽",
+  'preview.hint': "大致呈現截圖在 App Store 中的樣子。左右滑動查看全部。",
 
   'nav.reference': "參考案例",
   'ref.title': "用 StoreReady 製作",

@@ -1,8 +1,8 @@
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { Shape } from 'react-konva';
 import type Konva from 'konva';
 import type { TextObject } from '../../types';
-import { layoutRichText } from '../../utils/richText';
+import { layoutRichText, measureTextInk } from '../../utils/richText';
 
 type Props = {
   obj: TextObject;
@@ -30,9 +30,28 @@ export const RichTextNode = forwardRef<Konva.Shape, Props>(function RichTextNode
     [obj.runs, obj.fontFamily, obj.fontSize, obj.fontWeight, obj.width, obj.align, obj.lineHeight],
   );
 
+  const localRef = useRef<Konva.Shape | null>(null);
+  const setRefs = useCallback(
+    (node: Konva.Shape | null) => {
+      localRef.current = node;
+      if (typeof ref === 'function') ref(node);
+      else if (ref) ref.current = node;
+    },
+    [ref],
+  );
+
+  useLayoutEffect(() => {
+    const node = localRef.current;
+    if (!node) return;
+    node.getSelfRect = () => {
+      const ink = measureTextInk(obj);
+      return { x: ink.offsetX, y: 0, width: ink.width, height: ink.height };
+    };
+  });
+
   return (
     <Shape
-      ref={ref}
+      ref={setRefs}
       x={obj.x}
       y={obj.y}
       width={obj.width}

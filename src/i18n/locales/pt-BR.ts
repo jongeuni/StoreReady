@@ -230,6 +230,12 @@ const ptBR: Dict = {
   'feat.export.b': 'Exporte PNG ou ZIP nos tamanhos exigidos pela App Store (6,9"/6,7"/6,5").',
   'cta.title': 'Comece agora',
   'cta.sub': 'Sem conta e sem instalação. Seu trabalho fica salvo no seu navegador.',
+  'tabs.deleteConfirmTitle': "Excluir esta página?",
+  'tabs.deleteConfirmMessage': "Excluir “{name}”? Isso não pode ser desfeito.",
+  'top.preview': "Pré-visualização",
+  'top.previewBuilding': "Preparando a pré-visualização…",
+  'preview.title': "Pré-visualização da App Store",
+  'preview.hint': "É mais ou menos assim que suas capturas ficarão na App Store. Role para o lado para ver todas.",
 
   'nav.reference': "Referência",
   'ref.title': "Feito com StoreReady",

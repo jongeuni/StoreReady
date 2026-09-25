@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useProjectStore } from '../store/useProjectStore';
 import { Button } from './ui/Field';
 import { useT } from '../i18n';
+import { ConfirmModal } from './ConfirmModal';
 
 export function PageTabs() {
   const pages = useProjectStore((s) => s.project.pages);
@@ -12,6 +13,7 @@ export function PageTabs() {
   const duplicatePage = useProjectStore((s) => s.duplicatePage);
   const renamePage = useProjectStore((s) => s.renamePage);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; label: string } | null>(null);
   const t = useT();
 
   return (
@@ -20,7 +22,7 @@ export function PageTabs() {
         <div
           key={page.id}
           onClick={() => selectPage(page.id)}
-          className={`group flex shrink-0 cursor-pointer items-center gap-2 rounded-md border px-3 py-1.5 text-sm ${
+          className={`flex shrink-0 cursor-pointer items-center gap-2 rounded-md border px-3 py-1.5 text-sm ${
             page.id === currentPageId
               ? 'border-blue-500 bg-blue-500/10 text-blue-200'
               : 'border-neutral-800 bg-neutral-900 text-neutral-400 hover:border-neutral-700'
@@ -46,7 +48,7 @@ export function PageTabs() {
               {i + 1}. {page.label}
             </span>
           )}
-          <span className="hidden gap-1 group-hover:flex">
+          <span className="flex gap-1">
             <button
               title={t('tabs.duplicate')}
               onClick={(e) => {
@@ -62,7 +64,7 @@ export function PageTabs() {
                 title={t('tabs.delete')}
                 onClick={(e) => {
                   e.stopPropagation();
-                  removePage(page.id);
+                  setPendingDelete({ id: page.id, label: page.label });
                 }}
                 className="text-neutral-500 hover:text-red-400"
               >
@@ -73,6 +75,20 @@ export function PageTabs() {
         </div>
       ))}
       <Button onClick={() => addPage()}>{t('tabs.addPage')}</Button>
+
+      {pendingDelete && (
+        <ConfirmModal
+          title={t('tabs.deleteConfirmTitle')}
+          message={t('tabs.deleteConfirmMessage', { name: pendingDelete.label })}
+          confirmLabel={t('common.delete')}
+          cancelLabel={t('common.cancel')}
+          onCancel={() => setPendingDelete(null)}
+          onConfirm={() => {
+            removePage(pendingDelete.id);
+            setPendingDelete(null);
+          }}
+        />
+      )}
     </div>
   );
 }

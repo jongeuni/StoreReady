@@ -2,12 +2,17 @@ import { Rect } from 'react-konva';
 import type { Background } from '../../types';
 import { gradientPoints } from '../../utils/gradient';
 
+const HEX_RE = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+const safe = (c: string | undefined, fallback: string) => (c && HEX_RE.test(c.trim()) ? c.trim() : fallback);
+
 export function BackgroundNode({ width, height, background }: { width: number; height: number; background: Background }) {
   if (background.type === 'solid') {
-    return <Rect x={0} y={0} width={width} height={height} fill={background.color} listening={false} />;
+    return <Rect x={0} y={0} width={width} height={height} fill={safe(background.color, '#000000')} listening={false} />;
   }
   if (background.type === 'gradient') {
     const { start, end } = gradientPoints(width, height, background.angle);
+    const c0 = safe(background.colors[0], '#000000');
+    const c1 = safe(background.colors[1], c0);
     return (
       <Rect
         x={0}
@@ -16,7 +21,7 @@ export function BackgroundNode({ width, height, background }: { width: number; h
         height={height}
         fillLinearGradientStartPoint={start}
         fillLinearGradientEndPoint={end}
-        fillLinearGradientColorStops={[0, background.colors[0], 1, background.colors[1]]}
+        fillLinearGradientColorStops={[0, c0, 1, c1]}
         listening={false}
       />
     );

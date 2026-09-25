@@ -230,6 +230,12 @@ const vi: Dict = {
   'feat.export.b': 'Xuất PNG hoặc ZIP đúng kích thước App Store yêu cầu (6,9"/6,7"/6,5").',
   'cta.title': 'Bắt đầu ngay',
   'cta.sub': 'Không cần tài khoản hay cài đặt. Công việc của bạn được lưu ngay trong trình duyệt.',
+  'tabs.deleteConfirmTitle': "Xóa trang này?",
+  'tabs.deleteConfirmMessage': "Xóa “{name}”? Hành động này không thể hoàn tác.",
+  'top.preview': "Xem trước",
+  'top.previewBuilding': "Đang chuẩn bị bản xem trước…",
+  'preview.title': "Xem trước App Store",
+  'preview.hint': "Đại khái ảnh chụp màn hình của bạn sẽ trông như vậy trên App Store. Cuộn ngang để xem tất cả.",
 
   'nav.reference': "Tham khảo",
   'ref.title': "Làm bằng StoreReady",

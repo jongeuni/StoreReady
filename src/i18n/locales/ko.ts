@@ -229,6 +229,12 @@ const ko: Dict = {
   'feat.export.b': 'App Store 제출 규격(6.9"/6.7"/6.5") 그대로 PNG·ZIP으로 내보내요.',
   'cta.title': '지금 바로 시작해보세요',
   'cta.sub': '가입도, 설치도 필요 없어요. 작업 내용은 브라우저에 바로 저장돼요.',
+  'tabs.deleteConfirmTitle': "페이지를 삭제할까요?",
+  'tabs.deleteConfirmMessage': "\"{name}\" 페이지를 삭제할까요? 되돌릴 수 없습니다.",
+  'top.preview': "미리보기",
+  'top.previewBuilding': "미리보기 준비 중…",
+  'preview.title': "App Store 미리보기",
+  'preview.hint': "스크린샷이 App Store에서 보일 모습입니다. 옆으로 넘겨서 확인하세요.",
 
   'nav.reference': "레퍼런스",
   'ref.title': "StoreReady로 만든 앱",

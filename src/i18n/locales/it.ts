@@ -230,6 +230,12 @@ const it: Dict = {
   'feat.export.b': 'Esporta PNG o ZIP nelle dimensioni richieste dall’App Store (6,9"/6,7"/6,5").',
   'cta.title': 'Inizia ora',
   'cta.sub': 'Nessun account, nessuna installazione. Il tuo lavoro viene salvato nel tuo browser.',
+  'tabs.deleteConfirmTitle': "Eliminare questa pagina?",
+  'tabs.deleteConfirmMessage': "Eliminare «{name}»? L’operazione non può essere annullata.",
+  'top.preview': "Anteprima",
+  'top.previewBuilding': "Preparazione dell’anteprima…",
+  'preview.title': "Anteprima App Store",
+  'preview.hint': "Più o meno così appariranno i tuoi screenshot sull’App Store. Scorri di lato per vederli tutti.",
 
   'nav.reference': "Riferimenti",
   'ref.title': "Creato con StoreReady",

@@ -230,6 +230,12 @@ const th: Dict = {
   'feat.export.b': 'ส่งออก PNG หรือ ZIP ตามขนาดที่ App Store กำหนด (6.9"/6.7"/6.5")',
   'cta.title': 'เริ่มเลยตอนนี้',
   'cta.sub': 'ไม่ต้องมีบัญชี ไม่ต้องติดตั้ง งานของคุณถูกบันทึกไว้ในเบราว์เซอร์ของคุณเอง',
+  'tabs.deleteConfirmTitle': "ลบหน้านี้หรือไม่?",
+  'tabs.deleteConfirmMessage': "ลบ “{name}” หรือไม่? ไม่สามารถย้อนกลับได้",
+  'top.preview': "ดูตัวอย่าง",
+  'top.previewBuilding': "กำลังเตรียมตัวอย่าง…",
+  'preview.title': "ตัวอย่าง App Store",
+  'preview.hint': "ภาพหน้าจอของคุณจะดูประมาณนี้บน App Store เลื่อนไปด้านข้างเพื่อดูทั้งหมด",
 
   'nav.reference': "ตัวอย่างผลงาน",
   'ref.title': "สร้างด้วย StoreReady",

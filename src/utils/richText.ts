@@ -123,6 +123,44 @@ export function layoutRichText(runs: TextRun[], opts: LayoutOptions): RichLayout
   return { lines, totalHeight: lines.length * lineHeightPx, lineHeightPx };
 }
 
+/**
+ * The rectangle the glyphs actually cover, relative to the text box's own left/top: where the ink starts
+ * (depends on alignment), how wide the widest line really is, and the wrapped height. The selection outline
+ * and the align tools use this instead of the (much wider) declared box.
+ */
+export function measureTextInk(obj: {
+  text: string;
+  runs?: TextRun[];
+  color: string;
+  fontFamily: string;
+  fontSize: number;
+  fontWeight: number | string;
+  width: number;
+  align: 'left' | 'center' | 'right';
+  lineHeight: number;
+}): { offsetX: number; width: number; height: number } {
+  const runs = obj.runs && obj.runs.length > 0 ? obj.runs : [{ text: obj.text, color: obj.color }];
+  const layout = layoutRichText(runs, {
+    fontFamily: obj.fontFamily,
+    fontSize: obj.fontSize,
+    fontWeight: obj.fontWeight,
+    maxWidth: obj.width,
+    align: obj.align,
+    lineHeight: obj.lineHeight,
+  });
+  let minX = Infinity;
+  let maxX = -Infinity;
+  for (const line of layout.lines) {
+    for (const seg of line.segments) {
+      minX = Math.min(minX, seg.x);
+      maxX = Math.max(maxX, seg.x + seg.width);
+    }
+  }
+  const height = Math.max(layout.totalHeight, obj.fontSize);
+  if (!Number.isFinite(minX)) return { offsetX: 0, width: obj.width, height };
+  return { offsetX: Math.max(0, minX), width: Math.max(1, maxX - minX), height };
+}
+
 /** True when runs meaningfully differ in color (worth using the rich renderer instead of plain Text). */
 export function runsHaveMultipleColors(runs: TextRun[] | undefined): runs is TextRun[] {
   if (!runs || runs.length === 0) return false;

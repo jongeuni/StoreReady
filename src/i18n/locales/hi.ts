@@ -230,6 +230,12 @@ const hi: Dict = {
   'feat.export.b': 'PNG या ZIP को App Store के ज़रूरी आकारों (6.9"/6.7"/6.5") में एक्सपोर्ट करें।',
   'cta.title': 'अभी शुरू करें',
   'cta.sub': 'न खाता, न इंस्टॉलेशन। आपका काम आपके ब्राउज़र में ही सहेजा जाता है।',
+  'tabs.deleteConfirmTitle': "इस पेज को हटाएँ?",
+  'tabs.deleteConfirmMessage': "\"{name}\" हटाएँ? इसे वापस नहीं किया जा सकता।",
+  'top.preview': "पूर्वावलोकन",
+  'top.previewBuilding': "पूर्वावलोकन तैयार हो रहा है…",
+  'preview.title': "App Store पूर्वावलोकन",
+  'preview.hint': "App Store में आपके स्क्रीनशॉट लगभग ऐसे दिखेंगे। सभी देखने के लिए बगल में स्क्रोल करें।",
 
   'nav.reference': "रेफ़रेंस",
   'ref.title': "StoreReady से बना",

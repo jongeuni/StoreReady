@@ -230,6 +230,12 @@ const ar: Dict = {
   'feat.export.b': 'صدّر PNG أو ZIP بالأحجام التي يشترطها App Store (6.9"/6.7"/6.5").',
   'cta.title': 'ابدأ الآن',
   'cta.sub': 'بلا حساب وبلا تثبيت. يُحفظ عملك في متصفحك.',
+  'tabs.deleteConfirmTitle': "حذف هذه الصفحة؟",
+  'tabs.deleteConfirmMessage': "حذف «{name}»؟ لا يمكن التراجع عن ذلك.",
+  'top.preview': "معاينة",
+  'top.previewBuilding': "جارٍ تجهيز المعاينة…",
+  'preview.title': "معاينة App Store",
+  'preview.hint': "هكذا تقريبًا ستظهر لقطاتك في App Store. مرّر جانبًا لرؤيتها كلها.",
 
   'nav.reference': "أمثلة",
   'ref.title': "صُنع باستخدام StoreReady",

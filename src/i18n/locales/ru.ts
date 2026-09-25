@@ -230,6 +230,12 @@ const ru: Dict = {
   'feat.export.b': 'Экспортируйте PNG или ZIP в размерах, которых требует App Store (6,9"/6,7"/6,5").',
   'cta.title': 'Начните прямо сейчас',
   'cta.sub': 'Без аккаунта и установки. Ваша работа сохраняется в вашем браузере.',
+  'tabs.deleteConfirmTitle': "Удалить эту страницу?",
+  'tabs.deleteConfirmMessage': "Удалить «{name}»? Это действие нельзя отменить.",
+  'top.preview': "Предпросмотр",
+  'top.previewBuilding': "Готовим предпросмотр…",
+  'preview.title': "Предпросмотр App Store",
+  'preview.hint': "Примерно так скриншоты будут выглядеть в App Store. Прокрутите вбок, чтобы увидеть все.",
 
   'nav.reference': "Примеры",
   'ref.title': "Сделано в StoreReady",

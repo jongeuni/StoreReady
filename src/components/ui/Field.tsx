@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -63,7 +63,20 @@ export function TextField({
   );
 }
 
+const HEX_RE = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+
+/** "#abc" -> "#aabbcc" so <input type=color> and canvas gradients always get a full hex. */
+function normalizeHex(v: string): string {
+  const t = v.trim();
+  return t.length === 4 ? `#${t[1]}${t[1]}${t[2]}${t[2]}${t[3]}${t[3]}` : t;
+}
+
 export function ColorField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  // Typing edits a local draft; only a complete, valid colour is passed on. A half-typed or emptied field
+  // must never reach the canvas (an invalid gradient colour would break the whole page).
+  const [draft, setDraft] = useState(value);
+  useEffect(() => setDraft(value), [value]);
+
   return (
     <Field label={label}>
       <div className="flex items-center gap-2">
@@ -75,8 +88,12 @@ export function ColorField({ label, value, onChange }: { label: string; value: s
         />
         <input
           type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+          value={draft}
+          onChange={(e) => {
+            setDraft(e.target.value);
+            if (HEX_RE.test(e.target.value.trim())) onChange(normalizeHex(e.target.value));
+          }}
+          onBlur={() => setDraft(value)}
           className="w-full rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-neutral-100 focus:border-blue-500 focus:outline-none"
         />
       </div>

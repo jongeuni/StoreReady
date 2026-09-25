@@ -95,6 +95,8 @@ type Actions = {
   addPhoneObject: (pageId: string, deviceKind?: DeviceKind) => void;
   addShapeObject: (pageId: string, shapeKind: ShapeKind) => void;
   addImageObject: (pageId: string, dataUrl: string, fileName: string, naturalWidth: number, naturalHeight: number) => void;
+  /** Puts a screenshot into a phone: fills the first empty screen, otherwise adds another diagonal band. */
+  addScreenshotToPhone: (pageId: string, objectId: string, dataUrl: string, fileName: string) => void;
   updateObject: (pageId: string, objectId: string, patch: Partial<CanvasObject>) => void;
   moveObjectBy: (pageId: string, objectId: string, dx: number, dy: number) => void;
   removeObject: (pageId: string, objectId: string) => void;
@@ -367,6 +369,29 @@ export const useProjectStore = create<State & Actions>()(
             zIndex: maxZ + 1,
           };
           page.objects.push(obj);
+          s.selectedObjectIds = [obj.id];
+        }),
+
+      addScreenshotToPhone: (pageId, objectId, dataUrl, fileName) =>
+        set((s) => {
+          const page = s.project.pages.find((p) => p.id === pageId);
+          const obj = page?.objects.find((o) => o.id === objectId);
+          if (!obj || obj.type !== 'phone') return;
+          if (!obj.image) {
+            obj.image = dataUrl;
+            obj.imageFileName = fileName;
+            return;
+          }
+          const themes = obj.extraThemes ?? [];
+          const empty = themes.findIndex((th) => !th.image);
+          if (empty !== -1) {
+            themes[empty].image = dataUrl;
+            themes[empty].imageFileName = fileName;
+          } else {
+            themes.push({ name: `${obj.screenshotName || 'screen'}_${themes.length + 2}`, image: dataUrl, imageFileName: fileName });
+          }
+          obj.extraThemes = themes;
+          obj.dividerCuts = undefined;
           s.selectedObjectIds = [obj.id];
         }),
 

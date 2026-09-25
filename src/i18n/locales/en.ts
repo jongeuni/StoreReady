@@ -235,6 +235,12 @@ const en = {
   'feat.export.b': 'Export PNG or ZIP at the exact App Store sizes (6.9", 6.7", 6.5").',
   'cta.title': 'Start right now',
   'cta.sub': 'No account, no install — your work is saved right in the browser.',
+  'tabs.deleteConfirmTitle': "Delete this page?",
+  'tabs.deleteConfirmMessage': "Delete \"{name}\"? This can't be undone.",
+  'top.preview': "Preview",
+  'top.previewBuilding': "Preparing preview…",
+  'preview.title': "App Store preview",
+  'preview.hint': "Roughly how your screenshots will look on the App Store. Scroll sideways to see them all.",
 
   'nav.reference': "Reference",
   'ref.title': "Made with StoreReady",

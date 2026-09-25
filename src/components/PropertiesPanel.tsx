@@ -379,7 +379,7 @@ function TextPanel({ page, objectId }: { page: Page; objectId: string }) {
           value={obj.color}
           onChange={(v) => {
             if (applyColorToSelection) applyColorToSelection(v);
-            else updateObject(page.id, obj.id, { color: v });
+            else updateObject(page.id, obj.id, { color: v, runs: undefined });
           }}
         />
       </div>

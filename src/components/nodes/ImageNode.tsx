@@ -4,6 +4,7 @@ import type Konva from 'konva';
 import type { Context } from 'konva/lib/Context';
 import type { ImageObject } from '../../types';
 import { useHtmlImage } from '../../hooks/useHtmlImage';
+import { usePendingRender } from '../../utils/renderGate';
 
 type Props = {
   obj: ImageObject;
@@ -24,6 +25,7 @@ function roundedRectPath(ctx: Context, w: number, h: number, r: number) {
 
 export const ImageNode = forwardRef<Konva.Group, Props>(function ImageNode({ obj, onSelect, onDragEnd, onTransformEnd }, ref) {
   const image = useHtmlImage(obj.image);
+  usePendingRender(obj.id, !!obj.image && !image);
   const radius = Math.min(obj.cornerRadius ?? 0, obj.width / 2, obj.height / 2);
 
   return (

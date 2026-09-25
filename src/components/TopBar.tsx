@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type Konva from 'konva';
 import { useProjectStore } from '../store/useProjectStore';
 import { useToastStore } from '../store/useToastStore';
@@ -8,6 +9,8 @@ import { DEVICE_PRESETS, DEVICE_PRESET_GROUPS } from '../devicePresets';
 import { Button } from './ui/Field';
 import { panelWidthOf, spreadGap } from '../utils/spread';
 import { exportPageAsPng, exportPagesAsZip, exportStageToDataUrl, preloadProjectImages, sliceDataUrl } from '../utils/export';
+import { waitForRender } from '../utils/renderGate';
+import { PreviewModal } from './PreviewModal';
 
 export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | null> }) {
   const { navigate } = useRouter();
@@ -21,6 +24,8 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
   const pushToast = useToastStore((s) => s.push);
 
   const currentPage = project.pages.find((p) => p.id === currentPageId);
+  const [previewImages, setPreviewImages] = useState<string[] | null>(null);
+  const [previewBusy, setPreviewBusy] = useState(false);
 
   const handleDownload = async () => {
     const stage = stageRef.current;
@@ -41,11 +46,12 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
     }
   };
 
-  const handleExportAll = async () => {
+  /** Renders every page (two-screen pages as separate images) exactly as it will be exported. */
+  const captureAllPages = async (): Promise<{ label: string; dataUrl: string }[] | null> => {
     const stage = stageRef.current;
     if (!stage) {
       pushToast(t('top.nothingToExport'), 'error');
-      return;
+      return null;
     }
     const originalPageId = currentPageId;
     try {
@@ -55,9 +61,8 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
       const entries: { label: string; dataUrl: string }[] = [];
       for (const page of project.pages) {
         selectPage(page.id);
-        // Let React re-render this page's canvas, and its images finish loading, before capturing it.
-        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-        await new Promise((resolve) => setTimeout(resolve, 150));
+        // Wait for this page to render and for its pictures (incl. the 3D phone) to finish loading.
+        await waitForRender();
         const spread = page.spread ?? 1;
         const whole = exportStageToDataUrl(stage);
         if (spread <= 1) {
@@ -67,6 +72,17 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
           slices.forEach((dataUrl, i) => entries.push({ label: `${page.label}_${i + 1}`, dataUrl }));
         }
       }
+      return entries;
+    } finally {
+      // Always return to the page the user was on, even if a step threw.
+      selectPage(originalPageId);
+    }
+  };
+
+  const handleExportAll = async () => {
+    try {
+      const entries = await captureAllPages();
+      if (!entries) return;
       await exportPagesAsZip(entries, `${project.name || 'app-store-screenshots'}.zip`);
       pushToast(t('top.zipDone'), 'success');
     } catch (err) {
@@ -74,9 +90,20 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
       // Include the underlying reason so a failure on someone's machine can actually be diagnosed.
       const reason = err instanceof Error && err.message ? ` (${err.message})` : '';
       pushToast(`${t('top.zipFailed')}${reason}`, 'error');
+    }
+  };
+
+  const handlePreview = async () => {
+    if (previewBusy) return;
+    setPreviewBusy(true);
+    try {
+      const entries = await captureAllPages();
+      if (entries) setPreviewImages(entries.map((e) => e.dataUrl));
+    } catch (err) {
+      console.error(err);
+      pushToast(t('top.exportFailed'), 'error');
     } finally {
-      // Always return to the page the user was on, even if an export step threw.
-      selectPage(originalPageId);
+      setPreviewBusy(false);
     }
   };
 
@@ -116,12 +143,14 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
 
       <div className="flex items-center gap-2">
         <LanguageSwitcher />
+        <Button onClick={handlePreview}>{previewBusy ? t('top.previewBuilding') : t('top.preview')}</Button>
         <Button onClick={openPromptWizard}>{t('top.generatePrompt')}</Button>
         <Button onClick={handleExportAll}>{t('top.exportAll')}</Button>
         <Button variant="primary" onClick={handleDownload}>
           {t('top.downloadPng')}
         </Button>
       </div>
+      {previewImages && <PreviewModal name={project.name} images={previewImages} onClose={() => setPreviewImages(null)} />}
     </header>
   );
 }

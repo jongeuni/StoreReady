@@ -230,6 +230,12 @@ const tr: Dict = {
   'feat.export.b': 'PNG veya ZIP’i App Store’un istediği boyutlarda (6,9"/6,7"/6,5") dışa aktarın.',
   'cta.title': 'Hemen başlayın',
   'cta.sub': 'Hesap ve kurulum yok. Çalışmanız tarayıcınızda kaydedilir.',
+  'tabs.deleteConfirmTitle': "Bu sayfa silinsin mi?",
+  'tabs.deleteConfirmMessage': "“{name}” silinsin mi? Bu işlem geri alınamaz.",
+  'top.preview': "Önizleme",
+  'top.previewBuilding': "Önizleme hazırlanıyor…",
+  'preview.title': "App Store önizlemesi",
+  'preview.hint': "Ekran görüntüleriniz App Store’da kabaca böyle görünecek. Hepsini görmek için yana kaydırın.",
 
   'nav.reference': "Referanslar",
   'ref.title': "StoreReady ile yapıldı",

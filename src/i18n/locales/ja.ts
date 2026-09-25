@@ -230,6 +230,12 @@ const ja: Dict = {
   'feat.export.b': 'App Store の規定サイズ（6.9"/6.7"/6.5"）のまま PNG や ZIP で書き出せます。',
   'cta.title': '今すぐ始めましょう',
   'cta.sub': 'アカウントもインストールも不要。作業内容はブラウザにそのまま保存されます。',
+  'tabs.deleteConfirmTitle': "このページを削除しますか？",
+  'tabs.deleteConfirmMessage': "「{name}」を削除しますか？元に戻せません。",
+  'top.preview': "プレビュー",
+  'top.previewBuilding': "プレビューを準備中…",
+  'preview.title': "App Store プレビュー",
+  'preview.hint': "App Store でのスクリーンショットの見え方の目安です。横にスクロールして確認できます。",
 
   'nav.reference': "リファレンス",
   'ref.title': "StoreReadyで作ったアプリ",

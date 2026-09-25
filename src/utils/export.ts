@@ -23,7 +23,16 @@ export function downloadDataUrl(dataUrl: string, fileName: string) {
  */
 export function exportStageToDataUrl(stage: Konva.Stage): string {
   const scale = stage.scaleX() || 1;
-  return stage.toDataURL({ mimeType: 'image/png', pixelRatio: 1 / scale });
+  // Selection outlines, resize handles and the divider drag handles carry the name "editor-only";
+  // they must never end up in the exported picture.
+  const editorOnly = stage.find('.editor-only');
+  editorOnly.forEach((n) => n.hide());
+  try {
+    return stage.toDataURL({ mimeType: 'image/png', pixelRatio: 1 / scale });
+  } finally {
+    editorOnly.forEach((n) => n.show());
+    stage.batchDraw();
+  }
 }
 
 /** Cuts a wide image into `parts` equal images of exactly `partWidth` × `height` px (a multi-panel spread). */

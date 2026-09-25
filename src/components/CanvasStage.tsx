@@ -12,6 +12,11 @@ import { ImageNode } from './nodes/ImageNode';
 import { ShapeNode } from './nodes/ShapeNode';
 import { TextEditOverlay } from './TextEditOverlay';
 import { runsHaveMultipleColors } from '../utils/richText';
+import { useTextEditStore } from '../store/useTextEditStore';
+import { useToastStore } from '../store/useToastStore';
+import { useT } from '../i18n';
+import { readImageFile } from '../utils/imageUpload';
+import { getObjectBBox } from '../utils/geometry';
 
 type Props = {
   page: Page;
@@ -24,6 +29,12 @@ export function CanvasStage({ page, stageRef }: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [viewScale, setViewScale] = useState(0.2);
   const [editingTextId, setEditingTextId] = useState<string | null>(null);
+  const [dropTargetId, setDropTargetId] = useState<string | null>(null);
+  const canvasBoxRef = useRef<HTMLDivElement>(null);
+  const t = useT();
+  const pushToast = useToastStore((s) => s.push);
+  const addImageObject = useProjectStore((s) => s.addImageObject);
+  const addScreenshotToPhone = useProjectStore((s) => s.addScreenshotToPhone);
 
   const selectedObjectIds = useProjectStore((s) => s.selectedObjectIds);
   const selectObject = useProjectStore((s) => s.selectObject);
@@ -58,10 +69,9 @@ export function CanvasStage({ page, stageRef }: Props) {
         tr.nodes([node]);
         tr.keepRatio(obj.type === 'phone' || obj.type === 'image');
         tr.rotateEnabled(true);
-        // Text's own bounding box hugs the glyphs tightly (no breathing room like the
-        // double-click edit box has); pad the selection outline a bit so it doesn't feel
-        // cramped. Other object types keep a flush, exact-fit outline.
-        tr.padding(obj.type === 'text' ? Math.max(4, Math.round(obj.fontSize * 0.18)) : 0);
+        // Text's selection box hugs the visible glyphs (see measureTextInk); a hair of padding keeps it readable.
+        // Other object types keep a flush, exact-fit outline.
+        tr.padding(obj.type === 'text' ? Math.max(2, Math.round(obj.fontSize * 0.05)) : 0);
         tr.enabledAnchors(
           obj.type === 'phone' || obj.type === 'image'
             ? ['top-left', 'top-right', 'bottom-left', 'bottom-right']
@@ -85,6 +95,52 @@ export function CanvasStage({ page, stageRef }: Props) {
     [selectObject],
   );
 
+  /** The phone under a client-space point (topmost first), or null. */
+  const phoneAtPoint = (clientX: number, clientY: number): string | null => {
+    const rect = canvasBoxRef.current?.getBoundingClientRect();
+    if (!rect) return null;
+    const x = (clientX - rect.left) / viewScale;
+    const y = (clientY - rect.top) / viewScale;
+    const phones = page.objects.filter((o) => o.type === 'phone').sort((a, b) => b.zIndex - a.zIndex);
+    const hit = phones.find((o) => {
+      const b = getObjectBBox(o);
+      return x >= b.x && x <= b.x + b.width && y >= b.y && y <= b.y + b.height;
+    });
+    return hit ? hit.id : null;
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setDropTargetId(null);
+    const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith('image/'));
+    if (files.length === 0) return;
+    const targetId = phoneAtPoint(e.clientX, e.clientY);
+    for (const file of files) {
+      const result = await readImageFile(file);
+      if (!result.ok) {
+        pushToast(t(result.errorKey, result.errorVars), 'error');
+        continue;
+      }
+      if (targetId) {
+        addScreenshotToPhone(page.id, targetId, result.dataUrl, file.name);
+      } else {
+        // Dropped on empty canvas: place it as a free picture.
+        await new Promise<void>((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            addImageObject(page.id, result.dataUrl, file.name, img.naturalWidth, img.naturalHeight);
+            resolve();
+          };
+          img.onerror = () => {
+            pushToast(t('upload.errRead'), 'error');
+            resolve();
+          };
+          img.src = result.dataUrl;
+        });
+      }
+    }
+  };
+
   const displayWidth = page.canvas.width * viewScale;
   const displayHeight = page.canvas.height * viewScale;
 
@@ -97,11 +153,33 @@ export function CanvasStage({ page, stageRef }: Props) {
       ref={wrapperRef}
       className="relative flex min-h-0 w-full flex-1 items-center justify-center overflow-auto bg-neutral-900"
       style={{ padding: VIEWPORT_PADDING }}
+      onMouseDownCapture={(e) => {
+        // Any click on the canvas area finishes an in-progress text edit (keeping what was typed / recolored).
+        if (editingTextId && !(e.target as HTMLElement).closest('[data-text-editor]')) {
+          useTextEditStore.getState().commitEdit?.();
+        }
+      }}
+      onDragOver={(e) => {
+        if (!e.dataTransfer.types.includes('Files')) return;
+        e.preventDefault();
+        const id = phoneAtPoint(e.clientX, e.clientY);
+        if (id !== dropTargetId) setDropTargetId(id);
+      }}
+      onDragLeave={(e) => {
+        if (e.currentTarget === e.target) setDropTargetId(null);
+      }}
+      onDrop={handleDrop}
+      onMouseDown={(e) => {
+        // Clicking the empty area around the page behaves like clicking the page background:
+        // deselect, so the "add to page" / background panel shows.
+        if (e.target === e.currentTarget) clearSelection();
+      }}
     >
       <div
         className="relative shrink-0 shadow-2xl"
         style={{ width: displayWidth, height: displayHeight }}
         data-canvas-wrapper
+        ref={canvasBoxRef}
       >
         <Stage
           ref={stageRef}
@@ -190,6 +268,7 @@ export function CanvasStage({ page, stageRef }: Props) {
               })}
             <Transformer
               ref={transformerRef}
+              name="editor-only"
               rotateAnchorOffset={24}
               borderStroke="#5b8def"
               anchorStroke="#5b8def"
@@ -199,6 +278,19 @@ export function CanvasStage({ page, stageRef }: Props) {
             />
           </Layer>
         </Stage>
+        {/* Drop target highlight while dragging a picture over a phone */}
+        {dropTargetId &&
+          (() => {
+            const target = page.objects.find((o) => o.id === dropTargetId);
+            if (!target) return null;
+            const b = getObjectBBox(target);
+            return (
+              <div
+                className="pointer-events-none absolute rounded-xl border-2 border-dashed border-blue-400 bg-blue-500/10"
+                style={{ left: b.x * viewScale, top: b.y * viewScale, width: b.width * viewScale, height: b.height * viewScale }}
+              />
+            );
+          })()}
         {/* Gap between panels: editor-only cover, dropped from the exported images */}
         {Array.from({ length: (page.spread ?? 1) - 1 }, (_, i) => {
           const panelW = panelWidthOf(page);
