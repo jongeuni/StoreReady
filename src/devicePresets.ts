@@ -29,36 +29,21 @@ export const DEVICE_PRESETS: DevicePreset[] = [
     width: 1284,
     height: 2778,
   },
-  // iPad: up to 3 app previews + 10 screenshots for 12.9" / 13" displays.
-  {
-    id: 'ipad-13',
-    kind: 'tablet',
-    label: 'iPad 13"',
-    description: 'iPad Pro / Air 13" — portrait',
-    width: 2064,
-    height: 2752,
-  },
-  {
-    id: 'ipad-13-landscape',
-    kind: 'tablet',
-    label: 'iPad 13" landscape',
-    description: 'iPad Pro / Air 13" — landscape',
-    width: 2752,
-    height: 2064,
-  },
+  // Apple's upload slot for iPad accepts any one of 2064×2752, 2752×2064, 2048×2732, or 2732×2048 — the
+  // 12.9" and 13" displays share a single requirement, so one portrait + one landscape size covers both.
   {
     id: 'ipad-12.9',
     kind: 'tablet',
-    label: 'iPad 12.9"',
-    description: 'iPad Pro 12.9" — portrait',
+    label: 'iPad',
+    description: 'iPad Pro / Air 12.9"/13" — portrait',
     width: 2048,
     height: 2732,
   },
   {
     id: 'ipad-12.9-landscape',
     kind: 'tablet',
-    label: 'iPad 12.9" landscape',
-    description: 'iPad Pro 12.9" — landscape',
+    label: 'iPad landscape',
+    description: 'iPad Pro / Air 12.9"/13" — landscape',
     width: 2732,
     height: 2048,
   },
