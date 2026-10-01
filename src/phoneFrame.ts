@@ -1,6 +1,8 @@
 import type { DeviceKind } from './types';
 import phone3dFrame from './assets/phone3d/frame.png';
 import phone3dMirrorFrame from './assets/phone3d/frame-mirror.png';
+import ipad3dFrame from './assets/phone3d/ipad-frame.png';
+import ipad3dMirrorFrame from './assets/phone3d/ipad-frame-mirror.png';
 
 // Shared geometry for device placeholder graphics. Each DeviceModel is a specific,
 // freely-swappable look (e.g. "iPhone SE" vs "iPhone Pro Max") within a broader
@@ -169,6 +171,42 @@ export const DEVICE_MODELS: DeviceModel[] = [
     screenInsetBottomRatio: 0.019,
     screenCornerRadiusRatio: 0.019,
     chrome: 'none',
+  },
+  {
+    id: 'tablet-3d',
+    kind: 'tablet',
+    label: 'iPad 3D (tilted)',
+    aspect: 1.33444,
+    cornerRadiusRatio: 0,
+    screenInsetRatio: 0,
+    screenInsetBottomRatio: 0,
+    screenCornerRadiusRatio: 0,
+    chrome: 'none',
+    render3d: {
+      frameUrl: ipad3dFrame,
+      frameWidth: 900,
+      frameHeight: 1201,
+      quad: [[0.17692, 0.06157], [0.91465, 0.10999], [0.78876, 0.9366], [0.06458, 0.84306]],
+      screenAspect: 1.3494,
+    },
+  },
+  {
+    id: 'tablet-3d-mirror',
+    kind: 'tablet',
+    label: 'iPad 3D (tilted, mirrored)',
+    aspect: 1.33444,
+    cornerRadiusRatio: 0,
+    screenInsetRatio: 0,
+    screenInsetBottomRatio: 0,
+    screenCornerRadiusRatio: 0,
+    chrome: 'none',
+    render3d: {
+      frameUrl: ipad3dMirrorFrame,
+      frameWidth: 900,
+      frameHeight: 1201,
+      quad: [[0.08535, 0.10999], [0.82308, 0.06157], [0.93542, 0.84306], [0.21124, 0.9366]],
+      screenAspect: 1.3494,
+    },
   },
   {
     id: 'watch-45',

@@ -1,17 +1,24 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
-// Phone geometry in "width = 1" units, matching the flat iPhone model in src/phoneFrame.ts.
+// Device geometry in "width = 1" units. kind=phone matches the flat iPhone model in src/phoneFrame.ts;
+// kind=tablet is a flatter-bezel iPad with no dynamic island, aspect matching the iPad page preset.
+const params = new URLSearchParams(location.search);
+const KIND = params.get('kind') ?? 'phone';
+const IS_TABLET = KIND === 'tablet';
+
 const W = 1;
-const H = 2.168;
-const D = 0.07; // body thickness
-const BEZEL = 0.034;
+const H = IS_TABLET ? 2732 / 2048 : 2.168;
+const D = IS_TABLET ? 0.045 : 0.07; // body thickness
+const BEZEL = IS_TABLET ? 0.022 : 0.034;
+const FRAME_BEVEL = IS_TABLET ? 0.008 : 0.014;
+const CORNER_R = IS_TABLET ? 0.07 : 0.13;
+const SCREEN_CORNER_R = IS_TABLET ? 0.045 : 0.098;
 const SCREEN_W = W - BEZEL * 2;
 const SCREEN_H = H - BEZEL * 2;
 
 const OUT_W = 900;
-const OUT_H = 1500;
-const params = new URLSearchParams(location.search);
+const OUT_H = IS_TABLET ? Math.round(OUT_W * H) : 1500;
 const ROT = {
   x: Number(params.get('rx') ?? 0),
   y: Number(params.get('ry') ?? -0.4),
@@ -59,11 +66,11 @@ const phone = new THREE.Group();
 scene.add(phone);
 
 // Metal frame (dark titanium)
-const frameGeo = new THREE.ExtrudeGeometry(roundedRectShape(W, H, 0.13), {
+const frameGeo = new THREE.ExtrudeGeometry(roundedRectShape(W, H, CORNER_R), {
   depth: D,
   bevelEnabled: true,
-  bevelThickness: 0.014,
-  bevelSize: 0.014,
+  bevelThickness: FRAME_BEVEL,
+  bevelSize: FRAME_BEVEL,
   bevelSegments: 8,
   curveSegments: 48,
 });
@@ -71,29 +78,31 @@ frameGeo.translate(0, 0, -D / 2);
 const frameMat = new THREE.MeshStandardMaterial({ color: 0x4a4b50, metalness: 1, roughness: 0.3 });
 phone.add(new THREE.Mesh(frameGeo, frameMat));
 
-const zFront = D / 2 + 0.014;
+const zFront = D / 2 + FRAME_BEVEL;
 
 // Black front glass (the bezel area around the screen)
-const glassGeo = new THREE.ShapeGeometry(roundedRectShape(W - 0.006, H - 0.006, 0.124), 48);
+const glassGeo = new THREE.ShapeGeometry(roundedRectShape(W - 0.006, H - 0.006, CORNER_R - 0.006), 48);
 const glass = new THREE.Mesh(glassGeo, new THREE.MeshStandardMaterial({ color: 0x050506, metalness: 0.3, roughness: 0.12 }));
 glass.position.z = zFront + 0.0008;
 phone.add(glass);
 
 // Screen: invisible-but-depth-writing plane, so the front glass behind it is rejected and the PNG gets a hole
-const screenShape = roundedRectShape(SCREEN_W, SCREEN_H, 0.098);
+const screenShape = roundedRectShape(SCREEN_W, SCREEN_H, SCREEN_CORNER_R);
 const screen = new THREE.Mesh(new THREE.ShapeGeometry(screenShape, 48), new THREE.MeshBasicMaterial({ colorWrite: false }));
-const zScreen = zFront + 0.002;
+const zScreen = zFront + (IS_TABLET ? 0.0012 : 0.002);
 screen.position.z = zScreen;
 screen.renderOrder = -1;
 phone.add(screen);
 
-// Dynamic island, drawn over the screenshot
-const island = new THREE.Mesh(
-  new THREE.ShapeGeometry(roundedRectShape(0.29, 0.085, 0.0425), 24),
-  new THREE.MeshBasicMaterial({ color: 0x000000 }),
-);
-island.position.set(0, SCREEN_H / 2 - 0.1, zScreen + 0.0008);
-phone.add(island);
+// Dynamic island, drawn over the screenshot (phone only — recent iPads have no notch)
+if (!IS_TABLET) {
+  const island = new THREE.Mesh(
+    new THREE.ShapeGeometry(roundedRectShape(0.29, 0.085, 0.0425), 24),
+    new THREE.MeshBasicMaterial({ color: 0x000000 }),
+  );
+  island.position.set(0, SCREEN_H / 2 - 0.1, zScreen + 0.0008);
+  phone.add(island);
+}
 
 // Side buttons
 function button(x, y, h) {
@@ -101,10 +110,15 @@ function button(x, y, h) {
   b.position.set(x, y, 0);
   phone.add(b);
 }
-button(-W / 2 - 0.01, 0.62, 0.09); // action
-button(-W / 2 - 0.01, 0.42, 0.17); // volume up
-button(-W / 2 - 0.01, 0.18, 0.17); // volume down
-button(W / 2 + 0.01, 0.4, 0.28); // power
+if (IS_TABLET) {
+  button(W / 2 + 0.006, H / 2 - 0.1, 0.045); // power, top edge near corner
+  button(-W / 2 - 0.006, H * 0.28, 0.12); // volume rocker
+} else {
+  button(-W / 2 - 0.01, 0.62, 0.09); // action
+  button(-W / 2 - 0.01, 0.42, 0.17); // volume up
+  button(-W / 2 - 0.01, 0.18, 0.17); // volume down
+  button(W / 2 + 0.01, 0.4, 0.28); // power
+}
 
 phone.rotation.order = 'YXZ';
 phone.rotation.set(ROT.x, ROT.y, ROT.z);

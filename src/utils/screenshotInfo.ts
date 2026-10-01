@@ -57,9 +57,14 @@ function describePhone(p: PhoneObject) {
       : {}),
     ...(p.screenshotDescription ? { desc: p.screenshotDescription } : {}),
     kind: p.deviceKind ?? 'phone',
-    ...(getDeviceModel(p.deviceModel, p.deviceKind ?? 'phone').render3d
-      ? { look: `3D-rendered iPhone turned about 25 degrees (slightly tilted in-plane, mild perspective — the left and right edges stay nearly parallel), showing only a thin sliver of its ${p.deviceModel === 'phone-3d-mirror' ? 'left' : 'right'} edge${p.deviceModel === 'phone-3d-mirror' ? ' (the mirror image of the default 3D pose: turned and leaning the opposite way)' : ''}; the screen content is in perspective` }
-      : {}),
+    ...((() => {
+      if (!getDeviceModel(p.deviceModel, p.deviceKind ?? 'phone').render3d) return {};
+      const deviceName = (p.deviceKind ?? 'phone') === 'tablet' ? 'iPad' : 'iPhone';
+      const mirrored = p.deviceModel?.endsWith('-mirror') ?? false;
+      return {
+        look: `3D-rendered ${deviceName} turned about 25 degrees (slightly tilted in-plane, mild perspective — the left and right edges stay nearly parallel), showing only a thin sliver of its ${mirrored ? 'left' : 'right'} edge${mirrored ? ' (the mirror image of the default 3D pose: turned and leaning the opposite way)' : ''}; the screen content is in perspective`,
+      };
+    })()),
     width: p.width,
     top: p.top,
     left: p.left,

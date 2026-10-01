@@ -167,7 +167,14 @@ export const useProjectStore = create<State & Actions>()(
                 obj.left = Math.round(obj.left * scaleX);
                 obj.top = Math.round(obj.top * scaleY);
                 obj.width = Math.round(obj.width * scaleX);
-              } else if (obj.type === 'shape' || obj.type === 'image') {
+              } else if (obj.type === 'image') {
+                // A picture's own aspect ratio must survive a canvas reshape (portrait <-> landscape,
+                // phone <-> iPad): scale both sides by the same factor instead of stretching it.
+                obj.left = Math.round(obj.left * scaleX);
+                obj.top = Math.round(obj.top * scaleY);
+                obj.width = Math.round(obj.width * textScale);
+                obj.height = Math.round(obj.height * textScale);
+              } else if (obj.type === 'shape') {
                 obj.left = Math.round(obj.left * scaleX);
                 obj.top = Math.round(obj.top * scaleY);
                 obj.width = Math.round(obj.width * scaleX);
