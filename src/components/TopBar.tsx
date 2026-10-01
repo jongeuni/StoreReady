@@ -130,8 +130,8 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
           className="rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs text-neutral-200"
         >
           {DEVICE_PRESET_GROUPS.map((g) => (
-            <optgroup key={g.kind} label={g.label}>
-              {DEVICE_PRESETS.filter((p) => p.kind === g.kind).map((p) => (
+            <optgroup key={`${g.kind}-${g.platform ?? 'apple'}`} label={g.label}>
+              {DEVICE_PRESETS.filter((p) => p.kind === g.kind && (p.platform ?? 'apple') === (g.platform ?? 'apple')).map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.label} ({p.width}×{p.height})
                 </option>

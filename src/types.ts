@@ -12,6 +12,8 @@ export type DevicePreset = {
   description: string;
   /** Which kind of device this screenshot size is for; drives the default mockup and the dropdown group. */
   kind: DeviceKind;
+  /** Store platform the size is for — drives which dropdown group it's listed under. Unset = Apple/App Store. */
+  platform?: 'apple' | 'android';
   width: number;
   height: number;
 };

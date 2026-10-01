@@ -96,6 +96,44 @@ export const DEVICE_PRESETS: DevicePreset[] = [
     width: 312,
     height: 390,
   },
+  // Google Play Console screenshot specs: 2–8 images, PNG/JPEG, ≤8MB each, 16:9 or 9:16 aspect ratio,
+  // each side between 320px and 3840px. These sizes hit that ratio exactly within the allowed range.
+  {
+    id: 'android-phone',
+    kind: 'phone',
+    platform: 'android',
+    label: 'Android phone',
+    description: 'Phone screenshots — portrait (9:16)',
+    width: 1080,
+    height: 1920,
+  },
+  {
+    id: 'android-phone-landscape',
+    kind: 'phone',
+    platform: 'android',
+    label: 'Android phone landscape',
+    description: 'Phone screenshots — landscape (16:9)',
+    width: 1920,
+    height: 1080,
+  },
+  {
+    id: 'android-tablet-7',
+    kind: 'tablet',
+    platform: 'android',
+    label: 'Android tablet (7")',
+    description: '7-inch tablet screenshots — portrait (9:16)',
+    width: 2160,
+    height: 3840,
+  },
+  {
+    id: 'android-tablet-7-landscape',
+    kind: 'tablet',
+    platform: 'android',
+    label: 'Android tablet (7") landscape',
+    description: '7-inch tablet screenshots — landscape (16:9)',
+    width: 3840,
+    height: 2160,
+  },
 ];
 
 export const DEFAULT_DEVICE_PRESET_ID = DEVICE_PRESETS[0].id;
@@ -104,8 +142,10 @@ export function getDevicePreset(id: string): DevicePreset {
   return DEVICE_PRESETS.find((p) => p.id === id) ?? DEVICE_PRESETS[0];
 }
 
-export const DEVICE_PRESET_GROUPS: { kind: DevicePreset['kind']; label: string }[] = [
+export const DEVICE_PRESET_GROUPS: { kind: DevicePreset['kind']; platform?: DevicePreset['platform']; label: string }[] = [
   { kind: 'phone', label: 'iPhone' },
   { kind: 'tablet', label: 'iPad' },
   { kind: 'watch', label: 'Apple Watch' },
+  { kind: 'phone', platform: 'android', label: 'Android Phone' },
+  { kind: 'tablet', platform: 'android', label: 'Android Tablet (7")' },
 ];
