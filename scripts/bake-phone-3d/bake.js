@@ -123,7 +123,13 @@ if (IS_TABLET) {
 phone.rotation.order = 'YXZ';
 phone.rotation.set(ROT.x, ROT.y, ROT.z);
 
-const camera = new THREE.PerspectiveCamera(Number(params.get('fov') ?? 14), OUT_W / OUT_H, 0.1, 100);
+// ortho=1 renders with no perspective at all, so a device's opposite edges stay exactly parallel.
+// The tablet defaults to it (a wide, flat iPad shows perspective convergence far more than a phone does).
+const ORTHO = (params.get('ortho') ?? (IS_TABLET ? '1' : '0')) === '1';
+const ORTHO_HALF_H = 3; // world units from centre to top of the view, before the fit zoom
+const camera = ORTHO
+  ? new THREE.OrthographicCamera(-ORTHO_HALF_H * (OUT_W / OUT_H), ORTHO_HALF_H * (OUT_W / OUT_H), ORTHO_HALF_H, -ORTHO_HALF_H, 1, 40)
+  : new THREE.PerspectiveCamera(Number(params.get('fov') ?? 14), OUT_W / OUT_H, 0.1, 100);
 camera.position.set(0, 0, 12);
 camera.lookAt(0, 0, 0);
 
@@ -146,7 +152,12 @@ function bounds() {
 for (let i = 0; i < 4; i++) {
   const b = bounds();
   const fit = Math.min((OUT_W * 0.9) / (b.maxX - b.minX), (OUT_H * 0.94) / (b.maxY - b.minY));
-  camera.position.z /= fit;
+  if (ORTHO) {
+    camera.zoom *= fit;
+    camera.updateProjectionMatrix();
+  } else {
+    camera.position.z /= fit;
+  }
   camera.lookAt(0, 0, 0);
 }
 {
@@ -154,11 +165,18 @@ for (let i = 0; i < 4; i++) {
   // Re-centre by shifting the phone (keeps perspective consistent)
   const cx = (b.minX + b.maxX) / 2 - OUT_W / 2;
   const cy = (b.minY + b.maxY) / 2 - OUT_H / 2;
-  const worldPerPx = (2 * camera.position.z * Math.tan((camera.fov * Math.PI) / 360)) / OUT_H;
+  const worldPerPx = ORTHO
+    ? (2 * ORTHO_HALF_H) / camera.zoom / OUT_H
+    : (2 * camera.position.z * Math.tan((camera.fov * Math.PI) / 360)) / OUT_H;
   phone.position.x -= cx * worldPerPx;
   phone.position.y += cy * worldPerPx;
 }
 
+if (!ORTHO) {
+  camera.near = Math.max(0.1, camera.position.z - 4);
+  camera.far = camera.position.z + 4;
+  camera.updateProjectionMatrix();
+}
 renderer.render(scene, camera);
 
 // Where the screen's four corners ended up (TL, TR, BR, BL), as 0..1 fractions of the image.
