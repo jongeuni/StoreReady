@@ -59,11 +59,13 @@ function describePhone(p: PhoneObject) {
     kind: p.deviceKind ?? 'phone',
     ...((() => {
       if (!getDeviceModel(p.deviceModel, p.deviceKind ?? 'phone').render3d) return {};
-      const deviceName = (p.deviceKind ?? 'phone') === 'tablet' ? 'iPad' : 'iPhone';
+      const isTablet = (p.deviceKind ?? 'phone') === 'tablet';
       const mirrored = p.deviceModel?.endsWith('-mirror') ?? false;
-      return {
-        look: `3D-rendered ${deviceName} turned about 25 degrees (slightly tilted in-plane, mild perspective — the left and right edges stay nearly parallel), showing only a thin sliver of its ${mirrored ? 'left' : 'right'} edge${mirrored ? ' (the mirror image of the default 3D pose: turned and leaning the opposite way)' : ''}; the screen content is in perspective`,
-      };
+      const side = mirrored ? 'left' : 'right';
+      const look = isTablet
+        ? `3D-rendered iPad turned about 30 degrees around its vertical axis, with NO perspective and NO roll: the top and bottom edges stay perfectly horizontal and parallel, the left and right edges stay vertical and parallel, and the screen is simply compressed horizontally (not sheared). A thin sliver of its ${side} edge is visible${mirrored ? ' (the mirror image of the default pose: turned the opposite way)' : ''}.`
+        : `3D-rendered iPhone turned about 25 degrees (slightly tilted in-plane, mild perspective — the left and right edges stay nearly parallel), showing only a thin sliver of its ${side} edge${mirrored ? ' (the mirror image of the default 3D pose: turned and leaning the opposite way)' : ''}; the screen content is in perspective`;
+      return { look };
     })()),
     width: p.width,
     top: p.top,
