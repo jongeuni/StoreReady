@@ -1,6 +1,6 @@
 import type { Render3D } from '../phoneFrame';
 import { drawWarped, type Point } from './perspectiveWarp';
-import { bandCentroid, bandPolygon, dividerLines } from './diagonalSplit';
+import { bandCentroid, bandPolygon, dividerLines, layerPolygon } from './diagonalSplit';
 
 export type ThemeSource = { image?: HTMLImageElement; name: string };
 export type DividerStyle = { width: number; phoneWidth: number; color: string; dashed: boolean; cuts?: number[] };
@@ -55,7 +55,7 @@ function buildScreenSource(r3d: Render3D, themes: ThemeSource[], hint: string, d
   themes.forEach((theme, i) => {
     ctx.save();
     if (n > 1) {
-      const poly = bandPolygon(w, h, n, i, divider.cuts);
+      const poly = layerPolygon(w, h, n, i, divider.cuts);
       ctx.beginPath();
       poly.forEach(([x, y], k) => (k ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
       ctx.closePath();

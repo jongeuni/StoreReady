@@ -57,6 +57,25 @@ export function bandPolygon(w: number, h: number, n: number, i: number, cuts?: n
   return poly;
 }
 
+/**
+ * The region band `i` is painted over: everything from its starting divider to the far corner. Bands are
+ * painted in order, each over the previous one, so neighbouring images overlap under the divider instead of
+ * meeting edge to edge — two anti-aliased clip edges side by side would leave a visible hairline seam.
+ */
+export function layerPolygon(w: number, h: number, n: number, i: number, cuts?: number[]): Pt[] {
+  let poly: Pt[] = [
+    [0, 0],
+    [w, 0],
+    [w, h],
+    [0, h],
+  ];
+  if (i > 0) {
+    const start = resolveCuts(n, cuts)[i - 1] * (w + h);
+    poly = clipPolygon(poly, (p) => p[0] + p[1] - start);
+  }
+  return poly;
+}
+
 export function bandCentroid(poly: Pt[]): Pt {
   const n = poly.length || 1;
   return [poly.reduce((s, p) => s + p[0], 0) / n, poly.reduce((s, p) => s + p[1], 0) / n];

@@ -10,6 +10,7 @@ import {
   DEFAULT_DIVIDER_COLOR,
   bandCentroid,
   bandPolygon,
+  layerPolygon,
   dividerLines,
   dividerWidthOf,
   moveCut,
@@ -289,10 +290,11 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
         {themeCount > 1 ? (
           <>
             {Array.from({ length: themeCount }, (_, i) => {
-              const poly = bandPolygon(screenW, screenH, themeCount, i, obj.dividerCuts);
+              const poly = layerPolygon(screenW, screenH, themeCount, i, obj.dividerCuts);
+              const labelPoly = bandPolygon(screenW, screenH, themeCount, i, obj.dividerCuts);
               const img = themeImages[i];
               const themeName = (i === 0 ? obj.screenshotName : extra[i - 1]?.name) || t('canvas.noName');
-              const [cx, cy] = bandCentroid(poly);
+              const [cx, cy] = bandCentroid(labelPoly);
               return (
                 <Group
                   key={i}
