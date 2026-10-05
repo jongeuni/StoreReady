@@ -87,6 +87,8 @@ type Actions = {
   selectPage: (pageId: string) => void;
   renamePage: (pageId: string, label: string) => void;
   movePage: (pageId: string, direction: -1 | 1) => void;
+  /** Moves a page to an absolute position (0-based index in the final order). */
+  reorderPage: (pageId: string, toIndex: number) => void;
   applyTemplate: (pageId: string, templateId: TemplateId) => void;
   setBackground: (pageId: string, background: Background) => void;
 
@@ -245,6 +247,15 @@ export const useProjectStore = create<State & Actions>()(
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
           if (page) page.label = label;
+        }),
+
+      reorderPage: (pageId, toIndex) =>
+        set((s) => {
+          const from = s.project.pages.findIndex((p) => p.id === pageId);
+          const to = Math.max(0, Math.min(s.project.pages.length - 1, toIndex));
+          if (from === -1 || from === to) return;
+          const [page] = s.project.pages.splice(from, 1);
+          s.project.pages.splice(to, 0, page);
         }),
 
       movePage: (pageId, direction) =>
