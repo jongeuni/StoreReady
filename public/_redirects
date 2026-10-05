@@ -1,0 +1,2 @@
+# SPA fallback (Netlify / Cloudflare Pages): serve the app for client-side routes such as /editor and /reference.
+/*    /index.html   200
