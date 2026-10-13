@@ -250,6 +250,10 @@ const ru: Dict = {
   'spons.sub': "Спасибо всем, кто поддерживает StoreReady.",
   'spons.empty': "Пока нет спонсоров для показа.",
   'spons.cta': "Стать спонсором",
+  'ref.sponsoredTitle': "Приложения спонсоров",
+  'ref.sponsoredBy': "Спонсор: {name}",
+  'ref.sponsoredBadge': "Спонсор",
+  'spons.howTo': "Хотите, чтобы ваше приложение было вверху страницы? Вставьте ссылку на App Store в сообщение на Buy Me a Coffee — оно появится здесь автоматически.",
 };
 
 export default ru;

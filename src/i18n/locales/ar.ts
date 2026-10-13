@@ -250,6 +250,10 @@ const ar: Dict = {
   'spons.sub': "شكرًا لكل من يدعم StoreReady.",
   'spons.empty': "لا يوجد داعمون لعرضهم بعد.",
   'spons.cta': "كن داعمًا",
+  'ref.sponsoredTitle': "تطبيقات الداعمين",
+  'ref.sponsoredBy': "بدعم من {name}",
+  'ref.sponsoredBadge': "مدعوم",
+  'spons.howTo': "هل تريد ظهور تطبيقك في أعلى هذه الصفحة؟ الصق رابط App Store في رسالة Buy Me a Coffee وسيظهر هنا تلقائيًا.",
 };
 
 export default ar;

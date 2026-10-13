@@ -250,6 +250,10 @@ const th: Dict = {
   'spons.sub': "ขอบคุณทุกคนที่สนับสนุน StoreReady",
   'spons.empty': "ยังไม่มีผู้สนับสนุนให้แสดง",
   'spons.cta': "มาเป็นผู้สนับสนุน",
+  'ref.sponsoredTitle': "แอปที่ได้รับการสนับสนุน",
+  'ref.sponsoredBy': "สนับสนุนโดย {name}",
+  'ref.sponsoredBadge': "สปอนเซอร์",
+  'spons.howTo': "อยากให้แอปของคุณอยู่บนสุดของหน้านี้? วางลิงก์ App Store ในข้อความ Buy Me a Coffee แล้วแอปจะแสดงที่นี่อัตโนมัติ",
 };
 
 export default th;

@@ -250,6 +250,10 @@ const ptBR: Dict = {
   'spons.sub': "Obrigado a todos que apoiam o StoreReady.",
   'spons.empty': "Ainda não há patrocinadores para mostrar.",
   'spons.cta': "Torne-se patrocinador",
+  'ref.sponsoredTitle': "Apps patrocinados",
+  'ref.sponsoredBy': "Patrocinado por {name}",
+  'ref.sponsoredBadge': "Patrocinado",
+  'spons.howTo': "Quer seu app no topo desta página? Cole o link da App Store na sua mensagem do Buy Me a Coffee — ele aparece aqui automaticamente.",
 };
 
 export default ptBR;

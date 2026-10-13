@@ -59,6 +59,8 @@ StoreReady 是免费的。Buy Me a Coffee 上的支持者会显示在 Reference 
 
 赞助者列表由一个小型无服务器函数 `api/sponsors.js`（Vercel 风格）从 Buy Me a Coffee 读取。请在托管平台设置环境变量 `BMC_ACCESS_TOKEN`，未设置时列表为空。在 `src/config.ts` 中设置 `SPONSOR_URL` 即可显示“成为赞助者”按钮。
 
+**赞助应用：** 支持者在 Buy Me a Coffee 留言中粘贴 App Store 链接，其应用就会自动显示在 Reference 页面最顶部。函数会找到链接，通过 Apple 公开的 iTunes Lookup API 获取应用名称、图标和截图，并以 `apps` 返回。可选环境变量：`SPONSOR_APP_MIN_COFFEES`（展示所需咖啡数，默认 1）、`SPONSOR_APP_MAX`（默认 6）、`SPONSOR_APP_DENYLIST`（永不展示的 App Store id，逗号分隔）。
+
 ## 合作与咨询
 
 想让你的应用出现在主页，或有合作、赞助、广告想法？请发邮件至 **hello@app-ready.store**。Bug 和功能建议请使用 GitHub Issues。

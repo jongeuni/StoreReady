@@ -59,6 +59,8 @@ StoreReady는 무료입니다. Buy Me a Coffee 후원자는 Reference 페이지 
 
 후원자 목록은 작은 서버리스 함수 `api/sponsors.js`(Vercel 형식)가 Buy Me a Coffee에서 읽어 옵니다. 호스팅 환경 변수에 `BMC_ACCESS_TOKEN`을 설정하세요. 없으면 목록이 비어 있습니다. `src/config.ts`의 `SPONSOR_URL`을 설정하면 "후원하기" 버튼이 표시됩니다.
 
+**후원 앱:** 후원자가 Buy Me a Coffee 메시지에 App Store 링크를 붙여 넣으면 Reference 페이지 맨 위에 앱이 자동으로 표시됩니다. 함수가 링크를 찾아 Apple의 공개 iTunes Lookup API로 앱 이름·아이콘·스크린샷을 가져와 `apps`로 돌려줍니다. 선택 환경 변수: `SPONSOR_APP_MIN_COFFEES`(표시에 필요한 커피 수, 기본 1), `SPONSOR_APP_MAX`(기본 6), `SPONSOR_APP_DENYLIST`(표시하지 않을 App Store id, 쉼표로 구분).
+
 ## 협업 및 문의
 
 메인 페이지에 앱을 소개하고 싶거나, 제휴·후원·광고 제안이 있으신가요? **hello@app-ready.store**로 메일 주세요. 버그와 기능 요청은 GitHub Issues를 이용해 주세요.

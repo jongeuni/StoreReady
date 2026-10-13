@@ -255,6 +255,10 @@ const en = {
   'spons.sub': "Thank you to everyone supporting StoreReady.",
   'spons.empty': "No sponsors to show yet.",
   'spons.cta': "Become a sponsor",
+  'ref.sponsoredTitle': "Sponsored apps",
+  'ref.sponsoredBy': "Sponsored by {name}",
+  'ref.sponsoredBadge': "Sponsored",
+  'spons.howTo': "Want your app featured at the top of this page? Paste your App Store link into your Buy Me a Coffee message — it shows up here automatically.",
 };
 
 export type TKey = keyof typeof en;

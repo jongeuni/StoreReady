@@ -250,6 +250,10 @@ const vi: Dict = {
   'spons.sub': "Cảm ơn tất cả những ai ủng hộ StoreReady.",
   'spons.empty': "Chưa có nhà tài trợ để hiển thị.",
   'spons.cta': "Trở thành nhà tài trợ",
+  'ref.sponsoredTitle': "Ứng dụng được tài trợ",
+  'ref.sponsoredBy': "Được tài trợ bởi {name}",
+  'ref.sponsoredBadge': "Tài trợ",
+  'spons.howTo': "Muốn ứng dụng của bạn nằm ở đầu trang này? Dán liên kết App Store vào tin nhắn Buy Me a Coffee — ứng dụng sẽ tự động hiện ở đây.",
 };
 
 export default vi;

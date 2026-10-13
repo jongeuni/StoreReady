@@ -250,6 +250,10 @@ const hi: Dict = {
   'spons.sub': "StoreReady का समर्थन करने वाले सभी का धन्यवाद।",
   'spons.empty': "अभी दिखाने के लिए कोई प्रायोजक नहीं।",
   'spons.cta': "प्रायोजक बनें",
+  'ref.sponsoredTitle': "प्रायोजित ऐप",
+  'ref.sponsoredBy': "{name} द्वारा प्रायोजित",
+  'ref.sponsoredBadge': "प्रायोजित",
+  'spons.howTo': "चाहते हैं कि आपका ऐप इस पेज के सबसे ऊपर दिखे? अपने Buy Me a Coffee संदेश में App Store लिंक चिपकाएँ — वह यहाँ अपने आप दिखेगा।",
 };
 
 export default hi;

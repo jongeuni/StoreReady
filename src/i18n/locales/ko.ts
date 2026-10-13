@@ -249,6 +249,10 @@ const ko: Dict = {
   'spons.sub': "StoreReady를 응원해 주시는 모든 분께 감사드립니다.",
   'spons.empty': "아직 표시할 후원자가 없습니다.",
   'spons.cta': "후원하기",
+  'ref.sponsoredTitle': "후원 앱",
+  'ref.sponsoredBy': "{name} 님 후원",
+  'ref.sponsoredBadge': "후원",
+  'spons.howTo': "내 앱을 이 페이지 맨 위에 올리고 싶으신가요? Buy Me a Coffee 후원 메시지에 App Store 링크를 붙여 넣으면 자동으로 표시됩니다.",
 };
 
 export default ko;

@@ -248,6 +248,10 @@ const zhTW: Dict = {
   'spons.sub': "感謝每一位支持 StoreReady 的人。",
   'spons.empty': "目前還沒有可展示的贊助者。",
   'spons.cta': "成為贊助者",
+  'ref.sponsoredTitle': "贊助 App",
+  'ref.sponsoredBy': "由 {name} 贊助",
+  'ref.sponsoredBadge': "贊助",
+  'spons.howTo': "想讓你的 App 出現在本頁頂部？在 Buy Me a Coffee 留言中貼上你的 App Store 連結，就會自動顯示。",
 };
 
 export default zhTW;

@@ -250,6 +250,10 @@ const fr: Dict = {
   'spons.sub': "Merci à toutes les personnes qui soutiennent StoreReady.",
   'spons.empty': "Aucun sponsor à afficher pour le moment.",
   'spons.cta': "Devenir sponsor",
+  'ref.sponsoredTitle': "Apps sponsorisées",
+  'ref.sponsoredBy': "Sponsorisée par {name}",
+  'ref.sponsoredBadge': "Sponsorisé",
+  'spons.howTo': "Vous voulez voir votre app en haut de cette page ? Collez votre lien App Store dans votre message Buy Me a Coffee : elle apparaîtra ici automatiquement.",
 };
 
 export default fr;

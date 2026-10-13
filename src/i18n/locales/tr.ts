@@ -250,6 +250,10 @@ const tr: Dict = {
   'spons.sub': "StoreReady'i destekleyen herkese teşekkürler.",
   'spons.empty': "Henüz gösterilecek sponsor yok.",
   'spons.cta': "Sponsor ol",
+  'ref.sponsoredTitle': "Sponsorlu uygulamalar",
+  'ref.sponsoredBy': "{name} sponsorluğunda",
+  'ref.sponsoredBadge': "Sponsorlu",
+  'spons.howTo': "Uygulamanızın bu sayfanın en üstünde yer almasını ister misiniz? Buy Me a Coffee mesajınıza App Store bağlantınızı yapıştırın — burada otomatik görünür.",
 };
 
 export default tr;

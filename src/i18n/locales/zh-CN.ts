@@ -248,6 +248,10 @@ const zhCN: Dict = {
   'spons.sub': "感谢每一位支持 StoreReady 的人。",
   'spons.empty': "暂时还没有可展示的赞助者。",
   'spons.cta': "成为赞助者",
+  'ref.sponsoredTitle': "赞助应用",
+  'ref.sponsoredBy': "由 {name} 赞助",
+  'ref.sponsoredBadge': "赞助",
+  'spons.howTo': "想让你的应用出现在本页顶部？在 Buy Me a Coffee 留言中粘贴你的 App Store 链接，即可自动展示。",
 };
 
 export default zhCN;

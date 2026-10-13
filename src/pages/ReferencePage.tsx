@@ -8,35 +8,64 @@ import { REFERENCE_GUIDE_URL, SPONSORS_ENDPOINT, SPONSOR_URL } from '../config';
 import { loadReferenceApps } from '../reference/apps';
 
 type Sponsor = { name: string; coffees?: number };
+type SponsoredApp = { id: string; name: string; icon: string; screenshots: string[]; link: string | null; sponsor: string };
+
+// The server already restricts these, but the page never trusts remote data blindly: images must come from
+// Apple's image CDN and links must point at the App Store.
+const isAppleImage = (u: unknown): u is string => typeof u === 'string' && /^https:\/\/[^/]+\.mzstatic\.com\//.test(u);
+const isAppStoreLink = (u: unknown): u is string => typeof u === 'string' && /^https:\/\/apps\.apple\.com\//.test(u);
+
+function cleanApps(list: unknown): SponsoredApp[] {
+  if (!Array.isArray(list)) return [];
+  return list.flatMap((a): SponsoredApp[] => {
+    const shots = Array.isArray(a?.screenshots) ? a.screenshots.filter(isAppleImage) : [];
+    if (typeof a?.name !== 'string' || !a.name.trim() || !isAppleImage(a.icon) || shots.length === 0) return [];
+    return [
+      {
+        id: String(a.id ?? a.name),
+        name: a.name,
+        icon: a.icon,
+        screenshots: shots,
+        link: isAppStoreLink(a.link) ? a.link : null,
+        sponsor: typeof a.sponsor === 'string' ? a.sponsor : '',
+      },
+    ];
+  });
+}
 
 const apps = loadReferenceApps();
 
-function useSponsors(): Sponsor[] | null {
-  const [sponsors, setSponsors] = useState<Sponsor[] | null>(null);
+function useSponsors(): { sponsors: Sponsor[]; apps: SponsoredApp[] } | null {
+  const [data, setData] = useState<{ sponsors: Sponsor[]; apps: SponsoredApp[] } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     fetch(SPONSORS_ENDPOINT)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-      .then((json: { sponsors?: Sponsor[] }) => {
+      .then((json: { sponsors?: Sponsor[]; apps?: unknown }) => {
         if (cancelled) return;
         const list = Array.isArray(json.sponsors) ? json.sponsors : [];
-        setSponsors(list.filter((s) => typeof s?.name === 'string' && s.name.trim()));
+        setData({
+          sponsors: list.filter((s) => typeof s?.name === 'string' && s.name.trim()),
+          apps: cleanApps(json.apps),
+        });
       })
       // No endpoint (local dev, static host) or a failure: just show the empty state.
-      .catch(() => !cancelled && setSponsors([]));
+      .catch(() => !cancelled && setData({ sponsors: [], apps: [] }));
     return () => {
       cancelled = true;
     };
   }, []);
 
-  return sponsors;
+  return data;
 }
 
 export function ReferencePage() {
   const t = useT();
   const { navigate } = useRouter();
-  const sponsors = useSponsors();
+  const sponsorData = useSponsors();
+  const sponsors = sponsorData ? sponsorData.sponsors : null;
+  const sponsoredApps = sponsorData?.apps ?? [];
 
   const go = (to: string) => (e: React.MouseEvent) => {
     e.preventDefault();
@@ -66,6 +95,33 @@ export function ReferencePage() {
           <h1 className="text-3xl font-bold text-neutral-50">{t('ref.title')}</h1>
           <p className="mx-auto mt-3 max-w-xl text-sm text-neutral-400">{t('ref.sub')}</p>
         </motion.section>
+
+        {sponsoredApps.length > 0 && (
+          <section className="mb-14">
+            <h2 className="mb-6 text-center text-sm font-semibold uppercase tracking-wider text-amber-300">
+              ☕ {t('ref.sponsoredTitle')}
+            </h2>
+            <div className="grid justify-items-center gap-10 sm:grid-cols-2 lg:grid-cols-3">
+              {sponsoredApps.map((app) => (
+                <StoreListing
+                  key={app.id}
+                  name={app.name}
+                  icon={app.icon}
+                  screenshots={app.screenshots}
+                  href={app.link ?? undefined}
+                  tagline={app.sponsor ? t('ref.sponsoredBy', { name: app.sponsor }) : undefined}
+                  above={
+                    <div className="mb-3 flex justify-center">
+                      <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-300">
+                        {t('ref.sponsoredBadge')}
+                      </span>
+                    </div>
+                  }
+                />
+              ))}
+            </div>
+          </section>
+        )}
 
         {apps.length > 0 ? (
           <div className="grid justify-items-center gap-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -100,6 +156,7 @@ export function ReferencePage() {
         <section className="mt-16 border-t border-neutral-800 pt-12 text-center">
           <h2 className="text-2xl font-bold text-neutral-100">{t('spons.title')}</h2>
           <p className="mx-auto mt-2 max-w-xl text-sm text-neutral-500">{t('spons.sub')}</p>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-amber-300/80">{t('spons.howTo')}</p>
 
           {sponsors && sponsors.length > 0 ? (
             <ul className="mx-auto mt-6 flex max-w-2xl flex-wrap justify-center gap-2">

@@ -250,6 +250,10 @@ const ja: Dict = {
   'spons.sub': "StoreReadyを支援してくださるすべての方に感謝します。",
   'spons.empty': "表示できるスポンサーはまだいません。",
   'spons.cta': "スポンサーになる",
+  'ref.sponsoredTitle': "スポンサーのアプリ",
+  'ref.sponsoredBy': "{name} さんのスポンサー",
+  'ref.sponsoredBadge': "スポンサー",
+  'spons.howTo': "あなたのアプリをこのページの最上部に載せませんか？ Buy Me a Coffee のメッセージに App Store のリンクを貼ると、自動で表示されます。",
 };
 
 export default ja;

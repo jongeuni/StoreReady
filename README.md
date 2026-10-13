@@ -59,6 +59,8 @@ StoreReady is free. Supporters on Buy Me a Coffee are listed at the bottom of th
 
 The sponsors list is read from Buy Me a Coffee by a small serverless function, `api/sponsors.js` (Vercel-style). Set the `BMC_ACCESS_TOKEN` environment variable on your host; without it the list is simply empty. Set `SPONSOR_URL` in `src/config.ts` to show the "Become a sponsor" button.
 
+**Sponsored apps:** supporters can get their app shown at the very top of the Reference page by pasting their App Store link into their Buy Me a Coffee message. The function finds the link, looks the app up in Apple's public iTunes Lookup API (name, icon, screenshots), and returns it as `apps`. Optional environment variables: `SPONSOR_APP_MIN_COFFEES` (coffees needed before an app is shown, default 1), `SPONSOR_APP_MAX` (default 6) and `SPONSOR_APP_DENYLIST` (comma-separated App Store ids to never show).
+
 ## Collaboration & inquiries
 
 Want your app featured on the main page, or have a partnership, sponsorship or advertising idea? Email **hello@app-ready.store**. For bugs and feature requests, please use GitHub Issues.

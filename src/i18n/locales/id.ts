@@ -250,6 +250,10 @@ const id: Dict = {
   'spons.sub': "Terima kasih kepada semua yang mendukung StoreReady.",
   'spons.empty': "Belum ada sponsor untuk ditampilkan.",
   'spons.cta': "Jadi sponsor",
+  'ref.sponsoredTitle': "Aplikasi sponsor",
+  'ref.sponsoredBy': "Disponsori oleh {name}",
+  'ref.sponsoredBadge': "Sponsor",
+  'spons.howTo': "Ingin aplikasimu tampil di bagian atas halaman ini? Tempel tautan App Store di pesan Buy Me a Coffee — otomatis muncul di sini.",
 };
 
 export default id;
