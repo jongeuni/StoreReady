@@ -20,6 +20,10 @@ src/reference/apps/<your-app>/
 
 Use a short lowercase folder name (e.g. `my-habit-app`).
 
+**Example to copy:** [`src/reference/apps/dayline`](https://github.com/jongeuni/StoreReady/tree/main/src/reference/apps/dayline)
+— its [`app.json`](https://github.com/jongeuni/StoreReady/blob/main/src/reference/apps/dayline/app.json)
+has both an App Store and a Google Play link, and it has Korean and English screenshot sets.
+
 Only have one language? Put the images straight in `screenshots/` (`screenshots/1.png`, `2.png`, …) and
 they are used for every language. With per-language folders, visitors see their own language's set and
 fall back to `en` when theirs is missing.
@@ -36,9 +40,11 @@ fall back to `en` when theirs is missing.
 ```
 
 - `name` — required.
-- `appStore` — optional. The big **GET** button opens it. Must be an `https://apps.apple.com/...` link.
-- `googlePlay` — optional. If your app is on Android too, an Android icon link appears under the card.
-  Must be an `https://play.google.com/store/apps/...` link. (If you only give `googlePlay`, GET opens it.)
+- `appStore` — optional. Your **App Store** link; the big **GET** button opens it. Must be an
+  `https://apps.apple.com/...` link.
+- `googlePlay` — optional. Your **Google Play** link. If your app is on Android too, an Android icon link
+  appears right under the GET button. Must be an `https://play.google.com/store/apps/...` link.
+  (If you only give `googlePlay`, GET opens it.)
 - `tagline` — optional, one short line. Either a string, or one line per language like above.
 - `order` — optional number; lower comes first. Leave it out to sort alphabetically.
 
