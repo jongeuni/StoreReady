@@ -1,15 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DEVICE_KIND_KEY, useT, type TKey } from '../i18n';
+import { useShowcaseShots } from '../showcase';
 import type { DeviceKind } from '../types';
 import capture1 from '../assets/hero/capture-1.png';
 import capture2 from '../assets/hero/capture-2.png';
-import demo1 from '../assets/hero/demo-1.png';
-import demo2 from '../assets/hero/demo-2.png';
-import demo3 from '../assets/hero/demo-3.png';
-import demo4 from '../assets/hero/demo-4.png';
 
-const FINISHED = [demo1, demo2, demo3, demo4];
 
 const STEPS: { title: TKey; body: TKey }[] = [
   { title: 'demo.s1.title', body: 'demo.s1.body' },
@@ -249,15 +245,16 @@ function MockCanvas({ step }: { step: number }) {
   const kindA = morphing ? KIND_SEQUENCE[kindIdx % 3] : 'phone';
   const kindB = morphing ? KIND_SEQUENCE[(kindIdx + 1) % 3] : 'phone';
 
+  const finished = useShowcaseShots();
   const [finishedIdx, setFinishedIdx] = useState(0);
   useEffect(() => {
-    if (step < S_FINISH) {
+    if (step < S_FINISH || finished.length === 0) {
       setFinishedIdx(0);
       return;
     }
-    const id = setInterval(() => setFinishedIdx((i) => (i + 1) % FINISHED.length), 2200);
+    const id = setInterval(() => setFinishedIdx((i) => (i + 1) % finished.length), 2200);
     return () => clearInterval(id);
-  }, [step]);
+  }, [step, finished.length]);
 
   const [uploadDone, setUploadDone] = useState(false);
   useEffect(() => {
@@ -393,7 +390,7 @@ function MockCanvas({ step }: { step: number }) {
 
       {/* Last step: the finished, store-ready result */}
       <AnimatePresence>
-        {step >= S_FINISH && (
+        {step >= S_FINISH && finished.length > 0 && (
           <motion.div
             key="finished"
             initial={{ opacity: 0 }}
@@ -405,7 +402,7 @@ function MockCanvas({ step }: { step: number }) {
             <AnimatePresence mode="wait">
               <motion.img
                 key={finishedIdx}
-                src={FINISHED[finishedIdx]}
+                src={finished[finishedIdx % finished.length]}
                 alt=""
                 initial={{ opacity: 0, x: 24 }}
                 animate={{ opacity: 1, x: 0 }}

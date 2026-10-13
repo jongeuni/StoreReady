@@ -1,6 +1,10 @@
 {
   "name": "DAYLine",
-  "tagline": "Simple habit & daily-plan tracker",
-  "link": "",
+  "tagline": {
+    "en": "Plan vs. actual, your day at a glance",
+    "ko": "계획과 실제, 하루를 한눈에"
+  },
+  "appStore": "https://apps.apple.com/gh/app/dayline-plan-vs-actual/id6808438205",
+  "googlePlay": "https://play.google.com/store/apps/details?id=com.sowant.dayline&hl=ko",
   "order": 1
 }

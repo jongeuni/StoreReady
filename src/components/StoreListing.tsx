@@ -9,8 +9,10 @@ type Props = {
   /** URL of the app icon; falls back to the first letter of the name on a lime tile. */
   icon?: string;
   screenshots: string[];
-  /** Makes the GET button a link to the app. */
+  /** Makes the GET button a link to the app (App Store, or Google Play when that's the only store). */
   href?: string;
+  /** When set, an Android icon link to the app's Google Play page appears under the card. */
+  playHref?: string;
   tagline?: string;
   /** Show the sample star rating (only for the landing-page demo card, never for real apps). */
   showRating?: boolean;
@@ -20,12 +22,19 @@ type Props = {
 };
 
 /** An App Store product-page look-alike: listing header + a screenshot row that swipes along on its own. */
-export function StoreListing({ name, icon, screenshots, href, tagline, showRating = false, above, className = '' }: Props) {
+export function StoreListing({ name, icon, screenshots, href, playHref, tagline, showRating = false, above, className = '' }: Props) {
   const [index, setIndex] = useState(0);
   const [snap, setSnap] = useState(false);
   const n = screenshots.length;
   // Render the set twice so the row can slide past the last shot and wrap invisibly.
   const shots = [...screenshots, ...screenshots];
+
+  // A different set of screenshots (e.g. the viewer switched language) starts again from the first one.
+  const setKey = screenshots.join('|');
+  useEffect(() => {
+    setIndex(0);
+    setSnap(true);
+  }, [setKey]);
 
   useEffect(() => {
     if (n < 2) return;
@@ -100,6 +109,31 @@ export function StoreListing({ name, icon, screenshots, href, tagline, showRatin
           </motion.div>
         </div>
       </div>
+
+      {playHref && (
+        <div className="mt-3 flex justify-center">
+          <a
+            href={playHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Google Play"
+            title="Google Play"
+            className="inline-flex items-center gap-1.5 rounded-full border border-neutral-700 px-3.5 py-1.5 text-xs font-medium text-neutral-300 hover:border-emerald-400/60 hover:text-emerald-300"
+          >
+            <AndroidIcon className="h-4 w-4" />
+            Google Play
+          </a>
+        </div>
+      )}
     </motion.div>
+  );
+}
+
+/** Material Design "android" icon (Apache-2.0). */
+function AndroidIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-2.86-1.21-6.08-1.21-8.94 0L5.65 5.67c-.19-.29-.58-.38-.87-.2-.28.18-.37.54-.22.83L6.4 9.48C3.3 11.25 1.28 14.44 1 18h22c-.28-3.56-2.3-6.75-5.4-8.52zM7 15.25c-.69 0-1.25-.56-1.25-1.25S6.31 12.75 7 12.75s1.25.56 1.25 1.25S7.69 15.25 7 15.25zm10 0c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z" />
+    </svg>
   );
 }

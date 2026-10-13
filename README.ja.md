@@ -59,7 +59,7 @@ StoreReady は無料です。Buy Me a Coffee の支援者は Reference ページ
 
 スポンサー一覧は、小さなサーバーレス関数 `api/sponsors.js`（Vercel 形式）が Buy Me a Coffee から取得します。ホスティングの環境変数に `BMC_ACCESS_TOKEN` を設定してください。未設定の場合、一覧は空になります。`src/config.ts` の `SPONSOR_URL` を設定すると「スポンサーになる」ボタンが表示されます。
 
-**スポンサーのアプリ：** 支援者が Buy Me a Coffee のメッセージに App Store のリンクを貼ると、Reference ページの最上部にアプリが自動で表示されます。関数がリンクを見つけ、Apple の公開 iTunes Lookup API でアプリ名・アイコン・スクリーンショットを取得して `apps` として返します。任意の環境変数：`SPONSOR_APP_MIN_COFFEES`（表示に必要なコーヒー数、既定 1）、`SPONSOR_APP_MAX`（既定 6）、`SPONSOR_APP_DENYLIST`（表示しない App Store id、カンマ区切り）。
+**スポンサーのアプリ：** 支援者が Buy Me a Coffee のメッセージに App Store のリンクを貼ると、Reference ページの最上部にアプリが自動で表示されます。関数がリンクを見つけ、Apple の公開 iTunes Lookup API でアプリ名・アイコン・スクリーンショットを取得して `apps` として返します。任意の環境変数：`SPONSOR_APP_MIN_COFFEES`（表示に必要なコーヒー数、既定 1）、`SPONSOR_APP_MAX`（既定 6）、`SPONSOR_APP_DENYLIST`（表示しない App Store id、カンマ区切り）。 `SPONSOR_APP_APPROVED`（カンマ区切りの App Store id。設定するとこのアプリだけが表示され、スポンサーのアプリを手動で承認するのに使えます）。
 
 ## コラボレーション・お問い合わせ
 

@@ -6,16 +6,12 @@ import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
 import { StoreListing } from '../components/StoreListing';
 import { GITHUB_URL } from '../config';
 import { useRouter } from '../router';
-import demo1 from '../assets/hero/demo-1.png';
-import demo2 from '../assets/hero/demo-2.png';
-import demo3 from '../assets/hero/demo-3.png';
-import demo4 from '../assets/hero/demo-4.png';
+import { useShowcaseShots } from '../showcase';
 
 type Props = {
   onStart: () => void;
 };
 
-const HERO_IMAGES = [demo1, demo2, demo3, demo4];
 
 function GithubIcon({ className = 'h-4 w-4' }: { className?: string }) {
   return (
@@ -65,6 +61,7 @@ function Feature({ title, body, delay = 0 }: { title: string; body: string; dela
 export function LandingPage({ onStart }: Props) {
   const t = useT();
   const { navigate } = useRouter();
+  const heroShots = useShowcaseShots();
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
@@ -115,7 +112,7 @@ export function LandingPage({ onStart }: Props) {
 
           <StoreListing
             name="Your App"
-            screenshots={HERO_IMAGES}
+            screenshots={heroShots}
             showRating
             above={
               <div className="mb-3 flex justify-center">

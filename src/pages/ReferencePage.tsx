@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useT } from '../i18n';
+import { useI18n, useT } from '../i18n';
 import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
 import { useRouter } from '../router';
 import { StoreListing } from '../components/StoreListing';
 import { REFERENCE_GUIDE_URL, SPONSORS_ENDPOINT, SPONSOR_URL } from '../config';
-import { loadReferenceApps } from '../reference/apps';
+import { loadReferenceApps, primaryLink, screenshotsFor, taglineFor } from '../reference/apps';
 
 type Sponsor = { name: string; coffees?: number };
 type SponsoredApp = { id: string; name: string; icon: string; screenshots: string[]; link: string | null; sponsor: string };
@@ -62,6 +62,7 @@ function useSponsors(): { sponsors: Sponsor[]; apps: SponsoredApp[] } | null {
 
 export function ReferencePage() {
   const t = useT();
+  const lang = useI18n((s) => s.lang);
   const { navigate } = useRouter();
   const sponsorData = useSponsors();
   const sponsors = sponsorData ? sponsorData.sponsors : null;
@@ -130,9 +131,10 @@ export function ReferencePage() {
                 key={app.slug}
                 name={app.name}
                 icon={app.icon}
-                screenshots={app.screenshots}
-                href={app.link}
-                tagline={app.tagline}
+                screenshots={screenshotsFor(app, lang)}
+                href={primaryLink(app)}
+                playHref={app.appStore ? app.googlePlay : undefined}
+                tagline={taglineFor(app, lang)}
               />
             ))}
           </div>

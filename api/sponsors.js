@@ -15,6 +15,8 @@
 //   SPONSOR_APP_MIN_COFFEES     optional — total coffees a supporter needs before their app is shown (default 1)
 //   SPONSOR_APP_MAX             optional — most sponsored apps to show (default 6)
 //   SPONSOR_APP_DENYLIST        optional — comma-separated App Store ids that must never be shown
+//   SPONSOR_APP_APPROVED        optional — comma-separated App Store ids; when set, ONLY these are shown, so a
+//                               sponsor's app goes live after you add its id (manual approval)
 //
 // Only public display names, coffee counts and App Store metadata are returned — never emails, notes or
 // payment details. NOTE: the Buy Me a Coffee field names used below (payer_name, support_coffees,
@@ -116,10 +118,12 @@ export async function respond(res, fetchImpl, env) {
     // Sponsored apps: only supporters above the coffee threshold, minus the denylist, biggest supporters first.
     const minCoffees = Math.max(1, Number(env.SPONSOR_APP_MIN_COFFEES) || 1);
     const maxApps = Math.max(0, Number(env.SPONSOR_APP_MAX ?? 6));
-    const denied = new Set(String(env.SPONSOR_APP_DENYLIST ?? '').split(',').map((v) => v.trim()).filter(Boolean));
+    const ids = (v) => new Set(String(v ?? '').split(',').map((x) => x.trim()).filter(Boolean));
+    const denied = ids(env.SPONSOR_APP_DENYLIST);
+    const approved = ids(env.SPONSOR_APP_APPROVED); // empty = no approval step
     const candidates = [...appRequests.entries()]
       .map(([id, r]) => ({ id, ...r, coffees: totals.get(r.sponsor) ?? 0 }))
-      .filter((c) => c.coffees >= minCoffees && !denied.has(c.id))
+      .filter((c) => c.coffees >= minCoffees && !denied.has(c.id) && (approved.size === 0 || approved.has(c.id)))
       .sort((a, b) => b.coffees - a.coffees)
       .slice(0, maxApps);
 
