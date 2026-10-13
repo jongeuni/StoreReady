@@ -11,6 +11,7 @@ import { panelWidthOf, spreadGap } from '../utils/spread';
 import { exportPageAsPng, exportPagesAsZip, exportStageToDataUrl, preloadProjectImages, sliceDataUrl } from '../utils/export';
 import { waitForRender } from '../utils/renderGate';
 import { PreviewModal } from './PreviewModal';
+import { VersionMenu } from './VersionMenu';
 
 export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | null> }) {
   const { navigate } = useRouter();
@@ -53,13 +54,14 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
       pushToast(t('top.nothingToExport'), 'error');
       return null;
     }
-    const originalPageId = currentPageId;
+    // Read from the store, not from this render's snapshot: exporting every version switches the open project.
+    const { project: openProject, currentPageId: originalPageId } = useProjectStore.getState();
     try {
       // Warm the browser's image cache first, so each page's pictures are ready the moment it is shown.
-      await preloadProjectImages(project.pages);
+      await preloadProjectImages(openProject.pages);
 
       const entries: { label: string; dataUrl: string }[] = [];
-      for (const page of project.pages) {
+      for (const page of openProject.pages) {
         selectPage(page.id);
         // Wait for this page to render and for its pictures (incl. the 3D phone) to finish loading.
         await waitForRender();
@@ -93,6 +95,32 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
     }
   };
 
+  /** One ZIP with a folder per version (e.g. Korean / English / Japanese), each holding its numbered pages. */
+  const handleExportAllVersions = async () => {
+    const store = useProjectStore.getState();
+    const originalId = store.project.id;
+    try {
+      const all: { label: string; dataUrl: string; folder: string }[] = [];
+      for (const id of store.versionIds) {
+        useProjectStore.getState().switchProject(id);
+        const name = useProjectStore.getState().project.name || 'Untitled Project';
+        const entries = await captureAllPages();
+        if (!entries) return;
+        // The id keeps two versions with the same name in separate folders.
+        entries.forEach((e) => all.push({ ...e, folder: name }));
+      }
+      await exportPagesAsZip(all, `${store.project.name || 'app-store-screenshots'}-all-versions.zip`);
+      pushToast(t('top.zipDone'), 'success');
+    } catch (err) {
+      console.error(err);
+      const reason = err instanceof Error && err.message ? ` (${err.message})` : '';
+      pushToast(`${t('top.zipFailed')}${reason}`, 'error');
+    } finally {
+      // Leave the editor on the version the user was working in.
+      useProjectStore.getState().switchProject(originalId);
+    }
+  };
+
   const handlePreview = async () => {
     if (previewBusy) return;
     setPreviewBusy(true);
@@ -123,6 +151,7 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
           onChange={(e) => renameProject(e.target.value)}
           className="w-44 rounded border border-transparent bg-transparent px-1.5 py-1 text-sm font-semibold text-neutral-100 hover:border-neutral-700 focus:border-blue-500 focus:bg-neutral-800 focus:outline-none"
         />
+        <VersionMenu onExportAll={handleExportAllVersions} />
         <select
           value={project.devicePresetId}
           onChange={(e) => setDevicePreset(e.target.value)}

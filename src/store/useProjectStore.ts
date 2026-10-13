@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import { current } from 'immer';
 import { makeId } from '../utils/id';
 import { idbStorage } from '../persist/idbStorage';
 import { DEFAULT_DEVICE_PRESET_ID, getDevicePreset } from '../devicePresets';
@@ -67,6 +68,29 @@ function fitDevicesToPreset(page: Page, preset: DevicePreset) {
   }
 }
 
+/** Most versions (copies of a project) the editor keeps at once; each copy carries its own images. */
+export const MAX_VERSIONS = 20;
+
+/** A deep copy of a project with fresh ids everywhere, so it can live next to the original. */
+function cloneProjectWithNewIds(project: Project): Project {
+  const copy = structuredClone(project);
+  copy.id = makeId();
+  for (const page of copy.pages) {
+    page.id = makeId();
+    for (const obj of page.objects) obj.id = makeId();
+  }
+  return copy;
+}
+
+function uniqueVersionName(base: string, taken: string[]): string {
+  const root = base.trim() || 'Untitled Project';
+  if (!taken.includes(root)) return root;
+  for (let n = 2; ; n++) {
+    const candidate = `${root} ${n}`;
+    if (!taken.includes(candidate)) return candidate;
+  }
+}
+
 function nextPageLabel(pages: Page[]): string {
   return `Page ${pages.length + 1}`;
 }
@@ -81,9 +105,16 @@ function createInitialProject(): Project {
   };
 }
 
+/** A project that is saved but not currently open in the editor. */
+type ParkedProject = { project: Project; currentPageId: string };
+
 type State = {
   project: Project;
   currentPageId: string;
+  /** Every version's id, in display order (the open one included). */
+  versionIds: string[];
+  /** The versions that are not open right now, by id. */
+  parked: Record<string, ParkedProject>;
   selectedObjectIds: string[];
   promptWizardOpen: boolean;
   promptWizardStep: 1 | 2 | 3;
@@ -95,6 +126,11 @@ type Actions = {
   renameProject: (name: string) => void;
   setDevicePreset: (id: string) => void;
   setExtraNotes: (notes: string) => void;
+
+  // Versions: whole-project copies (e.g. one per language) that can be switched between and exported together
+  duplicateProject: () => void;
+  switchProject: (projectId: string) => void;
+  removeProject: (projectId: string) => void;
 
   // Pages
   addPage: (templateId?: TemplateId) => void;
@@ -150,13 +186,20 @@ type Actions = {
 
 const initialProject = createInitialProject();
 
-type PersistedState = { project: Project; currentPageId: string };
+type PersistedState = {
+  project: Project;
+  currentPageId: string;
+  versionIds?: string[];
+  parked?: Record<string, ParkedProject>;
+};
 
 export const useProjectStore = create<State & Actions>()(
   persist<State & Actions, [], [['zustand/immer', never]], PersistedState>(
     immer((set) => ({
       project: initialProject,
       currentPageId: initialProject.pages[0].id,
+      versionIds: [initialProject.id],
+      parked: {},
       selectedObjectIds: [],
       promptWizardOpen: false,
       promptWizardStep: 1,
@@ -206,6 +249,56 @@ export const useProjectStore = create<State & Actions>()(
             }
             fitDevicesToPreset(page, preset);
           }
+        }),
+
+      duplicateProject: () =>
+        set((s) => {
+          if (s.versionIds.length >= MAX_VERSIONS) return;
+          const source = current(s.project);
+          const names = [source.name, ...Object.values(s.parked).map((v) => v.project.name)];
+          const copy = cloneProjectWithNewIds(source);
+          copy.name = uniqueVersionName(`${source.name || 'Untitled Project'} copy`, names);
+          // The copy opens right away (ready to be renamed and translated); the original is parked beside it.
+          s.parked[source.id] = { project: source, currentPageId: s.currentPageId };
+          const at = s.versionIds.indexOf(source.id);
+          s.versionIds.splice(at + 1, 0, copy.id);
+          s.project = copy;
+          s.currentPageId = copy.pages[0].id;
+          s.selectedObjectIds = [];
+          s.promptWizardOpen = false;
+        }),
+
+      switchProject: (projectId) =>
+        set((s) => {
+          if (projectId === s.project.id) return;
+          const target = s.parked[projectId];
+          if (!target) return;
+          s.parked[s.project.id] = { project: current(s.project), currentPageId: s.currentPageId };
+          s.project = target.project;
+          s.currentPageId = target.project.pages.some((pg) => pg.id === target.currentPageId) ? target.currentPageId : target.project.pages[0].id;
+          delete s.parked[projectId];
+          s.selectedObjectIds = [];
+          s.promptWizardOpen = false;
+        }),
+
+      removeProject: (projectId) =>
+        set((s) => {
+          if (s.versionIds.length <= 1 || !s.versionIds.includes(projectId)) return;
+          const at = s.versionIds.indexOf(projectId);
+          if (projectId === s.project.id) {
+            // Deleting the open one: the neighbouring version takes its place.
+            const nextId = s.versionIds[at + 1] ?? s.versionIds[at - 1];
+            const next = s.parked[nextId];
+            if (!next) return;
+            s.project = next.project;
+            s.currentPageId = next.currentPageId;
+            delete s.parked[nextId];
+            s.selectedObjectIds = [];
+            s.promptWizardOpen = false;
+          } else {
+            delete s.parked[projectId];
+          }
+          s.versionIds.splice(at, 1);
         }),
 
       setExtraNotes: (notes) =>
@@ -623,6 +716,8 @@ export const useProjectStore = create<State & Actions>()(
       resetProject: () =>
         set((s) => {
           const fresh = createInitialProject();
+          const at = s.versionIds.indexOf(s.project.id);
+          if (at !== -1) s.versionIds[at] = fresh.id;
           s.project = fresh;
           s.currentPageId = fresh.pages[0].id;
           s.selectedObjectIds = [];
@@ -642,11 +737,23 @@ export const useProjectStore = create<State & Actions>()(
           await idbStorage.removeItem(name);
         },
       },
-      partialize: (state) => ({ project: state.project, currentPageId: state.currentPageId }),
+      partialize: (state) => ({
+        project: state.project,
+        currentPageId: state.currentPageId,
+        versionIds: state.versionIds,
+        parked: state.parked,
+      }),
       onRehydrateStorage: () => (state) => {
-        if (state && !state.project.pages.find((p) => p.id === state.currentPageId)) {
+        if (!state) return;
+        if (!state.project.pages.find((p) => p.id === state.currentPageId)) {
           state.currentPageId = state.project.pages[0]?.id ?? state.currentPageId;
         }
+        // Saved data from before versions existed has no list (and the placeholder id from first load is stale):
+        // rebuild it so the open project and every parked one are listed exactly once.
+        const parkedIds = Object.keys(state.parked ?? {}).filter((id) => id !== state.project.id);
+        const known = (state.versionIds ?? []).filter((id) => id === state.project.id || parkedIds.includes(id));
+        const missing = [state.project.id, ...parkedIds].filter((id) => !known.includes(id));
+        useProjectStore.setState({ versionIds: [...known, ...missing] });
       },
     },
   ),

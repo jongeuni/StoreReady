@@ -2,8 +2,16 @@ import type Konva from 'konva';
 import type { Page } from '../types';
 import { DEVICE_MODELS } from '../phoneFrame';
 
+/** File-name safe, but keeps letters of any script (a Korean page called "메인" stays "메인"). */
 function sanitizeFileName(name: string): string {
-  return name.replace(/[^a-z0-9-_]+/gi, '_').toLowerCase();
+  const cleaned = name.replace(/[^\p{L}\p{N}\-_]+/gu, '_').replace(/^_+|_+$/g, '').toLowerCase();
+  return cleaned || 'page';
+}
+
+/** Folder-name safe: keeps case, spaces and any script, drops only characters that break paths. */
+function sanitizeFolderName(name: string): string {
+  const cleaned = name.replace(/[\\/:*?"<>|\u0000-\u001f]+/g, '_').replace(/^[.\s_]+|[.\s_]+$/g, '').slice(0, 60);
+  return cleaned || 'version';
 }
 
 export function downloadDataUrl(dataUrl: string, fileName: string) {
@@ -70,15 +78,36 @@ export async function exportPageAsPng(stage: Konva.Stage, pageLabel: string, spr
 }
 
 export async function exportPagesAsZip(
-  entries: { label: string; dataUrl: string }[],
+  /** `folder` puts the image in its own folder inside the ZIP (used for one folder per version). */
+  entries: { label: string; dataUrl: string; folder?: string }[],
   zipFileName: string,
 ) {
   const JSZip = (await import('jszip')).default;
   const { saveAs } = await import('file-saver');
   const zip = new JSZip();
-  entries.forEach((entry, i) => {
+
+  // Two versions can share a name; keep their folders apart with a numeric suffix.
+  const folderFor = new Map<string, string>();
+  const used = new Set<string>();
+  const folderOf = (raw: string) => {
+    const known = folderFor.get(raw);
+    if (known) return known;
+    const base = sanitizeFolderName(raw);
+    let name = base;
+    for (let n = 2; used.has(name.toLowerCase()); n++) name = `${base} (${n})`;
+    used.add(name.toLowerCase());
+    folderFor.set(raw, name);
+    return name;
+  };
+
+  const counters = new Map<string, number>();
+  entries.forEach((entry) => {
+    const folder = entry.folder !== undefined ? folderOf(entry.folder) : '';
+    const n = (counters.get(folder) ?? 0) + 1;
+    counters.set(folder, n);
     const base64 = entry.dataUrl.split(',')[1];
-    zip.file(`${String(i + 1).padStart(2, '0')}-${sanitizeFileName(entry.label)}.png`, base64, { base64: true });
+    const file = `${String(n).padStart(2, '0')}-${sanitizeFileName(entry.label)}.png`;
+    zip.file(folder ? `${folder}/${file}` : file, base64, { base64: true });
   });
   // PNGs are already compressed; storing them as-is is much faster and uses far less memory than DEFLATE.
   const blob = await zip.generateAsync({ type: 'blob', compression: 'STORE', streamFiles: true });
