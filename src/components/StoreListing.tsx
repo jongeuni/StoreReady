@@ -11,7 +11,7 @@ type Props = {
   screenshots: string[];
   /** Makes the GET button a link to the app (App Store, or Google Play when that's the only store). */
   href?: string;
-  /** When set, an Android icon link to the app's Google Play page appears under the card. */
+  /** When set, an Android icon link to the app's Google Play page appears right under the GET button. */
   playHref?: string;
   tagline?: string;
   /** Show the sample star rating (only for the landing-page demo card, never for real apps). */
@@ -74,13 +74,28 @@ export function StoreListing({ name, icon, screenshots, href, playHref, tagline,
               tagline && <div className="mt-0.5 truncate text-xs text-neutral-500">{tagline}</div>
             )}
           </div>
-          {href ? (
-            <a href={href} target="_blank" rel="noopener noreferrer" className={`${getButton} hover:bg-blue-500`}>
-              GET
-            </a>
-          ) : (
-            <span className={getButton}>GET</span>
-          )}
+          <div className="flex shrink-0 flex-col items-center gap-1.5">
+            {href ? (
+              <a href={href} target="_blank" rel="noopener noreferrer" className={`${getButton} hover:bg-blue-500`}>
+                GET
+              </a>
+            ) : (
+              <span className={getButton}>GET</span>
+            )}
+            {playHref && (
+              <a
+                href={playHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Google Play"
+                title="Google Play"
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-neutral-400 hover:text-emerald-300"
+              >
+                <AndroidIcon className="h-3.5 w-3.5" />
+                Google Play
+              </a>
+            )}
+          </div>
         </div>
 
         <div className="-mr-5 mt-5 overflow-hidden">
@@ -110,21 +125,6 @@ export function StoreListing({ name, icon, screenshots, href, playHref, tagline,
         </div>
       </div>
 
-      {playHref && (
-        <div className="mt-3 flex justify-center">
-          <a
-            href={playHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Google Play"
-            title="Google Play"
-            className="inline-flex items-center gap-1.5 rounded-full border border-neutral-700 px-3.5 py-1.5 text-xs font-medium text-neutral-300 hover:border-emerald-400/60 hover:text-emerald-300"
-          >
-            <AndroidIcon className="h-4 w-4" />
-            Google Play
-          </a>
-        </div>
-      )}
     </motion.div>
   );
 }
