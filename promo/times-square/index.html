@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StoreReady · Times Square (KO)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #000; color: #e5e5e5; font: 14px/1.4 Pretendard, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 16px; }
+  canvas { width: min(100%, 1280px); height: auto; aspect-ratio: 16 / 9; background: #06070a; border-radius: 6px; }
+  .bar { display: flex; gap: 10px; align-items: center; width: min(100%, 1280px); }
+  .bar input[type=range] { flex: 1; }
+  button { background: #2563eb; color: #fff; border: 0; border-radius: 6px; padding: 8px 14px; font-weight: 700; cursor: pointer; }
+  button.alt { background: #262626; }
+  #status { color: #a3a3a3; min-width: 14ch; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<div class="bar">
+  <button id="play" class="alt">▶ 재생</button>
+  <input id="seek" type="range" min="0" max="28" step="0.01" value="0" />
+  <span id="status">0.00s</span>
+  <button id="encode">MP4로 저장</button>
+</div>
+
+<script type="module">
+const W = 1920, H = 1080, FPS = 30, DUR = 28;
+const SHOTS = 7;
+const FONT = 'Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif';
+const BG = '#06070a', LIME = '#c6ff3d', BLUE = '#3b82f6', WHITE = '#f5f5f5';
+const CUTS = [0, 4.8, 11, 17.2, 23, DUR];
+
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const eo3 = (x) => 1 - Math.pow(1 - x, 3);
+const eo5 = (x) => 1 - Math.pow(1 - x, 5);
+const eob = (x) => { const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const mod = (a, n) => ((a % n) + n) % n;
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+// ---------- assets ----------
+const shots = [];
+async function loadAssets() {
+  await Promise.all([
+    document.fonts.load(`800 100px Pretendard`),
+    document.fonts.load(`600 40px Pretendard`),
+    document.fonts.load(`400 40px Pretendard`),
+  ]);
+  await Promise.all(
+    Array.from({ length: SHOTS }, (_, i) => new Promise((res, rej) => {
+      const img = new Image();
+      img.onload = () => { shots[i] = img; res(); };
+      img.onerror = rej;
+      img.src = `/src/reference/apps/dayline/screenshots/ko/${i + 1}.webp`;
+    })),
+  );
+}
+
+// ---------- drawing helpers ----------
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
+
+/** A line of (possibly multi-coloured) text that slides up out of a mask. p: 0..1. */
+function line(parts, x, baseline, size, p, { weight = 800, align = 'left', spacing = -0.02 } = {}) {
+  if (p <= 0) return;
+  ctx.save();
+  ctx.font = `${weight} ${size}px ${FONT}`;
+  ctx.letterSpacing = `${(spacing * size).toFixed(1)}px`;
+  const widths = parts.map((q) => ctx.measureText(q.t).width);
+  const total = widths.reduce((a, b) => a + b, 0);
+  let cx = align === 'center' ? x - total / 2 : align === 'right' ? x - total : x;
+  ctx.beginPath();
+  ctx.rect(cx - 20, baseline - size * 1.0, total + 40, size * 1.35);
+  ctx.clip();
+  const e = eo5(p);
+  ctx.globalAlpha = clamp(p * 3);
+  ctx.translate(0, (1 - e) * size * 1.15);
+  ctx.textBaseline = 'alphabetic';
+  parts.forEach((q, i) => {
+    ctx.fillStyle = q.c ?? WHITE;
+    ctx.fillText(q.t, cx, baseline);
+    cx += widths[i];
+  });
+  ctx.restore();
+}
+
+function backdrop(t) {
+  ctx.fillStyle = BG;
+  ctx.fillRect(0, 0, W, H);
+  // drifting glows
+  const g1 = ctx.createRadialGradient(W * 0.82 + Math.sin(t * 0.5) * 80, H * 0.08, 0, W * 0.82, H * 0.08, 900);
+  g1.addColorStop(0, 'rgba(59,130,246,0.30)'); g1.addColorStop(1, 'rgba(59,130,246,0)');
+  ctx.fillStyle = g1; ctx.fillRect(0, 0, W, H);
+  const g2 = ctx.createRadialGradient(W * 0.08, H * 0.98 + Math.cos(t * 0.6) * 60, 0, W * 0.08, H * 0.98, 800);
+  g2.addColorStop(0, 'rgba(198,255,61,0.16)'); g2.addColorStop(1, 'rgba(198,255,61,0)');
+  ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
+  // faint grid sliding diagonally
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.045)';
+  ctx.lineWidth = 2;
+  const s = 120, off = (t * 18) % s;
+  ctx.beginPath();
+  for (let x = -s + off; x < W + s; x += s) { ctx.moveTo(x, 0); ctx.lineTo(x, H); }
+  for (let y = -s + off; y < H + s; y += s) { ctx.moveTo(0, y); ctx.lineTo(W, y); }
+  ctx.stroke();
+  ctx.restore();
+}
+
+function wordmark(x, y, size, alpha = 1, align = 'left') {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.font = `800 ${size}px ${FONT}`;
+  ctx.letterSpacing = `${(-0.03 * size).toFixed(1)}px`;
+  const a = ctx.measureText('Store').width, b = ctx.measureText('Ready').width;
+  let cx = align === 'center' ? x - (a + b) / 2 : x;
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = WHITE; ctx.fillText('Store', cx, y);
+  ctx.fillStyle = '#60a5fa'; ctx.fillText('Ready', cx + a, y);
+  ctx.restore();
+}
+
+function mark(cx, cy, size, alpha = 1) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(cx, cy);
+  const g = ctx.createLinearGradient(-size / 2, -size / 2, size / 2, size / 2);
+  g.addColorStop(0, '#60a5fa'); g.addColorStop(1, '#2563eb');
+  ctx.fillStyle = g;
+  rr(-size / 2, -size / 2, size, size, size * 0.26); ctx.fill();
+  // little phone with a check
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = size * 0.06; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  rr(-size * 0.19, -size * 0.3, size * 0.38, size * 0.6, size * 0.08); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(-size * 0.08, size * 0.02); ctx.lineTo(-size * 0.01, size * 0.1); ctx.lineTo(size * 0.1, -size * 0.07);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function chrome(t, scene) {
+  // small persistent branding (scenes 1-4)
+  if (scene >= 4) return;
+  const a = prog(t, 0.4, 1.0);
+  mark(150, 96, 64, a);
+  wordmark(196, 116, 46, a);
+  if (scene === 1) return;
+  ctx.save();
+  ctx.globalAlpha = 0.55 * a;
+  ctx.font = `600 38px ${FONT}`;
+  ctx.fillStyle = WHITE;
+  ctx.textAlign = 'right';
+  ctx.fillText('app-ready.store', W - 120, 112);
+  ctx.restore();
+}
+
+function pill(x, y, w, h, label, fill, textColor, stroke, size, alpha = 1, scale = 1) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(x + w / 2, y + h / 2);
+  ctx.scale(scale, scale);
+  rr(-w / 2, -h / 2, w, h, h / 2);
+  if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 3; ctx.stroke(); }
+  ctx.fillStyle = textColor; ctx.font = `700 ${size}px ${FONT}`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(label, 0, 3);
+  ctx.restore();
+}
+
+// ---------- scenes ----------
+function scene1(t) {
+  const x = 150;
+  line([{ t: '스크린샷 한 장이', c: WHITE }], x, 500, 158, prog(t, 0.35, 1.15));
+  line([{ t: '다운로드를 ', c: LIME }, { t: '바꿉니다.', c: LIME }], x, 690, 158, prog(t, 0.75, 1.55));
+  // growing rule + tagline
+  const w = eo5(prog(t, 1.5, 2.6)) * 520;
+  ctx.fillStyle = BLUE; rr(x, 750, w, 10, 5); ctx.fill();
+  line([{ t: '앱스토어 스크린샷, 이제 직접 만드세요.', c: '#a3a3a3' }], x, 860, 58, prog(t, 2.0, 2.8), { weight: 600, spacing: 0 });
+}
+
+function colorColumn(cx, dir, phase, t, alpha, dx) {
+  const w = 300, h = w * 2000 / 921, step = h + 30, cycle = SHOTS * step;
+  const off = dir * 90 * t + phase * step;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  for (let k = 0; k < SHOTS; k++) {
+    const y = mod(k * step + off, cycle) - cycle / 2;
+    if (y < -1300 || y > 1300) continue;
+    const img = shots[mod(k + Math.round(phase), SHOTS)];
+    ctx.save();
+    ctx.translate(cx + dx - w / 2, y);
+    rr(0, 0, w, h, 38); ctx.clip();
+    ctx.drawImage(img, 0, 0, w, h);
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+function scene2(t) {
+  const x = 150;
+  line([{ t: '레이아웃, 기기,', c: WHITE }], x, 420, 100, prog(t, 0.35, 1.1));
+  line([{ t: '문구, 색상까지.', c: WHITE }], x, 545, 100, prog(t, 0.55, 1.3));
+  line([{ t: '전부 내 마음대로.', c: LIME }], x, 700, 100, prog(t, 0.85, 1.6));
+  line([{ t: '실제 앱이 이렇게 완성됩니다 →', c: '#a3a3a3' }], x, 820, 46, prog(t, 1.7, 2.4), { weight: 600, spacing: 0 });
+
+  ctx.save();
+  ctx.translate(1590, 540);
+  ctx.rotate(-10 * Math.PI / 180);
+  const inn = (d) => eo5(prog(t, 0.2 + d, 1.4 + d));
+  colorColumn(-330, 1, 0, t, inn(0), (1 - inn(0)) * 420);
+  colorColumn(0, -1, 2, t, inn(0.15), (1 - inn(0.15)) * 420);
+  colorColumn(330, 1, 4, t, inn(0.3), (1 - inn(0.3)) * 420);
+  ctx.restore();
+}
+
+function drawDevices(t, cx, cy) {
+  const a = eo5(prog(t, 0.6, 1.6));
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.globalAlpha = a;
+  ctx.strokeStyle = LIME; ctx.lineWidth = 8; ctx.lineJoin = 'round';
+  const float = (k) => Math.sin(t * 1.6 + k) * 10;
+  // phone
+  ctx.save(); ctx.translate(-260, 20 + float(0));
+  rr(-80, -170, 160, 340, 38); ctx.stroke();
+  rr(-28, -150, 56, 14, 7); ctx.stroke();
+  ctx.restore();
+  // tablet
+  ctx.save(); ctx.translate(20, 70 + float(1.5));
+  rr(-150, -110, 300, 220, 30); ctx.stroke();
+  ctx.beginPath(); ctx.arc(138 - 24, 0, 5, 0, 7); ctx.stroke();
+  ctx.restore();
+  // watch
+  ctx.save(); ctx.translate(300, -10 + float(3));
+  rr(-62, -78, 124, 156, 36); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(-34, -78); ctx.lineTo(-28, -138); ctx.lineTo(28, -138); ctx.lineTo(34, -78);
+  ctx.moveTo(-34, 78); ctx.lineTo(-28, 138); ctx.lineTo(28, 138); ctx.lineTo(34, 78);
+  ctx.stroke();
+  ctx.restore();
+  ctx.restore();
+  ctx.save();
+  ctx.globalAlpha = a;
+  ctx.font = `700 46px ${FONT}`; ctx.fillStyle = WHITE; ctx.textAlign = 'center';
+  ctx.fillText('iPhone · iPad · Apple Watch', cx + 20, cy + 300);
+  ctx.restore();
+}
+
+function scene3(t) {
+  const x = 150;
+  line([{ t: '회원가입 없이,', c: WHITE }], x, 380, 128, prog(t, 0.3, 1.0));
+  line([{ t: '설치 없이,', c: WHITE }], x, 530, 128, prog(t, 1.2, 1.9));
+  line([{ t: '브라우저에서 바로.', c: WHITE }], x, 680, 128, prog(t, 2.1, 2.8));
+  const p = prog(t, 3.3, 4.1);
+  if (p > 0) {
+    ctx.save();
+    ctx.translate(x, 900);
+    const sc = 0.7 + 0.3 * eob(p);
+    ctx.scale(sc, sc);
+    ctx.globalAlpha = clamp(p * 3);
+    ctx.font = `800 190px ${FONT}`; ctx.letterSpacing = '-5px';
+    ctx.fillStyle = LIME; ctx.textBaseline = 'alphabetic';
+    ctx.fillText('무료로 시작.', 0, 0);
+    ctx.restore();
+  }
+  drawDevices(t, 1440, 470);
+}
+
+const LANGS = ['한국어', 'English', '日本語', '简体中文', '繁體中文', 'Español', 'Français', 'Deutsch', 'Português', 'Русский', 'Italiano', 'Bahasa Indonesia', 'Tiếng Việt', 'ไทย', 'Türkçe', 'العربية', 'हिन्दी'];
+let langLayout = null;
+function layoutLangs() {
+  ctx.font = `700 46px ${FONT}`;
+  const widths = LANGS.map((l) => ctx.measureText(l).width + 72);
+  const bounds = [[0, 5], [5, 11], [11, 17]];
+  const gap = 24, h = 90;
+  langLayout = [];
+  bounds.forEach(([a, b], r) => {
+    let cx = 150;
+    for (let i = a; i < b; i++) { langLayout.push({ i, x: cx, y: 640 + r * (h + 22), w: widths[i], h }); cx += widths[i] + gap; }
+  });
+}
+
+function scene4(t) {
+  const x = 150;
+  line([{ t: '한 번 만들면,', c: WHITE }], x, 330, 128, prog(t, 0.3, 1.0));
+  line([{ t: '17개 언어로.', c: LIME }], x, 480, 128, prog(t, 0.6, 1.3));
+  line([{ t: '버전 복사 → ZIP 하나로 한 번에 내보내기', c: '#a3a3a3' }], x, 580, 50, prog(t, 1.3, 2.0), { weight: 600, spacing: 0 });
+  if (!langLayout) layoutLangs();
+  const active = Math.floor(Math.max(0, t - 2.6) / 0.28) % LANGS.length;
+  langLayout.forEach(({ i, x: lx, y, w, h }, n) => {
+    const p = prog(t, 1.4 + n * 0.07, 1.9 + n * 0.07);
+    if (p <= 0) return;
+    const on = t > 2.6 && i === active;
+    pill(lx, y, w, h, LANGS[i], on ? LIME : 'rgba(255,255,255,0.06)', on ? '#06070a' : WHITE, on ? LIME : 'rgba(255,255,255,0.22)', 46, clamp(p * 2), 0.8 + 0.2 * eob(p) + (on ? 0.04 : 0));
+  });
+}
+
+function scene5(t) {
+  // ghost marquee of finished screens behind
+  ctx.save();
+  ctx.globalAlpha = 0.16 * eo3(prog(t, 0, 1));
+  ctx.translate(W / 2, H / 2); ctx.rotate(-10 * Math.PI / 180);
+  for (let c = -3; c <= 3; c++) colorColumn(c * 330, c % 2 ? 1 : -1, (c + 4) * 2, t + 10, 1, 0);
+  ctx.restore();
+  // vignette so text pops
+  const v = ctx.createRadialGradient(W / 2, H / 2, 200, W / 2, H / 2, 1100);
+  v.addColorStop(0, 'rgba(6,7,10,0.92)'); v.addColorStop(1, 'rgba(6,7,10,0.55)');
+  ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+
+  const pm = prog(t, 0.3, 1.2);
+  mark(W / 2, 300, 210 * (0.75 + 0.25 * eob(pm)), clamp(pm * 3));
+  const pw = prog(t, 0.6, 1.4);
+  if (pw > 0) {
+    ctx.save(); ctx.globalAlpha = clamp(pw * 3);
+    ctx.translate(0, (1 - eo5(pw)) * 60);
+    wordmark(W / 2, 560, 200, 1, 'center');
+    ctx.restore();
+  }
+  line([{ t: '앱스토어 스크린샷 메이커', c: WHITE }], W / 2, 680, 76, prog(t, 1.2, 2.0), { align: 'center', weight: 700, spacing: 0 });
+  const pp = prog(t, 2.0, 2.9);
+  if (pp > 0) {
+    const w = 760, h = 130, sc = 0.8 + 0.2 * eob(pp);
+    pill(W / 2 - w / 2, 770, w, h, 'app-ready.store', LIME, '#06070a', null, 74, clamp(pp * 3), sc);
+  }
+  line([{ t: '지금 무료로 시작하세요', c: '#a3a3a3' }], W / 2, 980, 50, prog(t, 2.6, 3.3), { align: 'center', weight: 600, spacing: 0 });
+}
+
+function sweep(t) {
+  for (let i = 1; i < CUTS.length - 1; i++) {
+    const cut = CUTS[i];
+    for (const [delay, color] of [[0.1, BLUE], [0, LIME]]) {
+      const q = prog(t, cut - 0.42 + delay, cut + 0.42 + delay);
+      if (q <= 0 || q >= 1) continue;
+      const Bw = W + 400, L = -Bw + q * (W + Bw);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(L + 200, 0); ctx.lineTo(L + Bw, 0); ctx.lineTo(L + Bw - 200, H); ctx.lineTo(L, H);
+      ctx.closePath(); ctx.fill();
+    }
+  }
+}
+
+function render(t) {
+  t = clamp(t, 0, DUR - 1 / FPS);
+  let s = 0;
+  for (let i = 0; i < CUTS.length - 1; i++) if (t >= CUTS[i]) s = i;
+  backdrop(t);
+  const local = t - CUTS[s];
+  [scene1, scene2, scene3, scene4, scene5][s](local);
+  chrome(local + (s === 0 ? 0 : 5), s);
+  sweep(t);
+  // fade in / out
+  const fadeIn = 1 - prog(t, 0, 0.5), fadeOut = prog(t, DUR - 0.6, DUR);
+  const f = Math.max(fadeIn, fadeOut);
+  if (f > 0) { ctx.fillStyle = `rgba(0,0,0,${f})`; ctx.fillRect(0, 0, W, H); }
+}
+window.__render = render;
+
+// ---------- player ----------
+const seek = document.getElementById('seek'), status = document.getElementById('status'), playBtn = document.getElementById('play');
+let playing = false, startedAt = 0, startT = 0;
+function show(t) { render(t); seek.value = t; status.textContent = `${t.toFixed(2)}s`; }
+function tick() {
+  if (!playing) return;
+  const t = startT + (performance.now() - startedAt) / 1000;
+  if (t >= DUR) { playing = false; playBtn.textContent = '▶ 재생'; show(0); return; }
+  show(t); requestAnimationFrame(tick);
+}
+playBtn.onclick = () => {
+  playing = !playing; playBtn.textContent = playing ? '❚❚ 정지' : '▶ 재생';
+  if (playing) { startT = Number(seek.value); startedAt = performance.now(); tick(); }
+};
+seek.oninput = () => { playing = false; playBtn.textContent = '▶ 재생'; show(Number(seek.value)); };
+
+// ---------- MP4 export (WebCodecs + mp4-muxer) ----------
+async function encode() {
+  const { Muxer, ArrayBufferTarget } = await import('https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.3/+esm');
+  const target = new ArrayBufferTarget();
+  const muxer = new Muxer({ target, video: { codec: 'avc', width: W, height: H }, fastStart: 'in-memory' });
+  let error = null;
+  const encoder = new VideoEncoder({ output: (chunk, meta) => muxer.addVideoChunk(chunk, meta), error: (e) => (error = e) });
+  encoder.configure({ codec: 'avc1.640032', width: W, height: H, bitrate: 20_000_000, framerate: FPS });
+  const total = DUR * FPS;
+  for (let i = 0; i < total; i++) {
+    if (error) throw error;
+    render(i / FPS);
+    const frame = new VideoFrame(canvas, { timestamp: Math.round((i * 1e6) / FPS), duration: Math.round(1e6 / FPS) });
+    encoder.encode(frame, { keyFrame: i % 60 === 0 });
+    frame.close();
+    while (encoder.encodeQueueSize > 6) await new Promise((r) => setTimeout(r, 4));
+    if (i % 15 === 0) status.textContent = `인코딩 ${Math.round((i / total) * 100)}%`;
+  }
+  await encoder.flush(); muxer.finalize();
+  const bytes = new Uint8Array(target.buffer);
+  status.textContent = `완료 ${(bytes.length / 1e6).toFixed(1)}MB`;
+  return bytes;
+}
+window.__encode = encode;
+document.getElementById('encode').onclick = async () => {
+  const bytes = await encode();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([bytes], { type: 'video/mp4' }));
+  a.download = 'storeready-times-square-ko.mp4';
+  a.click();
+};
+
+await loadAssets();
+show(Number(new URLSearchParams(location.search).get('t') ?? 0));
+window.__ready = true;
+</script>
+</body>
+</html>
