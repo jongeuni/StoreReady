@@ -96,6 +96,79 @@ export const DEVICE_PRESETS: DevicePreset[] = [
     width: 312,
     height: 390,
   },
+  // iPhone Duo (foldable): its outer and inner displays each take their own screenshot size. Apple makes
+  // screenshots for it mandatory from April 2027 for apps built with the iOS 27.1 SDK or later.
+  {
+    id: 'iphone-duo-outer',
+    kind: 'tablet',
+    group: 'duo',
+    label: 'iPhone Duo outer display',
+    description: 'iPhone Duo — outer display, portrait',
+    width: 1398,
+    height: 2034,
+  },
+  {
+    id: 'iphone-duo-outer-landscape',
+    kind: 'tablet',
+    group: 'duo',
+    label: 'iPhone Duo outer display landscape',
+    description: 'iPhone Duo — outer display, landscape',
+    width: 2034,
+    height: 1398,
+  },
+  {
+    id: 'iphone-duo-inner',
+    kind: 'tablet',
+    group: 'duo',
+    label: 'iPhone Duo inner display',
+    description: 'iPhone Duo — inner display, portrait',
+    width: 2007,
+    height: 2853,
+  },
+  {
+    id: 'iphone-duo-inner-landscape',
+    kind: 'tablet',
+    group: 'duo',
+    label: 'iPhone Duo inner display landscape',
+    description: 'iPhone Duo — inner display, landscape',
+    width: 2853,
+    height: 2007,
+  },
+  // App Store creative assets (iOS 27+): artwork for the top of the product page and for search results.
+  // Images must be opaque (no alpha). The safe area is what is never cropped or covered by the App Store UI.
+  {
+    id: 'creative-header',
+    kind: 'tablet',
+    group: 'creative',
+    creative: true,
+    label: 'Product page header',
+    description: 'Product page header — 21:9, 3840 × 1646 exactly',
+    width: 3840,
+    height: 1646,
+    safeArea: { width: 1646, height: 661 },
+  },
+  {
+    id: 'creative-search',
+    kind: 'tablet',
+    group: 'creative',
+    creative: true,
+    label: 'Search results image',
+    description: 'Search results — 3:2, 1920 × 1280 up to 3840 × 2560',
+    width: 3840,
+    height: 2560,
+    safeArea: { width: 2168, height: 1030 },
+  },
+  {
+    id: 'creative-universal',
+    kind: 'tablet',
+    group: 'creative',
+    creative: true,
+    label: 'Universal asset (header + search)',
+    description: 'Universal asset — 16:9, 5244 × 2950, PNG only',
+    width: 5244,
+    height: 2950,
+    safeArea: { width: 1402, height: 962 },
+  },
   // Google Play Console screenshot specs: 2–8 images, PNG/JPEG, ≤8MB each, 16:9 or 9:16 aspect ratio,
   // each side between 320px and 3840px. These sizes hit that ratio exactly within the allowed range.
   {
@@ -142,10 +215,18 @@ export function getDevicePreset(id: string): DevicePreset {
   return DEVICE_PRESETS.find((p) => p.id === id) ?? DEVICE_PRESETS[0];
 }
 
-export const DEVICE_PRESET_GROUPS: { kind: DevicePreset['kind']; platform?: DevicePreset['platform']; label: string }[] = [
-  { kind: 'phone', label: 'iPhone' },
-  { kind: 'tablet', label: 'iPad' },
-  { kind: 'watch', label: 'Apple Watch' },
-  { kind: 'phone', platform: 'android', label: 'Android Phone' },
-  { kind: 'tablet', platform: 'android', label: 'Android Tablet (7")' },
+/** Dropdown group a preset is listed under. */
+export function presetGroupId(p: DevicePreset): string {
+  if (p.group) return p.group;
+  return p.platform === 'android' ? `android-${p.kind}` : p.kind;
+}
+
+export const DEVICE_PRESET_GROUPS: { id: string; label: string }[] = [
+  { id: 'phone', label: 'iPhone' },
+  { id: 'duo', label: 'iPhone Duo' },
+  { id: 'tablet', label: 'iPad' },
+  { id: 'watch', label: 'Apple Watch' },
+  { id: 'creative', label: 'App Store header & search art' },
+  { id: 'android-phone', label: 'Android Phone' },
+  { id: 'android-tablet', label: 'Android Tablet (7")' },
 ];

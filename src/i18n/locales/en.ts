@@ -38,6 +38,7 @@ const en = {
   'template.dual-phone': 'Dual Phone',
   'template.split-phone': "Split phone (2 screens)",
   'template.phone-3d': "3D phone",
+  'template.creative-banner': "Header / search banner",
   'template.diagonal-split': "Diagonal split (3 themes)",
   'template.split-phone-3d': "Split 3D phone (2 screens)",
   'toolbar.addDevice': '+ Add device…',
@@ -165,6 +166,7 @@ const en = {
   'canvas.unnamed': '(unnamed)',
   'canvas.noName': 'No name set',
   'canvas.placeholder': 'Upload a screenshot or generate an AI prompt',
+  'canvas.safeArea': "Safe area",
 
   'land.openEditor': 'Open editor',
   'land.heroTitle': 'App Store screenshots,\nstart with the **layout**.',

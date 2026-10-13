@@ -38,6 +38,7 @@ const ko: Dict = {
   'template.dual-phone': '폰 2개',
   'template.split-phone': "폰 분할 (화면 2개)",
   'template.phone-3d': "3D 폰",
+  'template.creative-banner': "헤더 / 검색결과 배너",
   'template.diagonal-split': "대각선 분할 (테마 3개)",
   'template.split-phone-3d': "3D 폰 분할 (화면 2개)",
   'toolbar.addDevice': '+ 기기 추가…',
@@ -164,6 +165,7 @@ const ko: Dict = {
   'canvas.unnamed': '(이름 없음)',
   'canvas.noName': '이름이 없어요',
   'canvas.placeholder': '스크린샷을 업로드하거나 AI 프롬프트를 만들어보세요',
+  'canvas.safeArea': "안전 영역",
 
   'land.openEditor': '에디터 열기',
   'land.heroTitle': 'App Store 스크린샷,\n레이아웃부터 **디자인**하세요.',

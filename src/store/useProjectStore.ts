@@ -37,17 +37,33 @@ function fitDevicesToPreset(page: Page, preset: DevicePreset) {
     const current = getDeviceModel(obj.deviceModel, obj.deviceKind ?? 'phone');
     const kindOk = (obj.deviceKind ?? 'phone') === preset.kind;
     const orientationOk = preset.kind === 'phone' ? true : preset.kind === 'watch' ? true : current.aspect < 1 === landscape;
-    if (kindOk && orientationOk) continue;
+    if (!preset.creative && !(kindOk && orientationOk)) {
+      obj.deviceKind = preset.kind;
+      obj.deviceModel = target.id;
+      const maxWidth = page.canvas.width * (preset.kind === 'watch' ? 0.7 : 0.86);
+      const top = Math.min(obj.top, Math.round(page.canvas.height * 0.4));
+      const availableHeight = page.canvas.height - top - page.canvas.height * 0.04;
+      obj.width = Math.max(40, Math.round(Math.min(maxWidth, availableHeight / target.aspect)));
+      obj.top = top;
+      obj.left = Math.round((page.canvas.width - obj.width) / 2);
+      obj.rotation = 0;
+    }
 
-    obj.deviceKind = preset.kind;
-    obj.deviceModel = target.id;
-    const maxWidth = page.canvas.width * (preset.kind === 'watch' ? 0.7 : 0.86);
-    const top = Math.min(obj.top, Math.round(page.canvas.height * 0.4));
-    const availableHeight = page.canvas.height - top - page.canvas.height * 0.04;
-    obj.width = Math.max(40, Math.round(Math.min(maxWidth, availableHeight / target.aspect)));
-    obj.top = top;
-    obj.left = Math.round((page.canvas.width - obj.width) / 2);
-    obj.rotation = 0;
+    // Whatever the preset, never leave a device bigger than the page (a wide banner would otherwise
+    // inherit a phone scaled up by the width ratio).
+    const model = getDeviceModel(obj.deviceModel, obj.deviceKind ?? 'phone');
+    const maxH = page.canvas.height * 0.94;
+    const maxW = page.canvas.width * 0.96;
+    let width = obj.width;
+    if (width * model.aspect > maxH) width = Math.floor(maxH / model.aspect);
+    if (width > maxW) width = Math.floor(maxW);
+    if (width !== obj.width) {
+      const cx = obj.left + obj.width / 2;
+      obj.width = Math.max(40, width);
+      obj.left = Math.round(Math.min(Math.max(cx - obj.width / 2, 0), page.canvas.width - obj.width));
+    }
+    const h = obj.width * model.aspect;
+    if (obj.top + h > page.canvas.height) obj.top = Math.max(0, Math.round(page.canvas.height - h));
   }
 }
 
@@ -201,7 +217,7 @@ export const useProjectStore = create<State & Actions>()(
         set((s) => {
           const preset = getDevicePreset(s.project.devicePresetId);
           const page = createBlankPage(nextPageLabel(s.project.pages), preset.width, preset.height);
-          layoutPageWithTemplate(page, templateId, preset.width, preset.height);
+          layoutPageWithTemplate(page, preset.creative ? 'creative-banner' : templateId, preset.width, preset.height);
           fitDevicesToPreset(page, preset);
           s.project.pages.push(page);
           s.currentPageId = page.id;

@@ -38,6 +38,7 @@ const id: Dict = {
   'template.dual-phone': 'Dua ponsel',
   'template.split-phone': "Ponsel terbelah (2 layar)",
   'template.phone-3d': "Ponsel 3D",
+  'template.creative-banner': "Banner header / hasil pencarian",
   'template.diagonal-split': "Pembagian diagonal (3 tema)",
   'template.split-phone-3d': "Ponsel 3D terbelah (2 layar)",
   'toolbar.addDevice': '+ Tambah perangkat…',
@@ -164,6 +165,7 @@ const id: Dict = {
   'canvas.unnamed': '(tanpa nama)',
   'canvas.noName': 'Nama belum diatur',
   'canvas.placeholder': 'Unggah tangkapan layar atau buat prompt AI',
+  'canvas.safeArea': "Area aman",
 
   'land.openEditor': 'Buka editor',
   'land.heroTitle': 'Tangkapan layar App Store\ndimulai dari **tata letak**.',

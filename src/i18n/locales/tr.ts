@@ -38,6 +38,7 @@ const tr: Dict = {
   'template.dual-phone': 'İki telefon',
   'template.split-phone': "Bölünmüş telefon (2 ekran)",
   'template.phone-3d': "3D telefon",
+  'template.creative-banner': "Başlık / arama sonucu banner’ı",
   'template.diagonal-split': "Çapraz bölme (3 tema)",
   'template.split-phone-3d': "Bölünmüş 3D telefon (2 ekran)",
   'toolbar.addDevice': '+ Cihaz ekle…',
@@ -164,6 +165,7 @@ const tr: Dict = {
   'canvas.unnamed': '(adsız)',
   'canvas.noName': 'Ad belirlenmedi',
   'canvas.placeholder': 'Bir ekran görüntüsü yükleyin veya yapay zeka istemi oluşturun',
+  'canvas.safeArea': "Güvenli alan",
 
   'land.openEditor': 'Düzenleyiciyi aç',
   'land.heroTitle': 'App Store ekran görüntüleri\n**yerleşimle** başlar.',

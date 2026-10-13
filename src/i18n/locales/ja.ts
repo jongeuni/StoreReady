@@ -38,6 +38,7 @@ const ja: Dict = {
   'template.dual-phone': 'スマホ2台',
   'template.split-phone': "スマホ分割（2画面）",
   'template.phone-3d': "3Dスマホ",
+  'template.creative-banner': "ヘッダー / 検索結果バナー",
   'template.diagonal-split': "斜め分割（テーマ3つ）",
   'template.split-phone-3d': "3Dスマホ分割（2画面）",
   'toolbar.addDevice': '+ デバイスを追加…',
@@ -164,6 +165,7 @@ const ja: Dict = {
   'canvas.unnamed': '（名前なし）',
   'canvas.noName': '名前が未設定です',
   'canvas.placeholder': 'スクリーンショットをアップロードするか、AIプロンプトを作成してください',
+  'canvas.safeArea': "セーフエリア",
 
   'land.openEditor': 'エディタを開く',
   'land.heroTitle': 'App Store のスクリーンショットは、\n**レイアウト**から作ろう。',

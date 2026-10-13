@@ -38,6 +38,7 @@ const it: Dict = {
   'template.dual-phone': 'Due telefoni',
   'template.split-phone': "Telefono diviso (2 schermate)",
   'template.phone-3d': "Telefono 3D",
+  'template.creative-banner': "Banner intestazione / ricerca",
   'template.diagonal-split': "Divisione diagonale (3 temi)",
   'template.split-phone-3d': "Telefono 3D diviso (2 schermate)",
   'toolbar.addDevice': '+ Aggiungi dispositivo…',
@@ -164,6 +165,7 @@ const it: Dict = {
   'canvas.unnamed': '(senza nome)',
   'canvas.noName': 'Nessun nome impostato',
   'canvas.placeholder': 'Carica uno screenshot o genera un prompt IA',
+  'canvas.safeArea': "Area sicura",
 
   'land.openEditor': 'Apri l’editor',
   'land.heroTitle': 'Gli screenshot per l’App Store\nnascono dal **layout**.',

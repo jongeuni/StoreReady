@@ -38,6 +38,7 @@ const hi: Dict = {
   'template.dual-phone': 'दो फ़ोन',
   'template.split-phone': "बँटा हुआ फ़ोन (2 स्क्रीन)",
   'template.phone-3d': "3D फ़ोन",
+  'template.creative-banner': "हेडर / खोज परिणाम बैनर",
   'template.diagonal-split': "तिरछा विभाजन (3 थीम)",
   'template.split-phone-3d': "बँटा हुआ 3D फ़ोन (2 स्क्रीन)",
   'toolbar.addDevice': '+ डिवाइस जोड़ें…',
@@ -164,6 +165,7 @@ const hi: Dict = {
   'canvas.unnamed': '(बिना नाम)',
   'canvas.noName': 'कोई नाम तय नहीं',
   'canvas.placeholder': 'स्क्रीनशॉट अपलोड करें या AI प्रॉम्प्ट बनाएँ',
+  'canvas.safeArea': "सुरक्षित क्षेत्र",
 
   'land.openEditor': 'एडिटर खोलें',
   'land.heroTitle': 'App Store स्क्रीनशॉट की शुरुआत\n**लेआउट** से होती है।',

@@ -38,6 +38,7 @@ const ptBR: Dict = {
   'template.dual-phone': 'Dois celulares',
   'template.split-phone': "Celular dividido (2 telas)",
   'template.phone-3d': "Celular 3D",
+  'template.creative-banner': "Banner de cabeçalho / busca",
   'template.diagonal-split': "Divisão diagonal (3 temas)",
   'template.split-phone-3d': "Celular 3D dividido (2 telas)",
   'toolbar.addDevice': '+ Adicionar dispositivo…',
@@ -164,6 +165,7 @@ const ptBR: Dict = {
   'canvas.unnamed': '(sem nome)',
   'canvas.noName': 'Nenhum nome definido',
   'canvas.placeholder': 'Envie uma captura ou gere um prompt de IA',
+  'canvas.safeArea': "Área segura",
 
   'land.openEditor': 'Abrir o editor',
   'land.heroTitle': 'Capturas da App Store\ncomeçam pelo **layout**.',

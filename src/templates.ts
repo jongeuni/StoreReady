@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import type { CanvasObject, Page, Background } from './types';
 import { canvasWidthFor, spreadGap } from './utils/spread';
 
-export type TemplateId = 'single-phone' | 'dual-phone' | 'split-phone' | 'split-phone-3d' | 'diagonal-split' | 'phone-3d' | 'blank';
+export type TemplateId = 'single-phone' | 'dual-phone' | 'split-phone' | 'split-phone-3d' | 'diagonal-split' | 'phone-3d' | 'creative-banner' | 'blank';
 
 export type Template = {
   id: TemplateId;
@@ -179,6 +179,37 @@ export const TEMPLATES: Template[] = [
           zIndex: 1,
         },
       ];
+    },
+  },
+  {
+    id: 'creative-banner',
+    label: 'Header / search banner',
+    description: 'Headline and subheadline for App Store header, search result or universal art',
+    build: (canvasWidth, canvasHeight) => {
+      // All three creative assets keep a centred safe area at least ~26% as wide as the canvas, so the copy
+      // is sized from the canvas height and confined to that column.
+      const width = Math.round(canvasWidth * 0.26);
+      const x = Math.round((canvasWidth - width) / 2);
+      const headline = headlineObject(width, canvasHeight, 'Your headline\ngoes here');
+      const sub = subheadlineObject(width, canvasHeight, 'One short line about your app.');
+      if (headline.type === 'text' && sub.type === 'text') {
+        // The safe areas are only ~33-40% as tall as the canvas, so the whole text block (two headline lines,
+        // a gap, one subheadline line) is sized from the canvas height and centred vertically.
+        const headSize = Math.round(canvasHeight * 0.06);
+        const subSize = Math.round(canvasHeight * 0.026);
+        const gap = Math.round(canvasHeight * 0.025);
+        const block = headSize * headline.lineHeight * 2 + gap + subSize * sub.lineHeight;
+        const top = Math.round((canvasHeight - block) / 2);
+        headline.x = x;
+        headline.width = width;
+        headline.fontSize = headSize;
+        headline.y = top;
+        sub.x = x;
+        sub.width = width;
+        sub.fontSize = subSize;
+        sub.y = Math.round(top + headSize * headline.lineHeight * 2 + gap);
+      }
+      return [headline, sub];
     },
   },
   {

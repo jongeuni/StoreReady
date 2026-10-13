@@ -115,6 +115,20 @@ export function buildScreenshotInfoJson(project: Project, pages: Page[]): string
   const preset = getDevicePreset(project.devicePresetId);
   const data = {
     exportSize: { width: preset.width, height: preset.height, device: preset.label },
+    ...(preset.creative
+      ? {
+          assetNote: `This is App Store marketing art (${preset.label}), not a device screenshot: it must be exported opaque (no transparency).`,
+        }
+      : {}),
+    ...(preset.safeArea
+      ? {
+          safeArea: {
+            width: preset.safeArea.width,
+            height: preset.safeArea.height,
+            note: 'Centred on the canvas. Keep the headline and key visuals inside it; the App Store may crop or cover everything outside.',
+          },
+        }
+      : {}),
     pages: pages.map(buildPageData),
   };
   return JSON.stringify(data, null, 2);

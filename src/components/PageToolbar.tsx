@@ -26,6 +26,7 @@ const TEMPLATE_KEY: Record<TemplateId, TKey> = {
   'phone-3d': 'template.phone-3d',
   'diagonal-split': 'template.diagonal-split',
   'split-phone-3d': 'template.split-phone-3d',
+  'creative-banner': 'template.creative-banner',
 };
 
 const DEVICE_KINDS: DeviceKind[] = ['phone', 'tablet', 'watch'];

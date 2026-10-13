@@ -38,6 +38,7 @@ const ru: Dict = {
   'template.dual-phone': 'Два телефона',
   'template.split-phone': "Телефон на 2 экрана",
   'template.phone-3d': "3D-телефон",
+  'template.creative-banner': "Баннер для шапки / поиска",
   'template.diagonal-split': "Диагональное деление (3 темы)",
   'template.split-phone-3d': "3D-телефон на 2 экрана",
   'toolbar.addDevice': '+ Добавить устройство…',
@@ -164,6 +165,7 @@ const ru: Dict = {
   'canvas.unnamed': '(без названия)',
   'canvas.noName': 'Название не задано',
   'canvas.placeholder': 'Загрузите скриншот или создайте ИИ-промпт',
+  'canvas.safeArea': "Безопасная зона",
 
   'land.openEditor': 'Открыть редактор',
   'land.heroTitle': 'Скриншоты для App Store\nначинаются с **макета**.',

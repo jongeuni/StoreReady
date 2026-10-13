@@ -17,6 +17,7 @@ import { useToastStore } from '../store/useToastStore';
 import { useT } from '../i18n';
 import { readImageFile } from '../utils/imageUpload';
 import { getObjectBBox } from '../utils/geometry';
+import { getDevicePreset } from '../devicePresets';
 
 type Props = {
   page: Page;
@@ -32,6 +33,7 @@ export function CanvasStage({ page, stageRef }: Props) {
   const [dropTargetId, setDropTargetId] = useState<string | null>(null);
   const canvasBoxRef = useRef<HTMLDivElement>(null);
   const t = useT();
+  const safeArea = useProjectStore((s) => getDevicePreset(s.project.devicePresetId).safeArea);
   const pushToast = useToastStore((s) => s.push);
   const addImageObject = useProjectStore((s) => s.addImageObject);
   const addScreenshotToPhone = useProjectStore((s) => s.addScreenshotToPhone);
@@ -278,6 +280,22 @@ export function CanvasStage({ page, stageRef }: Props) {
             />
           </Layer>
         </Stage>
+        {/* App Store safe area for header / search art: an editor-only guide, never part of the export */}
+        {safeArea && (
+          <div
+            className="pointer-events-none absolute rounded border-2 border-dashed border-amber-400/80"
+            style={{
+              width: safeArea.width * viewScale,
+              height: safeArea.height * viewScale,
+              left: (page.canvas.width - safeArea.width) * 0.5 * viewScale,
+              top: ((page.canvas.height - safeArea.height) * 0.5 + (safeArea.offsetY ?? 0)) * viewScale,
+            }}
+          >
+            <span className="absolute -top-5 left-0 rounded bg-amber-400 px-1.5 text-[10px] font-semibold text-neutral-950">
+              {t('canvas.safeArea')} {safeArea.width}×{safeArea.height}
+            </span>
+          </div>
+        )}
         {/* Drop target highlight while dragging a picture over a phone */}
         {dropTargetId &&
           (() => {

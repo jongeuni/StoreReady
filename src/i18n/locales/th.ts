@@ -38,6 +38,7 @@ const th: Dict = {
   'template.dual-phone': 'โทรศัพท์สองเครื่อง',
   'template.split-phone': "โทรศัพท์แบ่ง 2 หน้าจอ",
   'template.phone-3d': "โทรศัพท์ 3 มิติ",
+  'template.creative-banner': "แบนเนอร์หัวเรื่อง / ผลการค้นหา",
   'template.diagonal-split': "แบ่งแนวทแยง (3 ธีม)",
   'template.split-phone-3d': "โทรศัพท์ 3 มิติแบ่ง 2 หน้าจอ",
   'toolbar.addDevice': '+ เพิ่มอุปกรณ์…',
@@ -164,6 +165,7 @@ const th: Dict = {
   'canvas.unnamed': '(ไม่มีชื่อ)',
   'canvas.noName': 'ยังไม่ได้ตั้งชื่อ',
   'canvas.placeholder': 'อัปโหลดภาพหน้าจอ หรือสร้างพรอมต์ AI',
+  'canvas.safeArea': "พื้นที่ปลอดภัย",
 
   'land.openEditor': 'เปิดตัวแก้ไข',
   'land.heroTitle': 'ภาพหน้าจอ App Store\nเริ่มต้นจาก**เลย์เอาต์**',

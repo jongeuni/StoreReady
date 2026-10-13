@@ -38,6 +38,7 @@ const de: Dict = {
   'template.dual-phone': 'Zwei Smartphones',
   'template.split-phone': "Geteiltes Smartphone (2 Screens)",
   'template.phone-3d': "3D-Smartphone",
+  'template.creative-banner': "Header- / Suchergebnis-Banner",
   'template.diagonal-split': "Diagonale Teilung (3 Themes)",
   'template.split-phone-3d': "Geteiltes 3D-Smartphone (2 Screens)",
   'toolbar.addDevice': '+ Gerät hinzufügen…',
@@ -164,6 +165,7 @@ const de: Dict = {
   'canvas.unnamed': '(ohne Namen)',
   'canvas.noName': 'Kein Name festgelegt',
   'canvas.placeholder': 'Lade einen Screenshot hoch oder erstelle einen KI-Prompt',
+  'canvas.safeArea': "Sicherer Bereich",
 
   'land.openEditor': 'Editor öffnen',
   'land.heroTitle': 'App-Store-Screenshots\nbeginnen mit dem **Layout**.',

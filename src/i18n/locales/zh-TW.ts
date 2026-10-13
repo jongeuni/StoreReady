@@ -38,6 +38,7 @@ const zhTW: Dict = {
   'template.dual-phone': '雙手機',
   'template.split-phone': "分屏手機（2屏）",
   'template.phone-3d': "3D 手機",
+  'template.creative-banner': "頁首 / 搜尋結果橫幅",
   'template.diagonal-split': "對角分割（3 個主題）",
   'template.split-phone-3d': "分屏 3D 手機（2屏）",
   'toolbar.addDevice': '+ 新增裝置…',
@@ -163,6 +164,7 @@ const zhTW: Dict = {
   'canvas.unnamed': '（未命名）',
   'canvas.noName': '尚未設定名稱',
   'canvas.placeholder': '上傳截圖，或產生 AI 提示詞',
+  'canvas.safeArea': "安全區域",
 
   'land.openEditor': '開啟編輯器',
   'land.heroTitle': 'App Store 截圖，\n從**版面**開始。',

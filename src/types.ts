@@ -14,6 +14,15 @@ export type DevicePreset = {
   kind: DeviceKind;
   /** Store platform the size is for — drives which dropdown group it's listed under. Unset = Apple/App Store. */
   platform?: 'apple' | 'android';
+  /** Explicit dropdown group (see DEVICE_PRESET_GROUPS). Unset = derived from platform + kind. */
+  group?: string;
+  /** Marketing art (App Store header / search result / universal asset) rather than a screenshot size. */
+  creative?: boolean;
+  /**
+   * Area (in canvas px, centred on the canvas, shifted down by offsetY) that the App Store never crops or covers.
+   * Shown as an editor-only guide; keep headlines and key visuals inside it.
+   */
+  safeArea?: { width: number; height: number; offsetY?: number };
   width: number;
   height: number;
 };

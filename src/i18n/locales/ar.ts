@@ -38,6 +38,7 @@ const ar: Dict = {
   'template.dual-phone': 'هاتفان',
   'template.split-phone': "هاتف مقسوم (شاشتان)",
   'template.phone-3d': "هاتف ثلاثي الأبعاد",
+  'template.creative-banner': "بانر الترويسة / نتائج البحث",
   'template.diagonal-split': "تقسيم قطري (3 سمات)",
   'template.split-phone-3d': "هاتف ثلاثي الأبعاد مقسوم (شاشتان)",
   'toolbar.addDevice': '+ إضافة جهاز…',
@@ -164,6 +165,7 @@ const ar: Dict = {
   'canvas.unnamed': '(بدون اسم)',
   'canvas.noName': 'لم يُحدَّد اسم',
   'canvas.placeholder': 'ارفع لقطة شاشة أو أنشئ موجّه ذكاء اصطناعي',
+  'canvas.safeArea': "المنطقة الآمنة",
 
   'land.openEditor': 'فتح المحرر',
   'land.heroTitle': 'لقطات شاشة App Store\nتبدأ من **التخطيط**.',

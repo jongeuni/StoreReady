@@ -38,6 +38,7 @@ const zhCN: Dict = {
   'template.dual-phone': '双手机',
   'template.split-phone': "分屏手机（2屏）",
   'template.phone-3d': "3D 手机",
+  'template.creative-banner': "页眉 / 搜索结果横幅",
   'template.diagonal-split': "对角分割（3 个主题）",
   'template.split-phone-3d': "分屏 3D 手机（2屏）",
   'toolbar.addDevice': '+ 添加设备…',
@@ -163,6 +164,7 @@ const zhCN: Dict = {
   'canvas.unnamed': '（未命名）',
   'canvas.noName': '未设置名称',
   'canvas.placeholder': '上传截图，或生成 AI 提示词',
+  'canvas.safeArea': "安全区域",
 
   'land.openEditor': '打开编辑器',
   'land.heroTitle': 'App Store 截图，\n从**布局**开始。',

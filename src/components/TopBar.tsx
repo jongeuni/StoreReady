@@ -5,7 +5,7 @@ import { useToastStore } from '../store/useToastStore';
 import { useRouter } from '../router';
 import { useT } from '../i18n';
 import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
-import { DEVICE_PRESETS, DEVICE_PRESET_GROUPS } from '../devicePresets';
+import { DEVICE_PRESETS, DEVICE_PRESET_GROUPS, presetGroupId } from '../devicePresets';
 import { Button } from './ui/Field';
 import { panelWidthOf, spreadGap } from '../utils/spread';
 import { exportPageAsPng, exportPagesAsZip, exportStageToDataUrl, preloadProjectImages, sliceDataUrl } from '../utils/export';
@@ -130,8 +130,8 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
           className="rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs text-neutral-200"
         >
           {DEVICE_PRESET_GROUPS.map((g) => (
-            <optgroup key={`${g.kind}-${g.platform ?? 'apple'}`} label={g.label}>
-              {DEVICE_PRESETS.filter((p) => p.kind === g.kind && (p.platform ?? 'apple') === (g.platform ?? 'apple')).map((p) => (
+            <optgroup key={g.id} label={g.label}>
+              {DEVICE_PRESETS.filter((p) => presetGroupId(p) === g.id).map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.label} ({p.width}×{p.height})
                 </option>

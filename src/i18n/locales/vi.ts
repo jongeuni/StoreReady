@@ -38,6 +38,7 @@ const vi: Dict = {
   'template.dual-phone': 'Hai điện thoại',
   'template.split-phone': "Điện thoại chia đôi (2 màn hình)",
   'template.phone-3d': "Điện thoại 3D",
+  'template.creative-banner': "Banner đầu trang / kết quả tìm kiếm",
   'template.diagonal-split': "Chia chéo (3 chủ đề)",
   'template.split-phone-3d': "Điện thoại 3D chia đôi (2 màn hình)",
   'toolbar.addDevice': '+ Thêm thiết bị…',
@@ -164,6 +165,7 @@ const vi: Dict = {
   'canvas.unnamed': '(chưa đặt tên)',
   'canvas.noName': 'Chưa đặt tên',
   'canvas.placeholder': 'Tải ảnh chụp màn hình lên hoặc tạo prompt AI',
+  'canvas.safeArea': "Vùng an toàn",
 
   'land.openEditor': 'Mở trình chỉnh sửa',
   'land.heroTitle': 'Ảnh chụp màn hình App Store\nbắt đầu từ **bố cục**.',
