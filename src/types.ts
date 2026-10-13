@@ -94,7 +94,7 @@ export type PhoneObject = BaseObject & {
   /** Specific model within deviceKind (e.g. 'phone-se' vs 'phone-pro-max') — see DEVICE_MODELS. */
   deviceModel?: string;
   screenshotName: string;
-  /** Optional free-form note about what this screen should show — a creative brief for the AI designing it. */
+  /** Optional free-form note about what this screen should show — shown as "desc" in the page's JSON info. */
   screenshotDescription?: string;
   image?: string; // data URL of the uploaded screenshot
   imageFileName?: string;
@@ -156,7 +156,5 @@ export type Project = {
   id: string;
   name: string;
   devicePresetId: string;
-  /** Free-form context for the AI (app concept, brand/style guidance) to inform the screens it designs. */
-  extraNotes?: string;
   pages: Page[];
 };

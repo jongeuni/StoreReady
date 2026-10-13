@@ -11,7 +11,6 @@ StoreReady is a free, browser-based editor for App Store marketing screenshots. 
 ## Two ways to finish
 
 1. **Build it all yourself** — Place devices, text, shapes and backgrounds, upload your real screenshots, and export. You can make a fully designed app promo page entirely on your own — no AI needed.
-2. **Hand the design to an AI** — Place phone placeholders, name each screen, and generate a prompt containing the exact layout spec (positions, colors, fonts). Paste it into Claude Code, Cursor or any AI coding agent to produce the finished images.
 
 ## Features
 

@@ -116,16 +116,12 @@ type State = {
   /** The versions that are not open right now, by id. */
   parked: Record<string, ParkedProject>;
   selectedObjectIds: string[];
-  promptWizardOpen: boolean;
-  promptWizardStep: 1 | 2 | 3;
-  promptWizardSelectedPageIds: string[];
 };
 
 type Actions = {
   // Project / device
   renameProject: (name: string) => void;
   setDevicePreset: (id: string) => void;
-  setExtraNotes: (notes: string) => void;
 
   // Versions: whole-project copies (e.g. one per language) that can be switched between and exported together
   duplicateProject: () => void;
@@ -173,13 +169,6 @@ type Actions = {
   selectObject: (id: string, additive?: boolean) => void;
   clearSelection: () => void;
 
-  // AI prompt wizard
-  openPromptWizard: () => void;
-  closePromptWizard: () => void;
-  setPromptWizardStep: (step: 1 | 2 | 3) => void;
-  togglePromptWizardPage: (pageId: string) => void;
-  setPromptWizardAllPagesSelected: (selected: boolean) => void;
-
   // Danger zone
   resetProject: () => void;
 };
@@ -201,9 +190,6 @@ export const useProjectStore = create<State & Actions>()(
       versionIds: [initialProject.id],
       parked: {},
       selectedObjectIds: [],
-      promptWizardOpen: false,
-      promptWizardStep: 1,
-      promptWizardSelectedPageIds: [],
 
       renameProject: (name) =>
         set((s) => {
@@ -265,7 +251,6 @@ export const useProjectStore = create<State & Actions>()(
           s.project = copy;
           s.currentPageId = copy.pages[0].id;
           s.selectedObjectIds = [];
-          s.promptWizardOpen = false;
         }),
 
       switchProject: (projectId) =>
@@ -278,7 +263,6 @@ export const useProjectStore = create<State & Actions>()(
           s.currentPageId = target.project.pages.some((pg) => pg.id === target.currentPageId) ? target.currentPageId : target.project.pages[0].id;
           delete s.parked[projectId];
           s.selectedObjectIds = [];
-          s.promptWizardOpen = false;
         }),
 
       removeProject: (projectId) =>
@@ -294,16 +278,10 @@ export const useProjectStore = create<State & Actions>()(
             s.currentPageId = next.currentPageId;
             delete s.parked[nextId];
             s.selectedObjectIds = [];
-            s.promptWizardOpen = false;
           } else {
             delete s.parked[projectId];
           }
           s.versionIds.splice(at, 1);
-        }),
-
-      setExtraNotes: (notes) =>
-        set((s) => {
-          s.project.extraNotes = notes;
         }),
 
       addPage: (templateId = 'single-phone') =>
@@ -680,37 +658,6 @@ export const useProjectStore = create<State & Actions>()(
       clearSelection: () =>
         set((s) => {
           s.selectedObjectIds = [];
-        }),
-
-      openPromptWizard: () =>
-        set((s) => {
-          s.promptWizardOpen = true;
-          s.promptWizardStep = 1;
-          s.promptWizardSelectedPageIds = s.project.pages.map((p) => p.id);
-        }),
-
-      closePromptWizard: () =>
-        set((s) => {
-          s.promptWizardOpen = false;
-        }),
-
-      setPromptWizardStep: (step) =>
-        set((s) => {
-          s.promptWizardStep = step;
-        }),
-
-      togglePromptWizardPage: (pageId) =>
-        set((s) => {
-          if (s.promptWizardSelectedPageIds.includes(pageId)) {
-            s.promptWizardSelectedPageIds = s.promptWizardSelectedPageIds.filter((id) => id !== pageId);
-          } else {
-            s.promptWizardSelectedPageIds.push(pageId);
-          }
-        }),
-
-      setPromptWizardAllPagesSelected: (selected) =>
-        set((s) => {
-          s.promptWizardSelectedPageIds = selected ? s.project.pages.map((p) => p.id) : [];
         }),
 
       resetProject: () =>

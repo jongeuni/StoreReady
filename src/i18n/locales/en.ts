@@ -19,7 +19,6 @@ const en = {
 
   'top.homeTitle': 'Go to the StoreReady home page',
   'top.deviceTitle': 'App Store screenshot size',
-  'top.generatePrompt': 'Generate AI Prompt',
   'top.exportAll': 'Export All (ZIP)',
   'top.downloadPng': 'Download PNG',
   'top.nothingToExport': 'Nothing to export yet.',
@@ -63,7 +62,6 @@ const en = {
   'toolbar.confirmApply': 'Apply',
 
   'info.title': "This page's info (JSON)",
-  'info.hint': '— positions & copy only, not a prompt',
   'info.copy': 'Copy JSON',
 
   'panel.layer': 'Layer',
@@ -74,8 +72,8 @@ const en = {
   'panel.deviceKind': 'Device kind',
   'panel.model': 'Model',
   'panel.screenshotName': 'Screenshot name',
-  'panel.nameHint': "This name tells your AI coding agent which screen to capture and place in this phone.",
-  'panel.aiCapture': "Use AI capture",
+  'panel.nameHint': "Shown as \"img\" in this page's JSON info.",
+  'panel.nameAndDesc': "Screenshot name & description",
   'panel.description': 'Screenshot description (optional)',
   'panel.descriptionPlaceholder': 'e.g. Home screen with 3 completed tasks and the streak banner visible',
   'panel.screenshotImage': 'Screenshot image',
@@ -153,34 +151,15 @@ const en = {
   'upload.errSize': 'Image is too large ({size}MB). Max size is 20MB.',
   'upload.errRead': 'Could not read the image file. Please try again.',
 
-  'wizard.title': 'Generate AI Prompt',
-  'wizard.step1': 'Select pages',
-  'wizard.step2': 'Extra info',
-  'wizard.step3': 'Prompt',
-  'wizard.selectHint': 'Choose which pages go into the prompt. Use the arrow to review and edit a page.',
-  'wizard.counts': '{phones} phone · {texts} text',
-  'wizard.reviewTitle': 'Review & edit',
-  'wizard.headline': 'Headline',
-  'wizard.subheadline': 'Subheadline',
-  'wizard.textRole': 'Text ({role})',
-  'wizard.modelOf': 'Model ({kind})',
-  'wizard.emptyPage': 'This page has no text or phones to review.',
-  'wizard.extraIntro':
-    'Background for the AI while it designs your screens. Say what the app is and what mood or tone you want, and it can make more convincing UI inside each phone. (Positions, colors and text of the layout itself are already in the JSON spec.)',
-  'wizard.extraLabel': 'About the app / style notes (optional)',
-  'wizard.extraPlaceholder':
-    'e.g. A diary app that compares your daily plan with what you actually did. Minimal, friendly tone.',
-  'wizard.copyPrompt': 'Copy Prompt',
 
   'canvas.unnamed': '(unnamed)',
   'canvas.noName': 'No name set',
-  'canvas.placeholder': 'Upload a screenshot or generate an AI prompt',
+  'canvas.placeholder': "Upload a screenshot",
   'canvas.safeArea': "Safe area",
 
   'land.openEditor': 'Open editor',
   'land.heroTitle': 'App Store screenshots,\nstart with the **layout**.',
-  'land.tagline':
-    'Design your App Store screenshots first, then let your AI coding agent generate the finished screens for you.',
+  'land.tagline': "Design App Store screenshots your way — layout, devices, text and colors, right in your browser.",
   'land.heroDesc':
     "This isn't an editor for decorating screenshots you already have. You first design the layout of the marketing image — headline, subheadline, where the phones go — and fill in the screens afterwards.",
   'land.start': 'Start for free',
@@ -201,7 +180,7 @@ const en = {
   'demo.s3.title': '3. Type your headline',
   'demo.s3.body': 'Whatever you type shows up on the canvas instantly — and you can recolor just the words you pick.',
   'demo.s4.title': '4. Name the screenshot',
-  'demo.s4.body': 'Give each phone a name like "home_full" so your AI agent knows exactly which screen to design.',
+  'demo.s4.body': "Give each phone a name like \"home_full\" so you can tell your screens apart.",
   'demo.s5.title': '5. Or add your own screenshot',
   'demo.s5.body': 'Already have a real screenshot? Upload it and it fills the phone right away.',
   'demo.s6.title': '6. Add a second phone',
@@ -211,33 +190,22 @@ const en = {
   'demo.s8.title': "8. And it comes out like this",
   'demo.s8.body': "Simple, easy habit app — DAYLine. This is a finished, store-ready result.",
 
-  'how.title': 'Two ways to finish',
-  'how.sub':
-    'Build everything yourself with no AI at all, or hand the design to an AI agent — mix them page by page if you like.',
-  'how.m1.badge': 'No AI needed',
+  'how.title': "How it works",
+  'how.sub': "Everything happens right in your browser. No account, no install.",
   'how.m1.title': 'Build it all yourself',
-  'how.m1.lead':
-    'You can make the **whole thing on your own**! Lay out phones, tablets, watches, headlines, colors and backgrounds yourself and end up with a **fully designed app promo image** — no AI involved.',
+  'how.m1.lead': "**You can make a fully designed app promo page entirely on your own!** Place phones, tablets, watches, headlines, colors and backgrounds yourself and end up with a finished promo image.",
   'how.m1.s1':
     'Start from a template or a blank canvas, then place devices, text and shapes and style the colors and background',
   'how.m1.s2': 'Select a phone and upload the screenshot you already have',
   'how.m1.s3': 'Get the finished image with [[{png}]] or [[{zip}]]',
-  'how.m2.title': 'Hand the design to an AI',
-  'how.m2.s1':
-    'Place phone placeholders and give each a screenshot name plus a short description of the screen you want',
-  'how.m2.s2': 'Press [[{prompt}]] to build a prompt with the exact positions, colors and copy',
-  'how.m2.s3':
-    'Paste it into an AI coding tool like Claude Code or Cursor and it creates the finished marketing image exactly to spec — not by capturing your real app, but by designing the screen content too',
-  'how.m2.s4': 'Use it as-is, or upload a real screenshot into any phone to swap just that screen',
 
   'feat.title': 'Everything you need',
   'feat.pages.t': 'Multiple pages',
   'feat.pages.b': 'Make as many marketing images as you need — Page 1, 2, 3… — each edited independently.',
   'feat.devices.t': 'Phone / Tablet / Watch',
   'feat.devices.b': 'Freely switch device type and model (iPhone SE, iPad Pro, and more).',
-  'feat.prompt.t': 'AI design prompt',
-  'feat.prompt.b':
-    'Turn your layout spec (positions, colors, copy) into a structured prompt that lets an AI draw the finished screens.',
+  'feat.versions.t': "Versions",
+  'feat.versions.b': "Copy a whole file for another language, translate it, and export every version together in one ZIP.",
   'feat.color.t': 'Per-word text color',
   'feat.color.b': 'Drag-select just the words you want in a headline and give them a different color.',
   'feat.shapes.t': 'Shapes & backgrounds',

@@ -7,7 +7,6 @@ import { PageToolbar } from './components/PageToolbar';
 import { CanvasStage } from './components/CanvasStage';
 import { PageInfoBar } from './components/PageInfoBar';
 import { PropertiesPanel } from './components/PropertiesPanel';
-import { PromptWizardModal } from './components/PromptWizardModal';
 import { Toasts } from './components/Toasts';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useT } from './i18n';
@@ -35,7 +34,6 @@ function App() {
         </div>
         <PropertiesPanel page={page} />
       </div>
-      <PromptWizardModal />
       <Toasts />
     </div>
   );

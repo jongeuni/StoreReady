@@ -160,7 +160,7 @@ function PhonePanel({ page, objectId }: { page: Page; objectId: string }) {
           className="flex items-center gap-1.5 text-left text-xs text-neutral-300 hover:text-neutral-100"
         >
           <span className={`text-[10px] transition-transform ${aiOpen ? 'rotate-180' : ''}`}>▾</span>
-          {t('panel.aiCapture')}
+          {t('panel.nameAndDesc')}
         </button>
         {aiOpen && (
           <>

@@ -11,7 +11,6 @@ StoreReady ist ein kostenloser Browser-Editor für App-Store-Marketing-Screensho
 ## Zwei Wege zum fertigen Ergebnis
 
 1. **Alles selbst machen** — Platziere Geräte, Texte, Formen und Hintergründe, lade deine echten Screenshots hoch und exportiere. Du kannst eine komplett gestaltete App-Werbeseite ganz allein erstellen – ohne KI.
-2. **Das Design einer KI überlassen** — Platziere Smartphone-Platzhalter, benenne jeden Bildschirm und erzeuge einen Prompt mit der exakten Layout-Spezifikation (Positionen, Farben, Schriften). Füge ihn in Claude Code, Cursor oder einen anderen KI-Coding-Agenten ein, um die fertigen Bilder zu erhalten.
 
 ## Funktionen
 

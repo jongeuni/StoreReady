@@ -134,16 +134,12 @@ export function LandingPage({ onStart }: Props) {
             <p className="mx-auto mt-2 max-w-xl text-center text-sm text-neutral-500">{t('how.sub')}</p>
           </FadeIn>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
-            {/* Method 1: build it all yourself — the emphasised one */}
+          <div className="mx-auto mt-10 max-w-2xl">
             <FadeIn
               delay={0.05}
               className="rounded-lg border border-emerald-500/40 bg-gradient-to-b from-emerald-500/10 to-neutral-900/60 p-6"
             >
-              <span className="inline-block rounded-full bg-emerald-400/15 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-300">
-                {t('how.m1.badge')}
-              </span>
-              <h3 className="mt-2 text-lg font-bold text-emerald-300">{t('how.m1.title')}</h3>
+              <h3 className="text-lg font-bold text-emerald-300">{t('how.m1.title')}</h3>
               <p className="mt-2 text-sm leading-relaxed text-neutral-300">
                 <Rich text={t('how.m1.lead')} strong="font-bold text-emerald-300" />
               </p>
@@ -153,19 +149,6 @@ export function LandingPage({ onStart }: Props) {
                 <li>
                   <Rich text={t('how.m1.s3', { png: t('top.downloadPng'), zip: t('top.exportAll') })} />
                 </li>
-              </ol>
-            </FadeIn>
-
-            {/* Method 2: hand it to an AI */}
-            <FadeIn delay={0.15} className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-6">
-              <h3 className="text-lg font-bold text-blue-300">{t('how.m2.title')}</h3>
-              <ol className="mt-4 list-decimal space-y-1.5 pl-4 text-sm leading-relaxed text-neutral-300">
-                <li>{t('how.m2.s1')}</li>
-                <li>
-                  <Rich text={t('how.m2.s2', { prompt: t('top.generatePrompt') })} />
-                </li>
-                <li>{t('how.m2.s3')}</li>
-                <li>{t('how.m2.s4')}</li>
               </ol>
             </FadeIn>
           </div>
@@ -179,7 +162,7 @@ export function LandingPage({ onStart }: Props) {
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <Feature delay={0} title={t('feat.pages.t')} body={t('feat.pages.b')} />
             <Feature delay={0.05} title={t('feat.devices.t')} body={t('feat.devices.b')} />
-            <Feature delay={0.1} title={t('feat.prompt.t')} body={t('feat.prompt.b')} />
+            <Feature delay={0.1} title={t('feat.versions.t')} body={t('feat.versions.b')} />
             <Feature delay={0.15} title={t('feat.color.t')} body={t('feat.color.b')} />
             <Feature delay={0.2} title={t('feat.shapes.t')} body={t('feat.shapes.b')} />
             <Feature delay={0.25} title={t('feat.export.t')} body={t('feat.export.b')} />

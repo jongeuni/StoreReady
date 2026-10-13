@@ -21,7 +21,6 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
   const selectPage = useProjectStore((s) => s.selectPage);
   const renameProject = useProjectStore((s) => s.renameProject);
   const setDevicePreset = useProjectStore((s) => s.setDevicePreset);
-  const openPromptWizard = useProjectStore((s) => s.openPromptWizard);
   const pushToast = useToastStore((s) => s.push);
 
   const currentPage = project.pages.find((p) => p.id === currentPageId);
@@ -173,7 +172,6 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
       <div className="flex items-center gap-2">
         <LanguageSwitcher />
         <Button onClick={handlePreview}>{previewBusy ? t('top.previewBuilding') : t('top.preview')}</Button>
-        <Button onClick={openPromptWizard}>{t('top.generatePrompt')}</Button>
         <Button onClick={handleExportAll}>{t('top.exportAll')}</Button>
         <Button variant="primary" onClick={handleDownload}>
           {t('top.downloadPng')}

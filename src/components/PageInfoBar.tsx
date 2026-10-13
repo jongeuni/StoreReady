@@ -6,7 +6,7 @@ import { Button } from './ui/Field';
 import { useT } from '../i18n';
 import type { Page } from '../types';
 
-/** This page's JSON info (positions + copy), collapsed under the canvas — no wizard, no prompt, just this one page. */
+/** This page's JSON info (positions + copy), collapsed under the canvas for just this one page. */
 export function PageInfoBar({ page }: { page: Page }) {
   const project = useProjectStore((s) => s.project);
   const pushToast = useToastStore((s) => s.push);

@@ -11,7 +11,6 @@ O StoreReady é um editor gratuito, no navegador, para capturas promocionais da 
 ## Duas formas de finalizar
 
 1. **Faça tudo você mesmo** — Posicione dispositivos, textos, formas e fundos, envie suas capturas reais e exporte. Você pode criar sozinho uma página promocional de app totalmente desenhada, sem IA.
-2. **Deixe o design com uma IA** — Posicione espaços reservados de celular, dê nome a cada tela e gere um prompt com a especificação exata do layout (posições, cores, fontes). Cole no Claude Code, Cursor ou qualquer agente de código com IA para obter as imagens prontas.
 
 ## Recursos
 
