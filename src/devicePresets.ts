@@ -134,6 +134,43 @@ export const DEVICE_PRESETS: DevicePreset[] = [
     width: 2853,
     height: 2007,
   },
+  // Mac App Store screenshots: 16:10, any one of these four sizes (2880×1800, 2560×1600, 1440×900, 1280×800).
+  {
+    id: 'mac-2880',
+    kind: 'tablet',
+    group: 'mac',
+    label: 'Mac 2880 × 1800',
+    description: 'Mac screenshots — 16:10, 2880 × 1800',
+    width: 2880,
+    height: 1800,
+  },
+  {
+    id: 'mac-2560',
+    kind: 'tablet',
+    group: 'mac',
+    label: 'Mac 2560 × 1600',
+    description: 'Mac screenshots — 16:10, 2560 × 1600',
+    width: 2560,
+    height: 1600,
+  },
+  {
+    id: 'mac-1440',
+    kind: 'tablet',
+    group: 'mac',
+    label: 'Mac 1440 × 900',
+    description: 'Mac screenshots — 16:10, 1440 × 900',
+    width: 1440,
+    height: 900,
+  },
+  {
+    id: 'mac-1280',
+    kind: 'tablet',
+    group: 'mac',
+    label: 'Mac 1280 × 800',
+    description: 'Mac screenshots — 16:10, 1280 × 800',
+    width: 1280,
+    height: 800,
+  },
   // App Store creative assets (iOS 27+): artwork for the top of the product page and for search results.
   // Images must be opaque (no alpha). The safe area is what is never cropped or covered by the App Store UI.
   {
@@ -225,6 +262,7 @@ export const DEVICE_PRESET_GROUPS: { id: string; label: string }[] = [
   { id: 'phone', label: 'iPhone' },
   { id: 'duo', label: 'iPhone Duo' },
   { id: 'tablet', label: 'iPad' },
+  { id: 'mac', label: 'Mac' },
   { id: 'watch', label: 'Apple Watch' },
   { id: 'creative', label: 'App Store header & search art' },
   { id: 'android-phone', label: 'Android Phone' },
