@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type Konva from 'konva';
 import { useProjectStore } from '../store/useProjectStore';
 import { useToastStore } from '../store/useToastStore';
@@ -10,6 +10,8 @@ import { Button } from './ui/Field';
 import { panelWidthOf, spreadGap } from '../utils/spread';
 import { exportPageAsPng, exportPagesAsZip, exportStageToDataUrl, preloadProjectImages, sliceDataUrl } from '../utils/export';
 import { waitForRender } from '../utils/renderGate';
+import { ConfirmModal } from './ConfirmModal';
+import { downloadProjectTemplate, parseProjectTemplate, type ProjectTemplateFile } from '../utils/projectTemplate';
 import { PreviewModal } from './PreviewModal';
 import { VersionMenu } from './VersionMenu';
 
@@ -21,7 +23,10 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
   const selectPage = useProjectStore((s) => s.selectPage);
   const renameProject = useProjectStore((s) => s.renameProject);
   const setDevicePreset = useProjectStore((s) => s.setDevicePreset);
+  const importProjectTemplate = useProjectStore((s) => s.importProjectTemplate);
   const pushToast = useToastStore((s) => s.push);
+  const [pendingImport, setPendingImport] = useState<ProjectTemplateFile | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currentPage = project.pages.find((p) => p.id === currentPageId);
   const [previewImages, setPreviewImages] = useState<string[] | null>(null);
@@ -171,12 +176,42 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
 
       <div className="flex items-center gap-2">
         <LanguageSwitcher />
+        <Button onClick={() => fileInputRef.current?.click()}>{t('top.importTemplate')}</Button>
+        <Button onClick={() => downloadProjectTemplate(project)}>{t('top.exportTemplate')}</Button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json,application/json"
+          className="hidden"
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            e.target.value = '';
+            if (!file) return;
+            const parsed = parseProjectTemplate(await file.text());
+            if (parsed) setPendingImport(parsed);
+            else pushToast(t('top.templateInvalid'), 'error');
+          }}
+        />
         <Button onClick={handlePreview}>{previewBusy ? t('top.previewBuilding') : t('top.preview')}</Button>
         <Button onClick={handleExportAll}>{t('top.exportAll')}</Button>
         <Button variant="primary" onClick={handleDownload}>
           {t('top.downloadPng')}
         </Button>
       </div>
+      {pendingImport && (
+        <ConfirmModal
+          title={t('top.importConfirmTitle')}
+          message={t('top.importConfirmMessage')}
+          confirmLabel={t('toolbar.confirmApply')}
+          cancelLabel={t('common.cancel')}
+          onCancel={() => setPendingImport(null)}
+          onConfirm={() => {
+            importProjectTemplate(pendingImport);
+            setPendingImport(null);
+            pushToast(t('top.templateImported'), 'success');
+          }}
+        />
+      )}
       {previewImages && <PreviewModal name={project.name} images={previewImages} onClose={() => setPreviewImages(null)} />}
     </header>
   );

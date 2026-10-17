@@ -6,7 +6,7 @@ import { makeId } from '../utils/id';
 import { idbStorage } from '../persist/idbStorage';
 import { DEFAULT_DEVICE_PRESET_ID, getDevicePreset } from '../devicePresets';
 import { canvasWidthFor, panelWidthOf } from '../utils/spread';
-import { applyPageTemplateTo, type PageTemplateFile } from '../utils/pageTemplate';
+import { pagesFromTemplate, type ProjectTemplateFile } from '../utils/projectTemplate';
 import { createBlankPage, layoutPageWithTemplate, type TemplateId } from '../templates';
 import { getObjectBBox, unionBBox, computeAlignedPosition, setObjectPosition, type AlignType } from '../utils/geometry';
 import { DEVICE_DEFAULT_WIDTH_RATIO, defaultModelForPreset, getDeviceModel } from '../phoneFrame';
@@ -126,6 +126,8 @@ type Actions = {
 
   // Versions: whole-project copies (e.g. one per language) that can be switched between and exported together
   duplicateProject: () => void;
+  /** Replaces the open version's name, screenshot size and pages with an imported template file (no pictures). */
+  importProjectTemplate: (file: ProjectTemplateFile) => void;
   switchProject: (projectId: string) => void;
   removeProject: (projectId: string) => void;
 
@@ -139,8 +141,6 @@ type Actions = {
   /** Moves a page to an absolute position (0-based index in the final order). */
   reorderPage: (pageId: string, toIndex: number) => void;
   applyTemplate: (pageId: string, templateId: TemplateId) => void;
-  /** Replaces a page's layout with an imported template file (no pictures). */
-  importPageTemplate: (pageId: string, file: PageTemplateFile) => void;
   setBackground: (pageId: string, background: Background) => void;
 
   // Objects
@@ -256,6 +256,16 @@ export const useProjectStore = create<State & Actions>()(
           s.selectedObjectIds = [];
         }),
 
+      importProjectTemplate: (file) =>
+        set((s) => {
+          const pages = pagesFromTemplate(file);
+          s.project.name = file.project.name;
+          s.project.devicePresetId = getDevicePreset(file.project.devicePresetId).id;
+          s.project.pages = pages;
+          s.currentPageId = pages[0].id;
+          s.selectedObjectIds = [];
+        }),
+
       switchProject: (projectId) =>
         set((s) => {
           if (projectId === s.project.id) return;
@@ -363,15 +373,6 @@ export const useProjectStore = create<State & Actions>()(
           if (!page) return;
           const panelWidth = panelWidthOf(page);
           layoutPageWithTemplate(page, templateId, panelWidth, page.canvas.height);
-          fitDevicesToPreset(page, getDevicePreset(s.project.devicePresetId));
-          s.selectedObjectIds = [];
-        }),
-
-      importPageTemplate: (pageId, file) =>
-        set((s) => {
-          const page = s.project.pages.find((p) => p.id === pageId);
-          if (!page) return;
-          applyPageTemplateTo(page, file);
           fitDevicesToPreset(page, getDevicePreset(s.project.devicePresetId));
           s.selectedObjectIds = [];
         }),
