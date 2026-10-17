@@ -16,6 +16,7 @@ const zhTW: Dict = {
   'device.phone': '手機',
   'device.tablet': '平板',
   'device.watch': '手錶',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': '回到 StoreReady 首頁',
   'top.deviceTitle': 'App Store 截圖尺寸',

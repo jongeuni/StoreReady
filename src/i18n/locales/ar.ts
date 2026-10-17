@@ -16,6 +16,7 @@ const ar: Dict = {
   'device.phone': 'هاتف',
   'device.tablet': 'جهاز لوحي',
   'device.watch': 'ساعة',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'الانتقال إلى الصفحة الرئيسية لـ StoreReady',
   'top.deviceTitle': 'حجم لقطة شاشة App Store',

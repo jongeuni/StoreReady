@@ -16,6 +16,7 @@ const id: Dict = {
   'device.phone': 'Ponsel',
   'device.tablet': 'Tablet',
   'device.watch': 'Jam tangan',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'Ke beranda StoreReady',
   'top.deviceTitle': 'Ukuran tangkapan layar App Store',

@@ -8,7 +8,7 @@ import ipad3dMirrorFrame from './assets/phone3d/ipad-frame-mirror.png';
 // freely-swappable look (e.g. "iPhone SE" vs "iPhone Pro Max") within a broader
 // DeviceKind (phone/tablet/watch). Kind drives the JSON export label and which model
 // list an object can pick from; model drives the actual frame shape/aspect drawn.
-export type DeviceChrome = 'island' | 'homeButton' | 'crown' | 'none';
+export type DeviceChrome = 'island' | 'homeButton' | 'crown' | 'laptop' | 'none';
 
 /** A pre-rendered (baked) 3D device: a transparent-screen frame image plus where its screen's corners are. */
 export type Render3D = {
@@ -31,6 +31,10 @@ export type DeviceModel = {
   screenInsetBottomRatio: number; // relative to width (bottom — larger for home-button phones)
   screenCornerRadiusRatio: number; // relative to width
   chrome: DeviceChrome;
+  /** Laptop only: the lid is narrower than the base — empty margin on each side, relative to width. */
+  bodyInsetXRatio?: number;
+  /** Laptop only: height of the keyboard base under the lid, relative to width. */
+  baseHeightRatio?: number;
   render3d?: Render3D;
 };
 
@@ -208,6 +212,20 @@ export const DEVICE_MODELS: DeviceModel[] = [
       screenAspect: 1.3494,
     },
   },
+  // MacBook: 16:10 screen in a thin lid sitting on a slim base (aspect = whole device height / width).
+  {
+    id: 'laptop-macbook',
+    kind: 'laptop',
+    label: 'MacBook',
+    aspect: 0.5915,
+    cornerRadiusRatio: 0.02,
+    screenInsetRatio: 0.018,
+    screenInsetBottomRatio: 0.046,
+    screenCornerRadiusRatio: 0.004,
+    chrome: 'laptop',
+    bodyInsetXRatio: 0.06,
+    baseHeightRatio: 0.024,
+  },
   {
     id: 'watch-45',
     kind: 'watch',
@@ -247,6 +265,7 @@ export const DEVICE_KIND_LABELS: Record<DeviceKind, string> = {
   phone: 'Phone',
   tablet: 'Tablet',
   watch: 'Watch',
+  laptop: 'MacBook',
 };
 
 /** Sensible default placeholder width for a freshly-added device, relative to the page's canvas width. */
@@ -254,6 +273,7 @@ export const DEVICE_DEFAULT_WIDTH_RATIO: Record<DeviceKind, number> = {
   phone: 0.62,
   tablet: 0.85,
   watch: 0.28,
+  laptop: 0.9,
 };
 
 /** The mockup a fresh page should use for a screenshot size: same kind, matching orientation. */

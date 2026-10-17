@@ -16,6 +16,7 @@ const en = {
   'device.phone': 'Phone',
   'device.tablet': 'Tablet',
   'device.watch': 'Watch',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'Go to the StoreReady home page',
   'top.deviceTitle': 'App Store screenshot size',

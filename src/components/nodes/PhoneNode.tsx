@@ -76,9 +76,14 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
   const bodyRadius = width * model.cornerRadiusRatio;
   const insetTop = width * model.screenInsetRatio;
   const insetSide = width * model.screenInsetRatio;
+  // Laptops: the lid is narrower than the base, so the screen is offset from the left edge.
+  const bodyX = width * (model.bodyInsetXRatio ?? 0);
+  const bodyW = width - bodyX * 2;
+  const baseH = width * (model.baseHeightRatio ?? 0);
+  const screenX = bodyX + insetSide;
   const insetBottom = width * model.screenInsetBottomRatio;
   const screenRadius = width * model.screenCornerRadiusRatio;
-  const screenW = width - insetSide * 2;
+  const screenW = bodyW - insetSide * 2;
   const screenH = height - insetTop - insetBottom;
   const islandW = width * 0.28;
   const islandH = height * 0.013;
@@ -140,7 +145,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
         const [u, v] = fromFrame((local.x * r3d.frameWidth) / width, (local.y * r3d.frameHeight) / height);
         fraction = (u * SRC_W + v * sourceH) / (SRC_W + sourceH);
       } else {
-        fraction = (local.x - insetSide + (local.y - insetTop)) / (screenW + screenH);
+        fraction = (local.x - screenX + (local.y - insetTop)) / (screenW + screenH);
       }
       const cur = resolveCuts(1 + (objRef.current.extraThemes?.length ?? 0), objRef.current.dividerCuts);
       onDividerChange(moveCut(cur, index, fraction));
@@ -269,7 +274,15 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
       }}
     >
       {/* Device body */}
-      <Rect width={width} height={height} cornerRadius={bodyRadius} fill="#0a0a0c" stroke="#38383c" strokeWidth={1} />
+      {model.chrome === 'laptop' ? (
+        <>
+          <Rect x={bodyX} width={bodyW} height={height - baseH} cornerRadius={[bodyRadius, bodyRadius, 0, 0]} fill="#0a0a0c" stroke="#38383c" strokeWidth={1} />
+          <Rect y={height - baseH} width={width} height={baseH} cornerRadius={[0, 0, baseH, baseH]} fill="#c9c9ce" stroke="#9a9aa0" strokeWidth={1} />
+          <Rect x={width / 2 - width * 0.07} y={height - baseH} width={width * 0.14} height={baseH * 0.45} cornerRadius={[0, 0, baseH * 0.45, baseH * 0.45]} fill="#a5a5ab" />
+        </>
+      ) : (
+        <Rect width={width} height={height} cornerRadius={bodyRadius} fill="#0a0a0c" stroke="#38383c" strokeWidth={1} />
+      )}
 
       {/* Digital crown (watch only) */}
       {model.chrome === 'crown' && (
@@ -286,7 +299,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
       )}
 
       {/* Screen */}
-      <Group x={insetSide} y={insetTop} clipFunc={(ctx) => roundedRectPath(ctx, screenW, screenH, screenRadius)}>
+      <Group x={screenX} y={insetTop} clipFunc={(ctx) => roundedRectPath(ctx, screenW, screenH, screenRadius)}>
         {themeCount > 1 ? (
           <>
             {Array.from({ length: themeCount }, (_, i) => {
@@ -376,7 +389,7 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
       </Group>
 
       {/* Drag handles for the diagonal dividers (selected phone only) */}
-      <Group x={insetSide} y={insetTop} name="editor-only">
+      <Group x={screenX} y={insetTop} name="editor-only">
         {renderDividerHandles(dividerLines(screenW, screenH, themeCount, obj.dividerCuts))}
       </Group>
 
@@ -389,6 +402,19 @@ export const PhoneNode = forwardRef<Konva.Group, Props>(function PhoneNode(
           height={islandH}
           cornerRadius={islandH / 2}
           fill="rgba(0,0,0,0.75)"
+          listening={false}
+        />
+      )}
+
+      {/* Camera notch (MacBook) */}
+      {model.chrome === 'laptop' && (
+        <Rect
+          x={width / 2 - width * 0.045}
+          y={insetTop}
+          width={width * 0.09}
+          height={width * 0.014}
+          cornerRadius={[0, 0, width * 0.007, width * 0.007]}
+          fill="#0a0a0c"
           listening={false}
         />
       )}

@@ -16,6 +16,7 @@ const ko: Dict = {
   'device.phone': '폰',
   'device.tablet': '태블릿',
   'device.watch': '워치',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'StoreReady 메인 페이지로',
   'top.deviceTitle': 'App Store 스크린샷 크기',

@@ -16,6 +16,7 @@ const de: Dict = {
   'device.phone': 'Smartphone',
   'device.tablet': 'Tablet',
   'device.watch': 'Uhr',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'Zur StoreReady-Startseite',
   'top.deviceTitle': 'App-Store-Screenshot-Größe',

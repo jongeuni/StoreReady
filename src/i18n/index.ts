@@ -123,4 +123,5 @@ export const DEVICE_KIND_KEY: Record<DeviceKind, TKey> = {
   phone: 'device.phone',
   tablet: 'device.tablet',
   watch: 'device.watch',
+  laptop: 'device.laptop',
 };

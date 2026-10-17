@@ -16,6 +16,7 @@ const ja: Dict = {
   'device.phone': 'スマホ',
   'device.tablet': 'タブレット',
   'device.watch': 'ウォッチ',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'StoreReady のトップページへ',
   'top.deviceTitle': 'App Store スクリーンショットのサイズ',

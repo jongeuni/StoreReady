@@ -16,6 +16,7 @@ const es: Dict = {
   'device.phone': 'Teléfono',
   'device.tablet': 'Tableta',
   'device.watch': 'Reloj',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'Ir a la página de inicio de StoreReady',
   'top.deviceTitle': 'Tamaño de captura del App Store',

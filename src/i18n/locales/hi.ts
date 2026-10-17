@@ -16,6 +16,7 @@ const hi: Dict = {
   'device.phone': 'फ़ोन',
   'device.tablet': 'टैबलेट',
   'device.watch': 'घड़ी',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'StoreReady के होम पेज पर जाएँ',
   'top.deviceTitle': 'App Store स्क्रीनशॉट का आकार',

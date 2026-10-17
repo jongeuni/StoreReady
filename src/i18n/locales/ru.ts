@@ -16,6 +16,7 @@ const ru: Dict = {
   'device.phone': 'Телефон',
   'device.tablet': 'Планшет',
   'device.watch': 'Часы',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'На главную страницу StoreReady',
   'top.deviceTitle': 'Размер скриншота для App Store',

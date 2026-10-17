@@ -29,7 +29,7 @@ const TEMPLATE_KEY: Record<TemplateId, TKey> = {
   'creative-banner': 'template.creative-banner',
 };
 
-const DEVICE_KINDS: DeviceKind[] = ['phone', 'tablet', 'watch'];
+const DEVICE_KINDS: DeviceKind[] = ['phone', 'tablet', 'watch', 'laptop'];
 
 export function PageToolbar({ page }: { page: Page }) {
   const t = useT();

@@ -38,7 +38,8 @@ function fitDevicesToPreset(page: Page, preset: DevicePreset) {
   for (const obj of page.objects) {
     if (obj.type !== 'phone') continue;
     const current = getDeviceModel(obj.deviceModel, obj.deviceKind ?? 'phone');
-    const kindOk = (obj.deviceKind ?? 'phone') === preset.kind;
+    // A MacBook the user added by hand stays a MacBook on any screenshot size.
+    const kindOk = (obj.deviceKind ?? 'phone') === preset.kind || obj.deviceKind === 'laptop';
     const orientationOk = preset.kind === 'phone' ? true : preset.kind === 'watch' ? true : current.aspect < 1 === landscape;
     if (!preset.creative && !(kindOk && orientationOk)) {
       obj.deviceKind = preset.kind;

@@ -16,6 +16,7 @@ const th: Dict = {
   'device.phone': 'โทรศัพท์',
   'device.tablet': 'แท็บเล็ต',
   'device.watch': 'นาฬิกา',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'ไปที่หน้าแรกของ StoreReady',
   'top.deviceTitle': 'ขนาดภาพหน้าจอ App Store',

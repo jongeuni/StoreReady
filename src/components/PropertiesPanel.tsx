@@ -24,7 +24,7 @@ const WEIGHTS: { value: string; key: TKey }[] = [
   { value: '800', key: 'weight.800' },
 ];
 
-const DEVICE_KINDS: DeviceKind[] = ['phone', 'tablet', 'watch'];
+const DEVICE_KINDS: DeviceKind[] = ['phone', 'tablet', 'watch', 'laptop'];
 
 const ROLE_KEY: Record<TextRole, TKey> = {
   headline: 'role.headline',

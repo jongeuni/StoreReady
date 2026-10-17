@@ -136,8 +136,8 @@ export const DEVICE_PRESETS: DevicePreset[] = [
   },
   // Mac App Store screenshots: 16:10, any one of these four sizes (2880×1800, 2560×1600, 1440×900, 1280×800).
   {
+    kind: 'laptop',
     id: 'mac-2880',
-    kind: 'tablet',
     group: 'mac',
     label: 'Mac 2880 × 1800',
     description: 'Mac screenshots — 16:10, 2880 × 1800',
@@ -145,8 +145,8 @@ export const DEVICE_PRESETS: DevicePreset[] = [
     height: 1800,
   },
   {
+    kind: 'laptop',
     id: 'mac-2560',
-    kind: 'tablet',
     group: 'mac',
     label: 'Mac 2560 × 1600',
     description: 'Mac screenshots — 16:10, 2560 × 1600',
@@ -154,8 +154,8 @@ export const DEVICE_PRESETS: DevicePreset[] = [
     height: 1600,
   },
   {
+    kind: 'laptop',
     id: 'mac-1440',
-    kind: 'tablet',
     group: 'mac',
     label: 'Mac 1440 × 900',
     description: 'Mac screenshots — 16:10, 1440 × 900',
@@ -163,8 +163,8 @@ export const DEVICE_PRESETS: DevicePreset[] = [
     height: 900,
   },
   {
+    kind: 'laptop',
     id: 'mac-1280',
-    kind: 'tablet',
     group: 'mac',
     label: 'Mac 1280 × 800',
     description: 'Mac screenshots — 16:10, 1280 × 800',

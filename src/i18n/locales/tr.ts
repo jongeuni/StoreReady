@@ -16,6 +16,7 @@ const tr: Dict = {
   'device.phone': 'Telefon',
   'device.tablet': 'Tablet',
   'device.watch': 'Saat',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'StoreReady ana sayfasına git',
   'top.deviceTitle': 'App Store ekran görüntüsü boyutu',

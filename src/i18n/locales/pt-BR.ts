@@ -16,6 +16,7 @@ const ptBR: Dict = {
   'device.phone': 'Celular',
   'device.tablet': 'Tablet',
   'device.watch': 'Relógio',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'Ir para a página inicial do StoreReady',
   'top.deviceTitle': 'Tamanho da captura da App Store',

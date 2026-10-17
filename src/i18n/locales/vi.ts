@@ -16,6 +16,7 @@ const vi: Dict = {
   'device.phone': 'Điện thoại',
   'device.tablet': 'Máy tính bảng',
   'device.watch': 'Đồng hồ',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': 'Về trang chủ StoreReady',
   'top.deviceTitle': 'Kích thước ảnh chụp màn hình App Store',

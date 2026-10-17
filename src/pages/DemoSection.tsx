@@ -108,6 +108,7 @@ const KIND_SHAPE: Record<DeviceKind, { widthMult: number; aspect: number; radius
   phone: { widthMult: 1, aspect: 2.05, radius: 26, bezel: 6 },
   tablet: { widthMult: 1.3, aspect: 1.36, radius: 16, bezel: 8 },
   watch: { widthMult: 0.7, aspect: 1.22, radius: 30, bezel: 9 },
+  laptop: { widthMult: 1.5, aspect: 0.62, radius: 8, bezel: 6 },
 };
 
 function DeviceMock({

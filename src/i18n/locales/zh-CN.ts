@@ -16,6 +16,7 @@ const zhCN: Dict = {
   'device.phone': '手机',
   'device.tablet': '平板',
   'device.watch': '手表',
+  'device.laptop': 'MacBook',
 
   'top.homeTitle': '返回 StoreReady 首页',
   'top.deviceTitle': 'App Store 截图尺寸',
