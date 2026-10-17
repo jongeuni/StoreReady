@@ -33,6 +33,10 @@ const fr: Dict = {
   'top.zipFailed': "Échec de l'export ZIP. Veuillez réessayer.",
 
   'tabs.addPage': '+ Page',
+  'tabs.common': 'Commun',
+  'commonPage.headline': 'Titre',
+  'commonPage.subtitle': 'Sous-titre',
+  'commonPage.note': 'Page commune : l’arrière-plan et la position/taille du titre et du sous-titre définis ici s’appliquent à toutes les pages (et aux nouvelles). Vous pouvez ensuite modifier chaque page. Le téléphone ne fixe que la position de départ des nouvelles pages. Cette page n’est jamais exportée.',
   'tabs.duplicate': 'Dupliquer la page',
   'tabs.delete': 'Supprimer la page',
   'ver.title': "Versions",

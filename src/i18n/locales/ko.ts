@@ -33,6 +33,10 @@ const ko: Dict = {
   'top.zipFailed': 'ZIP 내보내기에 실패했어요. 다시 시도해주세요.',
 
   'tabs.addPage': '+ 페이지',
+  'tabs.common': '공통',
+  'commonPage.headline': '헤드라인',
+  'commonPage.subtitle': '서브타이틀',
+  'commonPage.note': '공통 페이지: 여기서 정한 배경, 헤드라인·서브타이틀의 위치/크기가 모든 페이지(새 페이지 포함)에 똑같이 적용됩니다. 이후 각 페이지에서 따로 수정할 수 있습니다. 핸드폰은 새 페이지의 시작 위치만 정하며 기존 페이지는 바뀌지 않습니다. 이 페이지는 내보내지 않습니다.',
   'tabs.duplicate': '페이지 복제',
   'tabs.delete': '페이지 삭제',
   'ver.title': "버전",

@@ -33,6 +33,10 @@ const tr: Dict = {
   'top.zipFailed': 'ZIP dışa aktarımı başarısız oldu. Lütfen tekrar deneyin.',
 
   'tabs.addPage': '+ Sayfa',
+  'tabs.common': 'Ortak',
+  'commonPage.headline': 'Başlık',
+  'commonPage.subtitle': 'Alt başlık',
+  'commonPage.note': 'Ortak sayfa: burada belirlenen arka plan ile başlık ve alt başlığın konumu/boyutu tüm sayfalara (yenilere de) uygulanır. Sonrasında her sayfa ayrıca düzenlenebilir. Telefon yalnızca yeni sayfaların başlangıç konumunu belirler. Bu sayfa asla dışa aktarılmaz.',
   'tabs.duplicate': 'Sayfayı çoğalt',
   'tabs.delete': 'Sayfayı sil',
   'ver.title': "Sürümler",

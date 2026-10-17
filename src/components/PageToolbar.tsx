@@ -55,6 +55,9 @@ export function PageToolbar({ page }: { page: Page }) {
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-800 bg-neutral-900 px-3 py-2">
+      {page.isCommon ? (
+        <p className="max-w-3xl text-[11px] leading-snug text-neutral-400">{t('commonPage.note')}</p>
+      ) : (
       <div className="flex items-center gap-2">
         <label className="text-xs text-neutral-500">{t('toolbar.template')}</label>
         <select
@@ -94,6 +97,7 @@ export function PageToolbar({ page }: { page: Page }) {
           ))}
         </select>
       </div>
+      )}
 
       <div className={`flex items-center gap-1 ${hasSelection ? '' : 'pointer-events-none opacity-30'}`}>
         <span className="mr-1 text-xs text-neutral-500">{t('toolbar.align')}</span>
@@ -118,10 +122,14 @@ export function PageToolbar({ page }: { page: Page }) {
             {a.type === 'top' ? '⇞' : a.type === 'center-v' ? '↕' : '⇟'}
           </button>
         ))}
-        <span className="mx-1 h-4 w-px bg-neutral-700" />
-        <Button variant="danger" onClick={() => removeSelectedObjects(page.id)}>
-          {t('common.delete')}
-        </Button>
+        {!page.isCommon && (
+          <>
+            <span className="mx-1 h-4 w-px bg-neutral-700" />
+            <Button variant="danger" onClick={() => removeSelectedObjects(page.id)}>
+              {t('common.delete')}
+            </Button>
+          </>
+        )}
       </div>
 
       {pendingTemplateId && (

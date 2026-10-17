@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { current } from 'immer';
 import { makeId } from '../utils/id';
+import { translate, useI18n } from '../i18n';
 import { idbStorage } from '../persist/idbStorage';
 import { DEFAULT_DEVICE_PRESET_ID, getDevicePreset } from '../devicePresets';
 import { canvasWidthFor, panelWidthOf } from '../utils/spread';
@@ -93,8 +94,83 @@ function uniqueVersionName(base: string, taken: string[]): string {
 }
 
 function nextPageLabel(pages: Page[]): string {
-  return `Page ${pages.length + 1}`;
+  return `Page ${pages.filter((p) => !p.isCommon).length + 1}`;
 }
+
+/** Properties of the Common page's objects that are shared with (and editable on) the Common page. */
+const COMMON_TEXT_KEYS = ['x', 'y', 'width', 'fontSize'] as const;
+const COMMON_PHONE_KEYS = ['left', 'top', 'width', 'rotation'] as const;
+
+/** Builds the Common page: background + a headline, a subtitle and one empty phone (text is fixed, not editable). */
+function buildCommonPage(preset: DevicePreset): Page {
+  const lang = useI18n.getState().lang;
+  const page = createBlankPage('Common', preset.width, preset.height);
+  layoutPageWithTemplate(page, preset.creative ? 'creative-banner' : 'single-phone', preset.width, preset.height);
+  fitDevicesToPreset(page, preset);
+  page.templateId = undefined;
+  page.isCommon = true;
+  const first = (pred: (o: CanvasObject) => boolean) => page.objects.find(pred);
+  const head = first((o) => o.type === 'text' && o.role === 'headline');
+  const sub = first((o) => o.type === 'text' && o.role === 'subheadline');
+  const phone = first((o) => o.type === 'phone');
+  if (head?.type === 'text') head.text = translate(lang, 'commonPage.headline');
+  if (sub?.type === 'text') sub.text = translate(lang, 'commonPage.subtitle');
+  page.objects = [head, sub, phone].filter((o): o is CanvasObject => !!o);
+  return page;
+}
+
+/** The project with its Common page in front (added when a saved project predates it). */
+function withCommonPage(project: Project): Project {
+  if (project.pages.some((p) => p.isCommon)) {
+    const at = project.pages.findIndex((p) => p.isCommon);
+    if (at === 0) return project;
+    const pages = [...project.pages];
+    const [common] = pages.splice(at, 1);
+    return { ...project, pages: [common, ...pages] };
+  }
+  return { ...project, pages: [buildCommonPage(getDevicePreset(project.devicePresetId)), ...project.pages] };
+}
+
+function firstTextOf(page: Page, role: TextRole): TextObject | undefined {
+  return page.objects.find((o): o is TextObject => o.type === 'text' && o.role === role);
+}
+
+/** Pushes the Common page's background and headline/subtitle position+size onto every other page. */
+function syncFromCommon(project: Project) {
+  const common = project.pages.find((p) => p.isCommon);
+  if (!common) return;
+  const head = firstTextOf(common, 'headline');
+  const sub = firstTextOf(common, 'subheadline');
+  for (const page of project.pages) {
+    if (page.isCommon) continue;
+    page.canvas.background = structuredClone(current(common).canvas.background);
+    if ((page.spread ?? 1) > 1) continue;
+    for (const [src, role] of [[head, 'headline'], [sub, 'subheadline']] as const) {
+      const target = firstTextOf(page, role);
+      if (!src || !target) continue;
+      for (const k of COMMON_TEXT_KEYS) target[k] = src[k];
+    }
+  }
+}
+
+/** Makes a freshly built page start from the Common page (background, headline/subtitle, a lone phone's place). */
+function inheritFromCommon(page: Page, project: Project, preset: DevicePreset) {
+  const common = project.pages.find((p) => p.isCommon);
+  if (!common) return;
+  page.canvas.background = structuredClone(current(common).canvas.background);
+  if (preset.creative || (page.spread ?? 1) > 1) return;
+  for (const role of ['headline', 'subheadline'] as const) {
+    const src = firstTextOf(common, role);
+    const target = firstTextOf(page, role);
+    if (src && target) for (const k of COMMON_TEXT_KEYS) target[k] = src[k];
+  }
+  const srcPhone = common.objects.find((o) => o.type === 'phone');
+  const phones = page.objects.filter((o) => o.type === 'phone');
+  if (srcPhone?.type === 'phone' && phones.length === 1 && phones[0].type === 'phone') {
+    for (const k of COMMON_PHONE_KEYS) (phones[0] as PhoneObject)[k] = srcPhone[k];
+  }
+}
+
 
 function createInitialProject(): Project {
   const preset = getDevicePreset(DEFAULT_DEVICE_PRESET_ID);
@@ -102,7 +178,7 @@ function createInitialProject(): Project {
     id: makeId(),
     name: 'Untitled Project',
     devicePresetId: preset.id,
-    pages: [createBlankPage('Page 1', preset.width, preset.height)],
+    pages: [buildCommonPage(preset), createBlankPage('Page 1', preset.width, preset.height)],
   };
 }
 
@@ -189,7 +265,7 @@ export const useProjectStore = create<State & Actions>()(
   persist<State & Actions, [], [['zustand/immer', never]], PersistedState>(
     immer((set) => ({
       project: initialProject,
-      currentPageId: initialProject.pages[0].id,
+      currentPageId: initialProject.pages[1].id,
       versionIds: [initialProject.id],
       parked: {},
       selectedObjectIds: [],
@@ -258,11 +334,12 @@ export const useProjectStore = create<State & Actions>()(
 
       importProjectTemplate: (file) =>
         set((s) => {
-          const pages = pagesFromTemplate(file);
+          const preset = getDevicePreset(file.project.devicePresetId);
+          const pages = withCommonPage({ ...s.project, devicePresetId: preset.id, pages: pagesFromTemplate(file) }).pages;
           s.project.name = file.project.name;
           s.project.devicePresetId = getDevicePreset(file.project.devicePresetId).id;
           s.project.pages = pages;
-          s.currentPageId = pages[0].id;
+          s.currentPageId = (pages.find((p) => !p.isCommon) ?? pages[0]).id;
           s.selectedObjectIds = [];
         }),
 
@@ -303,6 +380,7 @@ export const useProjectStore = create<State & Actions>()(
           const page = createBlankPage(nextPageLabel(s.project.pages), preset.width, preset.height);
           layoutPageWithTemplate(page, preset.creative ? 'creative-banner' : templateId, preset.width, preset.height);
           fitDevicesToPreset(page, preset);
+          inheritFromCommon(page, s.project, preset);
           s.project.pages.push(page);
           s.currentPageId = page.id;
           s.selectedObjectIds = [];
@@ -310,12 +388,12 @@ export const useProjectStore = create<State & Actions>()(
 
       removePage: (pageId) =>
         set((s) => {
-          if (s.project.pages.length <= 1) return;
+          if (s.project.pages.filter((p) => !p.isCommon).length <= 1) return;
           const idx = s.project.pages.findIndex((p) => p.id === pageId);
-          if (idx === -1) return;
+          if (idx === -1 || s.project.pages[idx].isCommon) return;
           s.project.pages.splice(idx, 1);
           if (s.currentPageId === pageId) {
-            const nextIdx = Math.max(0, idx - 1);
+            const nextIdx = Math.max(1, idx - 1);
             s.currentPageId = s.project.pages[nextIdx].id;
           }
           s.selectedObjectIds = [];
@@ -324,7 +402,7 @@ export const useProjectStore = create<State & Actions>()(
       duplicatePage: (pageId) =>
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
-          if (!page) return;
+          if (!page || page.isCommon) return;
           const clone: Page = {
             ...page,
             id: makeId(),
@@ -346,14 +424,14 @@ export const useProjectStore = create<State & Actions>()(
       renamePage: (pageId, label) =>
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
-          if (page) page.label = label;
+          if (page && !page.isCommon) page.label = label;
         }),
 
       reorderPage: (pageId, toIndex) =>
         set((s) => {
           const from = s.project.pages.findIndex((p) => p.id === pageId);
-          const to = Math.max(0, Math.min(s.project.pages.length - 1, toIndex));
-          if (from === -1 || from === to) return;
+          const to = Math.max(1, Math.min(s.project.pages.length - 1, toIndex));
+          if (from === -1 || from === to || s.project.pages[from].isCommon) return;
           const [page] = s.project.pages.splice(from, 1);
           s.project.pages.splice(to, 0, page);
         }),
@@ -362,7 +440,7 @@ export const useProjectStore = create<State & Actions>()(
         set((s) => {
           const idx = s.project.pages.findIndex((p) => p.id === pageId);
           const newIdx = idx + direction;
-          if (idx === -1 || newIdx < 0 || newIdx >= s.project.pages.length) return;
+          if (idx === -1 || newIdx < 1 || newIdx >= s.project.pages.length || s.project.pages[idx].isCommon) return;
           const [page] = s.project.pages.splice(idx, 1);
           s.project.pages.splice(newIdx, 0, page);
         }),
@@ -370,7 +448,7 @@ export const useProjectStore = create<State & Actions>()(
       applyTemplate: (pageId, templateId) =>
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
-          if (!page) return;
+          if (!page || page.isCommon) return;
           const panelWidth = panelWidthOf(page);
           layoutPageWithTemplate(page, templateId, panelWidth, page.canvas.height);
           fitDevicesToPreset(page, getDevicePreset(s.project.devicePresetId));
@@ -380,13 +458,15 @@ export const useProjectStore = create<State & Actions>()(
       setBackground: (pageId, background) =>
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
-          if (page) page.canvas.background = background;
+          if (!page) return;
+          page.canvas.background = background;
+          if (page.isCommon) syncFromCommon(s.project);
         }),
 
       addTextObject: (pageId, role) =>
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
-          if (!page) return;
+          if (!page || page.isCommon) return;
           const maxZ = Math.max(0, ...page.objects.map((o) => o.zIndex));
           const width = Math.round(page.canvas.width * 0.7);
           const defaults: Record<TextRole, Partial<TextObject>> = {
@@ -416,7 +496,7 @@ export const useProjectStore = create<State & Actions>()(
       addPhoneObject: (pageId, deviceKind = 'phone') =>
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
-          if (!page) return;
+          if (!page || page.isCommon) return;
           const maxZ = Math.max(0, ...page.objects.map((o) => o.zIndex));
           // Pick the mockup that matches this page's orientation, and keep it inside the canvas.
           const panelWidth = panelWidthOf(page);
@@ -445,7 +525,7 @@ export const useProjectStore = create<State & Actions>()(
       addShapeObject: (pageId, shapeKind) =>
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
-          if (!page) return;
+          if (!page || page.isCommon) return;
           const maxZ = Math.max(0, ...page.objects.map((o) => o.zIndex));
           const size = Math.round(page.canvas.width * 0.3);
           const obj: ShapeObject = {
@@ -468,7 +548,7 @@ export const useProjectStore = create<State & Actions>()(
       addImageObject: (pageId, dataUrl, fileName, naturalWidth, naturalHeight) =>
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
-          if (!page || naturalWidth <= 0 || naturalHeight <= 0) return;
+          if (!page || page.isCommon || naturalWidth <= 0 || naturalHeight <= 0) return;
           const maxZ = Math.max(0, ...page.objects.map((o) => o.zIndex));
           // Fit within 60% of the canvas width and 40% of its height, never upscaling past the file's own size.
           const scale = Math.min(1, (page.canvas.width * 0.6) / naturalWidth, (page.canvas.height * 0.4) / naturalHeight);
@@ -494,7 +574,7 @@ export const useProjectStore = create<State & Actions>()(
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
           const obj = page?.objects.find((o) => o.id === objectId);
-          if (!obj || obj.type !== 'phone') return;
+          if (!obj || obj.type !== 'phone' || page?.isCommon) return;
           if (!obj.image) {
             obj.image = dataUrl;
             obj.imageFileName = fileName;
@@ -517,7 +597,14 @@ export const useProjectStore = create<State & Actions>()(
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
           const obj = page?.objects.find((o) => o.id === objectId);
-          if (!obj) return;
+          if (!obj || !page) return;
+          if (page.isCommon) {
+            // The Common page only shares position/size; everything else on it is fixed.
+            const allowed: readonly string[] = obj.type === 'text' ? COMMON_TEXT_KEYS : obj.type === 'phone' ? COMMON_PHONE_KEYS : [];
+            for (const [k, v] of Object.entries(patch)) if (allowed.includes(k)) (obj as Record<string, unknown>)[k] = v;
+            syncFromCommon(s.project);
+            return;
+          }
           Object.assign(obj, patch);
         }),
 
@@ -533,12 +620,13 @@ export const useProjectStore = create<State & Actions>()(
             obj.x += dx;
             obj.y += dy;
           }
+          if (page?.isCommon) syncFromCommon(s.project);
         }),
 
       removeObject: (pageId, objectId) =>
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
-          if (!page) return;
+          if (!page || page.isCommon) return;
           page.objects = page.objects.filter((o) => o.id !== objectId);
           s.selectedObjectIds = s.selectedObjectIds.filter((id) => id !== objectId);
         }),
@@ -546,7 +634,7 @@ export const useProjectStore = create<State & Actions>()(
       removeSelectedObjects: (pageId) =>
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
-          if (!page) return;
+          if (!page || page.isCommon) return;
           const selected = new Set(s.selectedObjectIds);
           page.objects = page.objects.filter((o) => !selected.has(o.id));
           s.selectedObjectIds = [];
@@ -556,7 +644,7 @@ export const useProjectStore = create<State & Actions>()(
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
           const obj = page?.objects.find((o) => o.id === objectId);
-          if (!page || !obj) return;
+          if (!page || !obj || page.isCommon) return;
           const maxZ = Math.max(0, ...page.objects.map((o) => o.zIndex));
           const clone: CanvasObject =
             obj.type === 'phone' || obj.type === 'shape' || obj.type === 'image'
@@ -570,7 +658,7 @@ export const useProjectStore = create<State & Actions>()(
         set((s) => {
           const page = s.project.pages.find((p) => p.id === pageId);
           const obj = page?.objects.find((o) => o.id === objectId);
-          if (obj && obj.type === 'phone') {
+          if (obj && obj.type === 'phone' && !page?.isCommon) {
             obj.image = dataUrl;
             obj.imageFileName = fileName;
           }
@@ -648,6 +736,7 @@ export const useProjectStore = create<State & Actions>()(
             const updated = setObjectPosition(obj, Math.round(x), Math.round(y));
             Object.assign(obj, updated);
           }
+          if (page.isCommon) syncFromCommon(s.project);
         }),
 
       setSelectedObjectIds: (ids) =>
@@ -679,7 +768,7 @@ export const useProjectStore = create<State & Actions>()(
           const at = s.versionIds.indexOf(s.project.id);
           if (at !== -1) s.versionIds[at] = fresh.id;
           s.project = fresh;
-          s.currentPageId = fresh.pages[0].id;
+          s.currentPageId = fresh.pages[1].id;
           s.selectedObjectIds = [];
         }),
     })),
@@ -705,6 +794,18 @@ export const useProjectStore = create<State & Actions>()(
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
+        // Saved data from before the Common page existed: add it in front (open project and parked versions).
+        const withCommon = withCommonPage(state.project);
+        if (withCommon !== state.project) useProjectStore.setState({ project: withCommon });
+        if (state.parked) {
+          const parked = Object.fromEntries(
+            Object.entries(state.parked).map(([id, v]) => [id, { ...v, project: withCommonPage(v.project) }]),
+          );
+          useProjectStore.setState({ parked });
+        }
+        if (!withCommon.pages.find((p) => p.id === state.currentPageId)) {
+          useProjectStore.setState({ currentPageId: (withCommon.pages.find((p) => !p.isCommon) ?? withCommon.pages[0]).id });
+        }
         if (!state.project.pages.find((p) => p.id === state.currentPageId)) {
           state.currentPageId = state.project.pages[0]?.id ?? state.currentPageId;
         }

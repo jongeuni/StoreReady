@@ -33,6 +33,10 @@ const zhCN: Dict = {
   'top.zipFailed': 'ZIP 导出失败，请重试。',
 
   'tabs.addPage': '+ 页面',
+  'tabs.common': '通用',
+  'commonPage.headline': '标题',
+  'commonPage.subtitle': '副标题',
+  'commonPage.note': '通用页面：在此设置的背景以及标题、副标题的位置/大小会应用到所有页面（包括新页面）。之后仍可单独修改每个页面。手机只决定新页面的起始位置，不会改变已有页面。此页面不会导出。',
   'tabs.duplicate': '复制页面',
   'tabs.delete': '删除页面',
   'ver.title': "版本",

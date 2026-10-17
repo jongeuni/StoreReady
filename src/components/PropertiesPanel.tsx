@@ -53,6 +53,35 @@ function LayerControls({ pageId, objectId }: { pageId: string; objectId: string 
   );
 }
 
+/** Common page: only position/size are shared, so only those fields are offered. */
+function CommonObjectPanel({ page, objectId }: { page: Page; objectId: string }) {
+  const t = useT();
+  const obj = page.objects.find((o) => o.id === objectId);
+  const updateObject = useProjectStore((s) => s.updateObject);
+  if (!obj) return null;
+  if (obj.type === 'text') {
+    return (
+      <div className="grid grid-cols-2 gap-2">
+        <NumberField label={t('panel.fontSize')} value={obj.fontSize} min={8} onChange={(v) => updateObject(page.id, obj.id, { fontSize: v })} />
+        <NumberField label={t('panel.width')} value={obj.width} min={40} onChange={(v) => updateObject(page.id, obj.id, { width: v })} />
+        <NumberField label={t('panel.posX')} value={obj.x} onChange={(v) => updateObject(page.id, obj.id, { x: v })} />
+        <NumberField label={t('panel.posY')} value={obj.y} onChange={(v) => updateObject(page.id, obj.id, { y: v })} />
+      </div>
+    );
+  }
+  if (obj.type === 'phone') {
+    return (
+      <div className="grid grid-cols-2 gap-2">
+        <NumberField label={t('panel.width')} value={obj.width} min={40} onChange={(v) => updateObject(page.id, obj.id, { width: v })} />
+        <NumberField label={t('panel.rotation')} value={obj.rotation} onChange={(v) => updateObject(page.id, obj.id, { rotation: v })} />
+        <NumberField label={t('panel.posX')} value={obj.left} onChange={(v) => updateObject(page.id, obj.id, { left: v })} />
+        <NumberField label={t('panel.posY')} value={obj.top} onChange={(v) => updateObject(page.id, obj.id, { top: v })} />
+      </div>
+    );
+  }
+  return null;
+}
+
 function ObjectActions({ pageId, objectId }: { pageId: string; objectId: string }) {
   const t = useT();
   const duplicateObject = useProjectStore((s) => s.duplicateObject);
@@ -652,7 +681,9 @@ export function PropertiesPanel({ page }: { page: Page }) {
                   ? t('panel.imageTitle')
                   : t('panel.textTitle', { role: t(ROLE_KEY[singleSelected.role]) })}
           </h2>
-          {singleSelected.type === 'phone' ? (
+          {page.isCommon ? (
+            <CommonObjectPanel page={page} objectId={singleSelected.id} />
+          ) : singleSelected.type === 'phone' ? (
             <PhonePanel page={page} objectId={singleSelected.id} />
           ) : singleSelected.type === 'shape' ? (
             <ShapePanel page={page} objectId={singleSelected.id} />
@@ -664,6 +695,7 @@ export function PropertiesPanel({ page }: { page: Page }) {
         </>
       ) : (
         <>
+          {!page.isCommon && (
           <div>
             <h2 className="mb-2 text-sm font-semibold text-neutral-200">{t('panel.addToPage')}</h2>
             <p className="mb-2 text-[11px] text-neutral-500">{t('panel.addDeviceHint')}</p>
@@ -673,7 +705,8 @@ export function PropertiesPanel({ page }: { page: Page }) {
               <AddImageButton pageId={page.id} />
             </div>
           </div>
-          <div className="border-t border-neutral-800 pt-4">
+          )}
+          <div className={page.isCommon ? '' : 'border-t border-neutral-800 pt-4'}>
             <h2 className="mb-2 text-sm font-semibold text-neutral-200">{t('bg.title')}</h2>
             <BackgroundPanel page={page} />
           </div>

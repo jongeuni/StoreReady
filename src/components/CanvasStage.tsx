@@ -114,6 +114,7 @@ export function CanvasStage({ page, stageRef }: Props) {
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setDropTargetId(null);
+    if (page.isCommon) return;
     const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith('image/'));
     if (files.length === 0) return;
     const targetId = phoneAtPoint(e.clientX, e.clientY);
@@ -249,7 +250,7 @@ export function CanvasStage({ page, stageRef }: Props) {
                       visible={obj.id !== editingTextId}
                       ref={setRef}
                       onSelect={handleSelect(obj.id)}
-                      onDblClick={() => setEditingTextId(obj.id)}
+                      onDblClick={() => !page.isCommon && setEditingTextId(obj.id)}
                       onDragEnd={(x, y) => updateObject(page.id, obj.id, { x: Math.round(x), y: Math.round(y) })}
                       onTransformEnd={(attrs) => updateObject(page.id, obj.id, attrs)}
                     />
@@ -262,7 +263,7 @@ export function CanvasStage({ page, stageRef }: Props) {
                     visible={obj.id !== editingTextId}
                     ref={setRef}
                     onSelect={handleSelect(obj.id)}
-                    onDblClick={() => setEditingTextId(obj.id)}
+                    onDblClick={() => !page.isCommon && setEditingTextId(obj.id)}
                     onDragEnd={(x, y) => updateObject(page.id, obj.id, { x: Math.round(x), y: Math.round(y) })}
                     onTransformEnd={(attrs) => updateObject(page.id, obj.id, attrs)}
                   />

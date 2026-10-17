@@ -33,6 +33,10 @@ const ptBR: Dict = {
   'top.zipFailed': 'Falha ao exportar o ZIP. Tente novamente.',
 
   'tabs.addPage': '+ Página',
+  'tabs.common': 'Comum',
+  'commonPage.headline': 'Título',
+  'commonPage.subtitle': 'Subtítulo',
+  'commonPage.note': 'Página comum: o fundo e a posição/tamanho do título e do subtítulo definidos aqui valem para todas as páginas (e para as novas). Depois você pode ajustar cada página. O celular só define onde as novas páginas começam. Esta página nunca é exportada.',
   'tabs.duplicate': 'Duplicar página',
   'tabs.delete': 'Excluir página',
   'ver.title': "Versões",

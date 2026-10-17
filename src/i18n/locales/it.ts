@@ -33,6 +33,10 @@ const it: Dict = {
   'top.zipFailed': 'Esportazione ZIP non riuscita. Riprova.',
 
   'tabs.addPage': '+ Pagina',
+  'tabs.common': 'Comune',
+  'commonPage.headline': 'Titolo',
+  'commonPage.subtitle': 'Sottotitolo',
+  'commonPage.note': 'Pagina comune: lo sfondo e la posizione/dimensione di titolo e sottotitolo qui impostati valgono per tutte le pagine (e per le nuove). Poi puoi modificare ogni pagina. Il telefono definisce solo la posizione iniziale delle nuove pagine. Questa pagina non viene mai esportata.',
   'tabs.duplicate': 'Duplica pagina',
   'tabs.delete': 'Elimina pagina',
   'ver.title': "Versioni",

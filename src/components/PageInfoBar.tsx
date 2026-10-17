@@ -27,6 +27,8 @@ export function PageInfoBar({ page }: { page: Page }) {
     }
   };
 
+  if (page.isCommon) return null;
+
   return (
     <div className="shrink-0 border-t border-neutral-800 bg-neutral-900">
       <button

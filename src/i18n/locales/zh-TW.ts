@@ -33,6 +33,10 @@ const zhTW: Dict = {
   'top.zipFailed': 'ZIP 匯出失敗，請再試一次。',
 
   'tabs.addPage': '+ 頁面',
+  'tabs.common': '通用',
+  'commonPage.headline': '標題',
+  'commonPage.subtitle': '副標題',
+  'commonPage.note': '通用頁面：在此設定的背景與標題、副標題的位置/大小會套用到所有頁面（包含新頁面）。之後仍可個別修改各頁面。手機只決定新頁面的起始位置，不會改變既有頁面。此頁面不會匯出。',
   'tabs.duplicate': '複製頁面',
   'tabs.delete': '刪除頁面',
   'ver.title': "版本",

@@ -33,6 +33,10 @@ const de: Dict = {
   'top.zipFailed': 'ZIP-Export fehlgeschlagen. Bitte versuche es erneut.',
 
   'tabs.addPage': '+ Seite',
+  'tabs.common': 'Allgemein',
+  'commonPage.headline': 'Überschrift',
+  'commonPage.subtitle': 'Untertitel',
+  'commonPage.note': 'Allgemeine Seite: Hintergrund sowie Position/Größe von Überschrift und Untertitel gelten für alle Seiten (auch neue). Danach kann jede Seite einzeln angepasst werden. Das Smartphone legt nur die Startposition neuer Seiten fest. Diese Seite wird nie exportiert.',
   'tabs.duplicate': 'Seite duplizieren',
   'tabs.delete': 'Seite löschen',
   'ver.title': "Versionen",

@@ -28,7 +28,7 @@ export function PageTabs() {
         <div
           key={page.id}
           onClick={() => selectPage(page.id)}
-          draggable={editingId !== page.id}
+          draggable={editingId !== page.id && !page.isCommon}
           onDragStart={(e) => {
             e.dataTransfer.setData(PAGE_DRAG_TYPE, page.id);
             e.dataTransfer.effectAllowed = 'move';
@@ -44,7 +44,7 @@ export function PageTabs() {
             e.dataTransfer.dropEffect = 'move';
             // Left half of a tab = drop before it, right half = drop after it.
             const rect = e.currentTarget.getBoundingClientRect();
-            const gap = e.clientX < rect.left + rect.width / 2 ? i : i + 1;
+            const gap = page.isCommon ? 1 : e.clientX < rect.left + rect.width / 2 ? i : i + 1;
             if (gap !== dropGap) setDropGap(gap);
           }}
           onDrop={(e) => {
@@ -67,7 +67,7 @@ export function PageTabs() {
               : 'border-neutral-800 bg-neutral-900 text-neutral-400 hover:border-neutral-700'
           }`}
         >
-          {dragId && dropGap === i && (
+          {dragId && dropGap === i && !page.isCommon && (
             <span className="pointer-events-none absolute -left-[7px] inset-y-0 w-[3px] rounded bg-blue-400" />
           )}
           {dragId && dropGap === pages.length && i === pages.length - 1 && (
@@ -89,10 +89,11 @@ export function PageTabs() {
               className="w-24 rounded border border-neutral-600 bg-neutral-800 px-1 text-xs text-neutral-100"
             />
           ) : (
-            <span onDoubleClick={() => setEditingId(page.id)}>
-              {i + 1}. {page.label}
+            <span onDoubleClick={() => !page.isCommon && setEditingId(page.id)}>
+              {page.isCommon ? `[${t('tabs.common')}]` : `${i}. ${page.label}`}
             </span>
           )}
+          {!page.isCommon && (
           <span className="flex gap-1">
             <button
               title={t('tabs.duplicate')}
@@ -104,7 +105,7 @@ export function PageTabs() {
             >
               ⧉
             </button>
-            {pages.length > 1 && (
+            {pages.length > 2 && (
               <button
                 title={t('tabs.delete')}
                 onClick={(e) => {
@@ -117,6 +118,7 @@ export function PageTabs() {
               </button>
             )}
           </span>
+          )}
         </div>
       ))}
       <Button onClick={() => addPage()}>{t('tabs.addPage')}</Button>

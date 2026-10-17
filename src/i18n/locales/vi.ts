@@ -33,6 +33,10 @@ const vi: Dict = {
   'top.zipFailed': 'Xuất ZIP thất bại. Vui lòng thử lại.',
 
   'tabs.addPage': '+ Trang',
+  'tabs.common': 'Chung',
+  'commonPage.headline': 'Tiêu đề',
+  'commonPage.subtitle': 'Phụ đề',
+  'commonPage.note': 'Trang chung: nền và vị trí/kích thước của tiêu đề, phụ đề đặt ở đây áp dụng cho mọi trang (kể cả trang mới). Sau đó vẫn có thể chỉnh riêng từng trang. Điện thoại chỉ đặt vị trí bắt đầu của trang mới. Trang này không bao giờ được xuất.',
   'tabs.duplicate': 'Nhân đôi trang',
   'tabs.delete': 'Xóa trang',
   'ver.title': "Phiên bản",

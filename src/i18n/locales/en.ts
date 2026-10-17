@@ -33,6 +33,10 @@ const en = {
   'top.zipFailed': 'ZIP export failed. Please try again.',
 
   'tabs.addPage': '+ Page',
+  'tabs.common': 'Common',
+  'commonPage.headline': 'Headline',
+  'commonPage.subtitle': 'Subtitle',
+  'commonPage.note': 'Common page: the background and the position/size of the headline and subtitle set here apply to every page (and to new pages). You can still change each page afterwards. The phone only sets where new pages start. This page is never exported.',
   'tabs.duplicate': 'Duplicate page',
   'tabs.delete': 'Delete page',
   'ver.title': "Versions",

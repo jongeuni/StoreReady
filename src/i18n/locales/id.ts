@@ -33,6 +33,10 @@ const id: Dict = {
   'top.zipFailed': 'Ekspor ZIP gagal. Silakan coba lagi.',
 
   'tabs.addPage': '+ Halaman',
+  'tabs.common': 'Umum',
+  'commonPage.headline': 'Judul',
+  'commonPage.subtitle': 'Subjudul',
+  'commonPage.note': 'Halaman umum: latar belakang serta posisi/ukuran judul dan subjudul di sini berlaku untuk semua halaman (termasuk baru). Setelah itu tiap halaman tetap bisa diubah. Ponsel hanya menentukan posisi awal halaman baru. Halaman ini tidak pernah diekspor.',
   'tabs.duplicate': 'Duplikat halaman',
   'tabs.delete': 'Hapus halaman',
   'ver.title': "Versi",

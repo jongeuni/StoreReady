@@ -33,6 +33,10 @@ const es: Dict = {
   'top.zipFailed': 'Error al exportar el ZIP. Inténtalo de nuevo.',
 
   'tabs.addPage': '+ Página',
+  'tabs.common': 'Común',
+  'commonPage.headline': 'Titular',
+  'commonPage.subtitle': 'Subtítulo',
+  'commonPage.note': 'Página común: el fondo y la posición/tamaño del titular y el subtítulo definidos aquí se aplican a todas las páginas (y a las nuevas). Después puedes cambiar cada página. El teléfono solo fija dónde empiezan las páginas nuevas. Esta página no se exporta.',
   'tabs.duplicate': 'Duplicar página',
   'tabs.delete': 'Eliminar página',
   'ver.title': "Versiones",

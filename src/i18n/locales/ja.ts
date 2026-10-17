@@ -33,6 +33,10 @@ const ja: Dict = {
   'top.zipFailed': 'ZIPの書き出しに失敗しました。もう一度お試しください。',
 
   'tabs.addPage': '+ ページ',
+  'tabs.common': '共通',
+  'commonPage.headline': '見出し',
+  'commonPage.subtitle': 'サブタイトル',
+  'commonPage.note': '共通ページ：ここで設定した背景と、見出し・サブタイトルの位置／サイズがすべてのページ（新規ページを含む）に適用されます。その後、各ページで個別に変更できます。スマホは新規ページの開始位置のみを決め、既存ページは変わりません。このページは書き出されません。',
   'tabs.duplicate': 'ページを複製',
   'tabs.delete': 'ページを削除',
   'ver.title': "バージョン",

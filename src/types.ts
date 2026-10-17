@@ -142,6 +142,8 @@ export type Page = {
   id: string;
   label: string;
   templateId?: string;
+  /** The always-first [Common] page: its background and headline/subtitle position+size apply to every page. Never exported or deleted. */
+  isCommon?: boolean;
   /** Number of export-sized panels laid side by side on this page (canvas is `spread` × the preset width). Default 1. */
   spread?: number;
   canvas: {

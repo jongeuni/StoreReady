@@ -66,6 +66,7 @@ export function TopBar({ stageRef }: { stageRef: React.RefObject<Konva.Stage | n
 
       const entries: { label: string; dataUrl: string }[] = [];
       for (const page of openProject.pages) {
+        if (page.isCommon) continue;
         selectPage(page.id);
         // Wait for this page to render and for its pictures (incl. the 3D phone) to finish loading.
         await waitForRender();
