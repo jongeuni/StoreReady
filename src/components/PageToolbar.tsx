@@ -5,6 +5,8 @@ import { Button } from './ui/Field';
 import { ConfirmModal } from './ConfirmModal';
 import type { AlignType } from '../utils/geometry';
 import type { DeviceKind, Page } from '../types';
+import { downloadPageTemplate, parsePageTemplate, type PageTemplateFile } from '../utils/pageTemplate';
+import { useToastStore } from '../store/useToastStore';
 import { DEVICE_KIND_KEY, useT, type TKey } from '../i18n';
 
 const ALIGN_H: { type: AlignType; key: TKey }[] = [
@@ -40,6 +42,10 @@ export function PageToolbar({ page }: { page: Page }) {
   const removeSelectedObjects = useProjectStore((s) => s.removeSelectedObjects);
 
   const [pendingTemplateId, setPendingTemplateId] = useState<TemplateId | null>(null);
+  const importPageTemplate = useProjectStore((s) => s.importPageTemplate);
+  const pushToast = useToastStore((s) => s.push);
+  const [pendingImport, setPendingImport] = useState<PageTemplateFile | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const templateSelectRef = useRef<HTMLSelectElement>(null);
   const deviceSelectRef = useRef<HTMLSelectElement>(null);
 
@@ -72,6 +78,29 @@ export function PageToolbar({ page }: { page: Page }) {
             </option>
           ))}
         </select>
+
+        <Button onClick={() => fileInputRef.current?.click()}>{t('toolbar.importTemplate')}</Button>
+        <Button onClick={() => downloadPageTemplate(page)}>{t('toolbar.exportTemplate')}</Button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json,application/json"
+          className="hidden"
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            e.target.value = '';
+            if (!file) return;
+            const parsed = parsePageTemplate(await file.text());
+            if (!parsed) {
+              pushToast(t('toolbar.templateInvalid'), 'error');
+              return;
+            }
+            if (page.objects.length === 0) {
+              importPageTemplate(page.id, parsed);
+              pushToast(t('toolbar.templateImported'), 'success');
+            } else setPendingImport(parsed);
+          }}
+        />
 
         <span className="mx-1 h-4 w-px bg-neutral-700" />
 
@@ -123,6 +152,21 @@ export function PageToolbar({ page }: { page: Page }) {
           {t('common.delete')}
         </Button>
       </div>
+
+      {pendingImport && (
+        <ConfirmModal
+          title={t('toolbar.confirmTitle')}
+          message={t('toolbar.confirmMessage')}
+          confirmLabel={t('toolbar.confirmApply')}
+          cancelLabel={t('common.cancel')}
+          onCancel={() => setPendingImport(null)}
+          onConfirm={() => {
+            importPageTemplate(page.id, pendingImport);
+            setPendingImport(null);
+            pushToast(t('toolbar.templateImported'), 'success');
+          }}
+        />
+      )}
 
       {pendingTemplateId && (
         <ConfirmModal

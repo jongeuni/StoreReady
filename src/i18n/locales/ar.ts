@@ -60,6 +60,10 @@ const ar: Dict = {
   'toolbar.confirmTitle': 'تطبيق القالب؟',
   'toolbar.confirmMessage': 'سيؤدي تطبيق القالب إلى مسح كل المحتوى الحالي في هذه الصفحة. هل تريد المتابعة؟',
   'toolbar.confirmApply': 'تطبيق',
+  'toolbar.importTemplate': 'استيراد قالب',
+  'toolbar.exportTemplate': 'تصدير القالب',
+  'toolbar.templateInvalid': 'ملف القالب غير صالح.',
+  'toolbar.templateImported': 'تم استيراد القالب.',
 
   'info.title': 'معلومات هذه الصفحة (JSON)',
   'info.copy': 'نسخ JSON',

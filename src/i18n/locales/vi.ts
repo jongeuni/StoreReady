@@ -60,6 +60,10 @@ const vi: Dict = {
   'toolbar.confirmTitle': 'Áp dụng mẫu?',
   'toolbar.confirmMessage': 'Áp dụng mẫu sẽ xóa toàn bộ nội dung hiện tại của trang này. Tiếp tục?',
   'toolbar.confirmApply': 'Áp dụng',
+  'toolbar.importTemplate': 'Nhập mẫu',
+  'toolbar.exportTemplate': 'Xuất mẫu',
+  'toolbar.templateInvalid': 'Tệp mẫu không hợp lệ.',
+  'toolbar.templateImported': 'Đã nhập mẫu.',
 
   'info.title': 'Thông tin trang này (JSON)',
   'info.copy': 'Sao chép JSON',

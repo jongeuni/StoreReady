@@ -60,6 +60,10 @@ const en = {
   'toolbar.confirmTitle': 'Apply this template?',
   'toolbar.confirmMessage': 'Applying a template removes everything currently on this page. Continue?',
   'toolbar.confirmApply': 'Apply',
+  'toolbar.importTemplate': 'Import template',
+  'toolbar.exportTemplate': 'Export template',
+  'toolbar.templateInvalid': 'Not a valid template file.',
+  'toolbar.templateImported': 'Template imported.',
 
   'info.title': "This page's info (JSON)",
   'info.copy': 'Copy JSON',

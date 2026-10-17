@@ -60,6 +60,10 @@ const hi: Dict = {
   'toolbar.confirmTitle': 'टेम्पलेट लागू करें?',
   'toolbar.confirmMessage': 'टेम्पलेट लागू करने से इस पेज की मौजूदा सारी सामग्री मिट जाएगी। जारी रखें?',
   'toolbar.confirmApply': 'लागू करें',
+  'toolbar.importTemplate': 'टेम्पलेट इम्पोर्ट करें',
+  'toolbar.exportTemplate': 'टेम्पलेट एक्सपोर्ट करें',
+  'toolbar.templateInvalid': 'मान्य टेम्पलेट फ़ाइल नहीं है।',
+  'toolbar.templateImported': 'टेम्पलेट इम्पोर्ट हो गया।',
 
   'info.title': 'इस पेज की जानकारी (JSON)',
   'info.copy': 'JSON कॉपी करें',

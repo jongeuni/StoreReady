@@ -60,6 +60,10 @@ const de: Dict = {
   'toolbar.confirmTitle': 'Vorlage anwenden?',
   'toolbar.confirmMessage': 'Beim Anwenden einer Vorlage wird der gesamte aktuelle Inhalt dieser Seite gelöscht. Fortfahren?',
   'toolbar.confirmApply': 'Anwenden',
+  'toolbar.importTemplate': 'Vorlage importieren',
+  'toolbar.exportTemplate': 'Vorlage exportieren',
+  'toolbar.templateInvalid': 'Keine gültige Vorlagendatei.',
+  'toolbar.templateImported': 'Vorlage importiert.',
 
   'info.title': 'Infos zu dieser Seite (JSON)',
   'info.copy': 'JSON kopieren',

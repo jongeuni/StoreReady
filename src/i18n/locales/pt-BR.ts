@@ -60,6 +60,10 @@ const ptBR: Dict = {
   'toolbar.confirmTitle': 'Aplicar modelo?',
   'toolbar.confirmMessage': 'Aplicar um modelo apagará todo o conteúdo atual desta página. Continuar?',
   'toolbar.confirmApply': 'Aplicar',
+  'toolbar.importTemplate': 'Importar modelo',
+  'toolbar.exportTemplate': 'Exportar modelo',
+  'toolbar.templateInvalid': 'Arquivo de modelo inválido.',
+  'toolbar.templateImported': 'Modelo importado.',
 
   'info.title': 'Informações desta página (JSON)',
   'info.copy': 'Copiar JSON',

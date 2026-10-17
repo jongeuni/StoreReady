@@ -60,6 +60,10 @@ const zhTW: Dict = {
   'toolbar.confirmTitle': '套用範本？',
   'toolbar.confirmMessage': '套用範本會清除此頁面目前的所有內容。要繼續嗎？',
   'toolbar.confirmApply': '套用',
+  'toolbar.importTemplate': '匯入範本',
+  'toolbar.exportTemplate': '匯出範本',
+  'toolbar.templateInvalid': '不是有效的範本檔案。',
+  'toolbar.templateImported': '範本已匯入。',
 
   'info.title': '此頁面資訊 (JSON)',
   'info.copy': '複製 JSON',

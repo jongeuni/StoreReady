@@ -60,6 +60,10 @@ const it: Dict = {
   'toolbar.confirmTitle': 'Applicare il modello?',
   'toolbar.confirmMessage': 'Applicando un modello verrà cancellato tutto il contenuto attuale di questa pagina. Continuare?',
   'toolbar.confirmApply': 'Applica',
+  'toolbar.importTemplate': 'Importa modello',
+  'toolbar.exportTemplate': 'Esporta modello',
+  'toolbar.templateInvalid': 'File modello non valido.',
+  'toolbar.templateImported': 'Modello importato.',
 
   'info.title': 'Info di questa pagina (JSON)',
   'info.copy': 'Copia JSON',

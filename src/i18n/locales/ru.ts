@@ -60,6 +60,10 @@ const ru: Dict = {
   'toolbar.confirmTitle': 'Применить шаблон?',
   'toolbar.confirmMessage': 'При применении шаблона всё текущее содержимое этой страницы будет удалено. Продолжить?',
   'toolbar.confirmApply': 'Применить',
+  'toolbar.importTemplate': 'Импорт шаблона',
+  'toolbar.exportTemplate': 'Экспорт шаблона',
+  'toolbar.templateInvalid': 'Недопустимый файл шаблона.',
+  'toolbar.templateImported': 'Шаблон импортирован.',
 
   'info.title': 'Данные этой страницы (JSON)',
   'info.copy': 'Копировать JSON',

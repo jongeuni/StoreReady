@@ -60,6 +60,10 @@ const th: Dict = {
   'toolbar.confirmTitle': 'ใช้เทมเพลตหรือไม่?',
   'toolbar.confirmMessage': 'การใช้เทมเพลตจะลบเนื้อหาปัจจุบันทั้งหมดในหน้านี้ ต้องการดำเนินการต่อหรือไม่?',
   'toolbar.confirmApply': 'ใช้',
+  'toolbar.importTemplate': 'นำเข้าเทมเพลต',
+  'toolbar.exportTemplate': 'ส่งออกเทมเพลต',
+  'toolbar.templateInvalid': 'ไฟล์เทมเพลตไม่ถูกต้อง',
+  'toolbar.templateImported': 'นำเข้าเทมเพลตแล้ว',
 
   'info.title': 'ข้อมูลของหน้านี้ (JSON)',
   'info.copy': 'คัดลอก JSON',

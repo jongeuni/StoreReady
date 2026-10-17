@@ -60,6 +60,10 @@ const ja: Dict = {
   'toolbar.confirmTitle': 'テンプレートを適用しますか？',
   'toolbar.confirmMessage': 'テンプレートを適用すると、このページの現在の内容はすべて消えます。続けますか？',
   'toolbar.confirmApply': '適用',
+  'toolbar.importTemplate': 'テンプレートを読み込む',
+  'toolbar.exportTemplate': 'テンプレートを書き出す',
+  'toolbar.templateInvalid': '有効なテンプレートファイルではありません。',
+  'toolbar.templateImported': 'テンプレートを読み込みました。',
 
   'info.title': 'このページの情報 (JSON)',
   'info.copy': 'JSONをコピー',

@@ -60,6 +60,10 @@ const zhCN: Dict = {
   'toolbar.confirmTitle': '应用模板？',
   'toolbar.confirmMessage': '应用模板会清除此页面的所有现有内容。要继续吗？',
   'toolbar.confirmApply': '应用',
+  'toolbar.importTemplate': '导入模板',
+  'toolbar.exportTemplate': '导出模板',
+  'toolbar.templateInvalid': '不是有效的模板文件。',
+  'toolbar.templateImported': '模板已导入。',
 
   'info.title': '此页面信息 (JSON)',
   'info.copy': '复制 JSON',

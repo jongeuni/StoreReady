@@ -60,6 +60,10 @@ const ko: Dict = {
   'toolbar.confirmTitle': '템플릿을 적용할까요?',
   'toolbar.confirmMessage': '템플릿을 적용하면 현재 페이지의 내용이 모두 사라집니다. 계속할까요?',
   'toolbar.confirmApply': '적용',
+  'toolbar.importTemplate': '템플릿 불러오기',
+  'toolbar.exportTemplate': '템플릿 내보내기',
+  'toolbar.templateInvalid': '올바른 템플릿 파일이 아닙니다.',
+  'toolbar.templateImported': '템플릿을 불러왔습니다.',
 
   'info.title': '이 페이지 정보 (JSON)',
   'info.copy': 'JSON 복사',

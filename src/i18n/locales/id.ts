@@ -60,6 +60,10 @@ const id: Dict = {
   'toolbar.confirmTitle': 'Terapkan templat?',
   'toolbar.confirmMessage': 'Menerapkan templat akan menghapus semua konten saat ini di halaman ini. Lanjutkan?',
   'toolbar.confirmApply': 'Terapkan',
+  'toolbar.importTemplate': 'Impor templat',
+  'toolbar.exportTemplate': 'Ekspor templat',
+  'toolbar.templateInvalid': 'Berkas templat tidak valid.',
+  'toolbar.templateImported': 'Templat diimpor.',
 
   'info.title': 'Info halaman ini (JSON)',
   'info.copy': 'Salin JSON',

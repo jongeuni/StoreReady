@@ -60,6 +60,10 @@ const tr: Dict = {
   'toolbar.confirmTitle': 'Şablon uygulansın mı?',
   'toolbar.confirmMessage': 'Şablon uygulamak bu sayfadaki mevcut tüm içeriği siler. Devam edilsin mi?',
   'toolbar.confirmApply': 'Uygula',
+  'toolbar.importTemplate': 'Şablonu içe aktar',
+  'toolbar.exportTemplate': 'Şablonu dışa aktar',
+  'toolbar.templateInvalid': 'Geçerli bir şablon dosyası değil.',
+  'toolbar.templateImported': 'Şablon içe aktarıldı.',
 
   'info.title': 'Bu sayfanın bilgileri (JSON)',
   'info.copy': 'JSON kopyala',

@@ -60,6 +60,10 @@ const es: Dict = {
   'toolbar.confirmTitle': '¿Aplicar plantilla?',
   'toolbar.confirmMessage': 'Aplicar una plantilla borrará todo el contenido actual de esta página. ¿Continuar?',
   'toolbar.confirmApply': 'Aplicar',
+  'toolbar.importTemplate': 'Importar plantilla',
+  'toolbar.exportTemplate': 'Exportar plantilla',
+  'toolbar.templateInvalid': 'No es un archivo de plantilla válido.',
+  'toolbar.templateImported': 'Plantilla importada.',
 
   'info.title': 'Información de esta página (JSON)',
   'info.copy': 'Copiar JSON',
