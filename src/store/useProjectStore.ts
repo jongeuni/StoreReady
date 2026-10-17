@@ -4,6 +4,7 @@ import { immer } from 'zustand/middleware/immer';
 import { current } from 'immer';
 import { makeId } from '../utils/id';
 import { translate, useI18n } from '../i18n';
+import { measureTextInk } from '../utils/richText';
 import { idbStorage } from '../persist/idbStorage';
 import { DEFAULT_DEVICE_PRESET_ID, getDevicePreset } from '../devicePresets';
 import { canvasWidthFor, panelWidthOf } from '../utils/spread';
@@ -136,6 +137,27 @@ function firstTextOf(page: Page, role: TextRole): TextObject | undefined {
   return page.objects.find((o): o is TextObject => o.type === 'text' && o.role === role);
 }
 
+
+/**
+ * Copies a headline/subtitle's position and size onto another page's text. The Align tools place the glyphs
+ * (not the wider text box), so a left-aligned "Headline" can sit at x = -11; copying x verbatim would push a
+ * longer headline further left. Instead the glyphs keep the edge they are anchored to: centred glyphs stay
+ * centred, otherwise the glyph edge nearer the canvas side (left or right) stays where it is.
+ */
+function copyTextGeometry(src: TextObject, target: TextObject, canvasWidth: number) {
+  const srcInk = measureTextInk({ ...src });
+  const left = src.x + srcInk.offsetX;
+  const right = left + srcInk.width;
+  const centered = Math.abs((left + right) / 2 - canvasWidth / 2) <= canvasWidth * 0.01;
+  const frac = centered ? 0.5 : left <= canvasWidth - right ? 0 : 1;
+  const anchor = left + srcInk.width * frac;
+  target.width = src.width;
+  target.fontSize = src.fontSize;
+  target.y = src.y;
+  const ink = measureTextInk({ ...target });
+  target.x = Math.round(anchor - ink.offsetX - ink.width * frac);
+}
+
 /** Pushes the Common page's background and headline/subtitle position+size onto every other page. */
 function syncFromCommon(project: Project) {
   const common = project.pages.find((p) => p.isCommon);
@@ -149,7 +171,7 @@ function syncFromCommon(project: Project) {
     for (const [src, role] of [[head, 'headline'], [sub, 'subheadline']] as const) {
       const target = firstTextOf(page, role);
       if (!src || !target) continue;
-      for (const k of COMMON_TEXT_KEYS) target[k] = src[k];
+      copyTextGeometry(src, target, common.canvas.width);
     }
   }
 }
@@ -163,7 +185,7 @@ function inheritFromCommon(page: Page, project: Project, preset: DevicePreset) {
   for (const role of ['headline', 'subheadline'] as const) {
     const src = firstTextOf(common, role);
     const target = firstTextOf(page, role);
-    if (src && target) for (const k of COMMON_TEXT_KEYS) target[k] = src[k];
+    if (src && target) copyTextGeometry(src, target, common.canvas.width);
   }
   const srcPhone = common.objects.find((o) => o.type === 'phone');
   const phones = page.objects.filter((o) => o.type === 'phone');
